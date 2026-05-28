@@ -1,0 +1,130 @@
+[
+  {
+    "id": "guava",
+    "name": "Guava",
+    "scientificName": "Psidium guajava",
+    "shortDescription": "A tropical fruit tree whose leaves have strong antibacterial and anti-inflammatory properties.",
+    "imageSource": "guava.jpg",
+    "categories": ["digestive", "immune-boost", "wound-care"],
+    "lookAlikeIds": ["oregano"],
+    "details": {
+      "localName": "Bayabas",
+      "preparation": [
+        {
+          "method": "Tea / Decoction",
+          "description": "Boil 5-6 fresh leaves in 2 cups of water for 10 minutes. Strain and drink warm.",
+          "uses": ["Diarrhea relief", "Stomach ache"]
+        },
+        {
+          "method": "Poultice",
+          "description": "Crush fresh leaves and apply directly to wounds or skin irritations.",
+          "uses": ["Wound healing", "Anti-inflammatory"]
+        },
+        {
+          "method": "Mouth Rinse",
+          "description": "Boil leaves, cool the decoction, and use as a gargle.",
+          "uses": ["Toothache", "Gum disease"]
+        }
+      ],
+      "facts": {
+        "origin": "Central America",
+        "family": "Myrtaceae",
+        "habitat": "Tropical and subtropical regions"
+      },
+      "warnings": [
+        "Consult a doctor before medicinal use",
+        "Do not consume in excess"
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical, tolerates brief cold",
+      "soil": "Well-drained, slightly acidic to neutral (pH 5.0–7.0)",
+      "sunlight": "Full sun (6-8 hours daily)",
+      "watering": "Regular watering, allow soil to dry between waterings",
+      "propagation": "Seeds, cuttings, or air layering",
+      "growthTime": "2-4 years to fruit from seed",
+      "tips": [
+        "Prune regularly to encourage branching",
+        "Protect from frost during winter months"
+      ]
+    },
+    "research": [
+      {
+        "title": "Antibacterial activity of Psidium guajava leaves",
+        "summary": "Study confirms the potent antibacterial properties of guava leaf extracts against common pathogens.",
+        "reference": "Journal of Ethnopharmacology",
+        "year": 2018
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Oval-shaped, rough texture with prominent veins",
+      "flower": "White with many stamens",
+      "stem": "Smooth, copper-colored peeling bark",
+      "smell": "Distinctive, sweet, somewhat musky when crushed"
+    }
+  },
+  {
+    "id": "oregano",
+    "name": "Oregano",
+    "scientificName": "Origanum vulgare",
+    "shortDescription": "An aromatic herb with potent antibacterial properties often used for respiratory conditions.",
+    "imageSource": "oregano.jpg",
+    "categories": ["respiratory", "antibacterial", "cough-relief"],
+    "lookAlikeIds": ["guava"],
+    "details": {
+      "localName": "Oregano",
+      "preparation": [
+        {
+          "method": "Juice Extract",
+          "description": "Wash leaves, crush them in a clean cloth, and squeeze to extract the juice. Take 1 teaspoon.",
+          "uses": ["Cough relief", "Sore throat"]
+        },
+        {
+          "method": "Tea",
+          "description": "Steep 1 tablespoon of fresh leaves in a cup of boiling water for 10 minutes. Strain and drink.",
+          "uses": ["Cold & flu", "Digestion"]
+        },
+        {
+          "method": "Oil Infusion",
+          "description": "Infuse dried leaves in carrier oil (like olive oil) for several weeks. Apply topically.",
+          "uses": ["Antibacterial", "Skin infections"]
+        }
+      ],
+      "facts": {
+        "origin": "Mediterranean region",
+        "family": "Lamiaceae",
+        "habitat": "Warm, temperate areas"
+      },
+      "warnings": [
+        "Pregnant women should consult a physician before therapeutic use",
+        "May cause skin irritation in concentrated essential oil form"
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Warm, Mediterranean-like",
+      "soil": "Well-drained, sandy or loamy",
+      "sunlight": "Full sun",
+      "watering": "Light watering, drought-tolerant",
+      "propagation": "Seeds, cuttings, or division",
+      "growthTime": "Harvest leaves in 6-8 weeks",
+      "tips": [
+        "Pinch flowers to encourage leaf growth",
+        "Do not overwater, as roots are prone to rot"
+      ]
+    },
+    "research": [
+      {
+        "title": "Antimicrobial properties of Origanum vulgare",
+        "summary": "Research details the high concentration of carvacrol and thymol contributing to its antimicrobial effects.",
+        "reference": "Phytotherapy Research",
+        "year": 2020
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Small, spade-shaped, soft and slightly hairy",
+      "flower": "Tiny, pink or purple clusters",
+      "stem": "Square, woody at the base",
+      "smell": "Strong, spicy, and earthy aroma"
+    }
+  }
+]
