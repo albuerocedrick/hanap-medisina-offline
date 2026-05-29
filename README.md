@@ -1,4 +1,4 @@
-# 🌿 Hanap Medisina — Offline
+# Hanap Medisina Offline
 
 A fully offline React Native mobile app for identifying and learning about Philippine medicinal plants. Point your camera at a plant, and the on-device TFLite model identifies it instantly — no internet required.
 
