@@ -107,7 +107,7 @@ export const HistoryGridCard: React.FC<Props> = ({
       className="shadow-sm"
     >
       {/* Thumbnail */}
-      <View className="w-full aspect-square bg-slate-100 relative border-b border-white/10 dark:border-white/5">
+      <View className="w-full aspect-square relative">
         <Image source={{ uri: item.imageUri }} className="w-full h-full" resizeMode="cover" />
 
         {/* Favorite Overlay */}

@@ -44,6 +44,7 @@ export function PlantGridCardComponent({
   }));
 
   const isFavorite = useLibraryStore((s) => s.isFavorite(plant.id));
+  const toggleFavorite = useLibraryStore((s) => s.toggleFavorite);
 
   const [imageError, setImageError] = useState<boolean>(false);
   const [imageLoading, setImageLoading] = useState<boolean>(true);
@@ -113,10 +114,28 @@ export function PlantGridCardComponent({
             <Ionicons name="cloud-offline-outline" size={16} color="rgba(255,255,255,0.8)" />
           </View>
         )}
-        {!hideFavoriteIndicator && isFavorite && (
-          <View style={{ position: "absolute", top: 8, right: 8 }}>
-            <Ionicons name="heart" size={16} color={isDark ? "#fca5a5" : "#ef4444"} />
-          </View>
+        {!hideFavoriteIndicator && (
+          <TouchableOpacity
+            onPress={() => toggleFavorite(plant)}
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              width: 28,
+              height: 28,
+              borderRadius: 14,
+              backgroundColor: "rgba(0,0,0,0.4)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons 
+              name={isFavorite ? "heart" : "heart-outline"} 
+              size={16} 
+              color={isFavorite ? "#ef4444" : "white"} 
+            />
+          </TouchableOpacity>
         )}
       </View>
 

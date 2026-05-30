@@ -80,6 +80,7 @@ export function PlantCardComponent({
   }));
 
   const isFavorite = useLibraryStore((s) => s.isFavorite(plant.id));
+  const toggleFavorite = useLibraryStore((s) => s.toggleFavorite);
 
   const [imageError, setImageError] = useState<boolean>(false);
   const [imageLoading, setImageLoading] = useState<boolean>(true);
@@ -168,13 +169,17 @@ export function PlantCardComponent({
             </View>
 
             {!hideFavoriteIndicator && (
-              <View style={{ marginTop: 2 }}>
+              <TouchableOpacity 
+                style={{ marginTop: 2 }}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                onPress={() => toggleFavorite(plant)}
+              >
                 {isFavorite ? (
-                  <Ionicons name="heart" size={16} color={isDark ? "#fca5a5" : "#ef4444"} />
+                  <Ionicons name="heart" size={16} color="#ef4444" />
                 ) : (
                   <Ionicons name="heart-outline" size={16} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
                 )}
-              </View>
+              </TouchableOpacity>
             )}
           </View>
 
