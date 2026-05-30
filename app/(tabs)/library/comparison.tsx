@@ -306,12 +306,6 @@ export default function PlantComparisonScreen() {
             )}
           </View>
 
-          {/* Central "VS" Badge – simple translucent circle, no BlurView for perf */}
-          <View
-            style={{ position: "absolute", top: "50%", left: "50%", width: 44, height: 44, borderRadius: 22, backgroundColor: isDark ? "rgba(11,18,11,0.75)" : "rgba(250,254,239,0.85)", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)", alignItems: "center", justifyContent: "center", transform: [{ translateX: -22 }, { translateY: -22 }], shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 4, shadowOffset: { width: 0, height: 2 }, elevation: 4 }}
-          >
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C", fontSize: 13 }}>VS</Text>
-          </View>
         </View>
 
         {/* ─── Bottom: Physical Checklist ─────────────────────────────────── */}

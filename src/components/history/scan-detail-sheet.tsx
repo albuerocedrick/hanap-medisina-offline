@@ -267,20 +267,6 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
                   {scan.plantName}
                 </Text>
 
-                <View
-                  style={{
-                    backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(162,207,163,0.15)",
-                    borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)",
-                    borderWidth: 1,
-                    alignSelf: "flex-start",
-                  }}
-                  className="px-2.5 py-1 rounded-full flex-row items-center gap-1.5"
-                >
-                  <Feather name="save" size={12} color={isDark ? "rgba(248,250,252,0.6)" : "#4D8035"} />
-                  <Text style={{ color: isDark ? "rgba(248,250,252,0.8)" : "rgba(34,69,28,0.8)", fontFamily: "Quicksand_700Bold" }} className="text-[10px] uppercase tracking-wider">
-                    Local Scan
-                  </Text>
-                </View>
               </View>
 
               <TouchableOpacity
