@@ -1,4 +1,5 @@
 import { useFonts } from 'expo-font';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -41,12 +42,14 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {/* Tabs Group */}
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      
-      {/* 404 Fallback */}
-      <Stack.Screen name="+not-found" options={{ presentation: 'modal' }} />
-    </Stack>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* Tabs Group */}
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        
+        {/* 404 Fallback */}
+        <Stack.Screen name="+not-found" options={{ presentation: 'modal' }} />
+      </Stack>
+    </GestureHandlerRootView>
   );
 }

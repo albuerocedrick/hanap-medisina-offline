@@ -20,11 +20,13 @@ import { PlantOfTheDay } from "../../src/components/home/PlantOfTheDay";
 import { RecentScans, RecentScansHandle } from "../../src/components/home/RecentScans";
 import { ScanNowBanner } from "../../src/components/home/ScanNowBanner";
 import { useFeedStore } from "../../src/store/useFeedStore";
+import { ScanDetailSheet } from "../../src/components/history/scan-detail-sheet";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
   
   const fetchHomeFeed = useFeedStore((s) => s.fetchHomeFeed);
 
@@ -81,11 +83,16 @@ export default function HomeScreen() {
               <ScanNowBanner />
               <PlantOfTheDay />
               <FeaturedPlants />
-              <RecentScans ref={recentScansRef} />
+              <RecentScans ref={recentScansRef} onScanPress={(scan) => setSelectedScanId(scan.id)} />
               <DailyTrivia />
             </>
           )}
         </ScrollView>
+        <ScanDetailSheet 
+          visible={!!selectedScanId}
+          scanId={selectedScanId}
+          onClose={() => setSelectedScanId(null)}
+        />
       </View>
     </PageTransition>
   );

@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-05-29T00:00:00Z",
+  "models": {
+    "MedicinalPlant": {
+      "description": "Plant data loaded from src/data/plants.json and used throughout the library.",
+      "fields": {
+        "id": "string",
+        "name": "string",
+        "scientificName": "string",
+        "shortDescription": "string",
+        "imageSource": "string | undefined",
+        "imageUrl": "string | undefined",
+        "categories": "string[]",
+        "lookAlikeIds": "string[]",
+        "details": "PlantDetails",
+        "cultivationGuide": "CultivationGuide",
+        "research": "ResearchEntry[]",
+        "comparisonTraits": "ComparisonTraits"
+      }
+    },
+    "PlantDetails": {
+      "fields": {
+        "localName": "string",
+        "preparation": "PreparationMethod[]",
+        "facts": "Record<string, string>",
+        "warnings": "string[]"
+      }
+    },
+    "PreparationMethod": {
+      "fields": {
+        "method": "string",
+        "description": "string",
+        "uses": "string[]"
+      }
+    },
+    "CultivationGuide": {
+      "fields": {
+        "climate": "string",
+        "soil": "string",
+        "sunlight": "string",
+        "watering": "string",
+        "propagation": "string",
+        "growthTime": "string",
+        "tips": "string[]"
+      }
+    },
+    "ResearchEntry": {
+      "fields": {
+        "title": "string",
+        "summary": "string",
+        "reference": "string",
+        "year": "number"
+      }
+    },
+    "ComparisonTraits": {
+      "fields": {
+        "leaf": "string",
+        "flower": "string",
+        "stem": "string",
+        "smell": "string"
+      }
+    },
+    "LocalScanRecord": {
+      "description": "Scan history entry persisted in useHistoryStore.",
+      "fields": {
+        "id": "string",
+        "plantName": "string",
+        "plantId": "string",
+        "confidence": "number",
+        "imageUri": "string",
+        "scannedAt": "string",
+        "isFavorite": "boolean",
+        "notes": "string | undefined"
+      }
+    },
+    "ExportedScan": {
+      "description": "Scan history entry used for backup export/import.",
+      "fields": {
+        "id": "string",
+        "plantName": "string",
+        "plantId": "string",
+        "confidence": "number",
+        "scannedAt": "string",
+        "isFavorite": "boolean",
+        "notes": "string | undefined",
+        "imageBase64": "string | undefined"
+      }
+    },
+    "Profile": {
+      "description": "User profile persisted in useProfileStore.",
+      "fields": {
+        "name": "string",
+        "nickname": "string",
+        "avatarUri": "string | null",
+        "isFirstLaunch": "boolean"
+      }
+    },
+    "ExportData": {
+      "description": "Backup JSON structure used by src/services/dataTransfer.ts.",
+      "fields": {
+        "version": "1",
+        "exportedAt": "string",
+        "profile": "{ name: string; nickname: string; avatarBase64?: string }",
+        "scans": "ExportedScan[]",
+        "favorites": "string[]"
+      }
+    },
+    "LibraryPersistence": {
+      "description": "AsyncStorage persistence shape for useLibraryStore favorites and plants.",
+      "fields": {
+        "favorites": "MedicinalPlant[]",
+        "plants": "MedicinalPlant[]",
+        "viewMode": "'list' | 'grid'"
+      }
+    },
+    "HistoryPersistence": {
+      "description": "AsyncStorage persistence shape for useHistoryStore.",
+      "fields": {
+        "scans": "LocalScanRecord[]",
+        "sortBy": "'newest' | 'oldest'",
+        "viewMode": "'list' | 'grid'",
+        "activeTab": "'all' | 'favorites'"
+      }
+    },
+    "ProfilePersistence": {
+      "description": "AsyncStorage persistence shape for useProfileStore.",
+      "fields": {
+        "name": "string",
+        "nickname": "string",
+        "avatarUri": "string | null",
+        "isFirstLaunch": "boolean"
+      }
+    }
+  }
+}

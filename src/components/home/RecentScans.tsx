@@ -4,24 +4,26 @@ import { useColorScheme } from "nativewind";
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useHistoryStore } from "../../store/useHistoryStore";
-import { ScanDetailSheet } from "../history/scan-detail-sheet";
 import { LocalScanRecord } from "../../types";
 
 export interface RecentScansHandle { refresh: () => Promise<void>; }
 
-export const RecentScans = forwardRef<RecentScansHandle>(function RecentScans(_, ref) {
+interface RecentScansProps {
+  onScanPress?: (scan: LocalScanRecord) => void;
+}
+
+export const RecentScans = forwardRef<RecentScansHandle, RecentScansProps>(function RecentScans({ onScanPress }, ref) {
   const { colorScheme } = useColorScheme(); 
   const isDark = colorScheme === "dark";
 
   const allScans = useHistoryStore((s) => s.scans);
   
+
+
   // Get up to 3 most recent scans, sorted by date
   const recentScans = [...allScans]
     .sort((a, b) => new Date(b.scannedAt).getTime() - new Date(a.scannedAt).getTime())
     .slice(0, 3);
-
-  // Local state for scan detail modal
-  const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
 
   useImperativeHandle(ref, () => ({ 
     refresh: async () => {
@@ -32,7 +34,9 @@ export const RecentScans = forwardRef<RecentScansHandle>(function RecentScans(_,
   }));
 
   const handleScanPress = (scan: LocalScanRecord) => {
-    setSelectedScanId(scan.id);
+    if (onScanPress) {
+      onScanPress(scan);
+    }
   };
 
   return (
@@ -98,12 +102,6 @@ export const RecentScans = forwardRef<RecentScansHandle>(function RecentScans(_,
         </View>
       )}
 
-      {/* Inline Detail Sheet */}
-      <ScanDetailSheet 
-        visible={!!selectedScanId}
-        scanId={selectedScanId}
-        onClose={() => setSelectedScanId(null)}
-      />
     </View>
   );
 });

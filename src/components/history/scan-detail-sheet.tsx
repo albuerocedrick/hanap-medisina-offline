@@ -1,24 +1,36 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
     Alert,
+    BackHandler,
+    Dimensions,
     Image,
-    Modal,
-    Pressable,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
+import Animated, {
+    interpolate,
+    runOnJS,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+    Easing,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getAllPlants, MedicinalPlant } from "@/src/services/localLibrary";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { LocalScanRecord } from "@/src/types";
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SHEET_HEIGHT = SCREEN_HEIGHT * 0.85;
+const ANIM_CONFIG = { duration: 320, easing: Easing.out(Easing.cubic) };
 
 interface Props {
   visible: boolean;
@@ -29,20 +41,66 @@ interface Props {
 export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  
+
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
 
   const getScanById = useHistoryStore((s) => s.getScanById);
   const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
   const deleteScan = useHistoryStore((s) => s.deleteScan);
-  const scans = useHistoryStore((s) => s.scans); // Subscribe to changes
+  const scans = useHistoryStore((s) => s.scans);
 
   const [scan, setScan] = useState<LocalScanRecord | null>(null);
   const [libraryMatch, setLibraryMatch] = useState<MedicinalPlant | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Animated values — run entirely on UI thread, no JS freeze
+  const progress = useSharedValue(0); // 0 = hidden, 1 = visible
+
+  // Backdrop animated style
+  const backdropStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 1], [0, 1]),
+  }));
+
+
+  // Sheet animated style: slides up from bottom
+  const sheetStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: interpolate(
+          progress.value,
+          [0, 1],
+          [SHEET_HEIGHT, 0]
+        ),
+      },
+    ],
+  }));
+
+  // Animate in/out whenever visible changes
+  useEffect(() => {
+    if (visible) {
+      setIsMounted(true);
+      progress.value = withTiming(1, ANIM_CONFIG);
+    } else {
+      progress.value = withTiming(0, ANIM_CONFIG, (finished) => {
+        if (finished) runOnJS(setIsMounted)(false);
+      });
+    }
+  }, [visible]);
+
+  // Android hardware back button
+  useEffect(() => {
+    if (!visible) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      onClose();
+      return true;
+    });
+    return () => sub.remove();
+  }, [visible, onClose]);
+
+  // Load scan data
   useEffect(() => {
     if (!visible || !scanId) {
       setScan(null);
@@ -53,21 +111,16 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
     async function loadScanData(sid: string) {
       setLoading(true);
       setError(null);
-
       try {
         const currentScan = getScanById(sid);
         if (!currentScan) throw new Error("Scan data could not be found.");
-
         setScan(currentScan);
 
-        // Cross-reference Library
-        const allPlants = await getAllPlants();
+        const allPlants = getAllPlants();
         const matchedPlant = allPlants.find(
           (p) => p.name.toLowerCase() === currentScan.plantName.toLowerCase()
         );
-        
         if (matchedPlant) setLibraryMatch(matchedPlant);
-
       } catch (err: any) {
         setError(err.message || "Failed to load scan details.");
       } finally {
@@ -93,14 +146,14 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
       "Are you sure you want to delete this scan? This cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive", 
+        {
+          text: "Delete",
+          style: "destructive",
           onPress: async () => {
             await deleteScan(scan.id);
             onClose();
-          } 
-        }
+          },
+        },
       ]
     );
   };
@@ -114,7 +167,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
   };
 
   const displayConf = scan ? Number((scan.confidence * 100).toFixed(2)) : 0;
-  
+
   const getConfColor = (val: number) => {
     if (val >= 70) return { bg: "#22c55e", text: isDark ? "#4ade80" : "#15803d", bar: isDark ? "rgba(34, 197, 94, 0.2)" : "#f0fdf4" };
     if (val >= 35) return { bg: "#f59e0b", text: isDark ? "#fbbf24" : "#b45309", bar: isDark ? "rgba(245, 158, 11, 0.2)" : "#fffbeb" };
@@ -122,40 +175,54 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
   };
   const confStyles = getConfColor(displayConf);
 
-  return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={onClose}
-    >
-      {/* Dimmed Backdrop (Closes on press) */}
-      <Pressable 
-        style={{ flex: 1, backgroundColor: "rgba(11, 18, 11, 0.6)" }} 
-        onPress={onClose} 
-      />
+  if (!isMounted) return null;
 
-      {/* Bottom Sheet Container */}
-      <View 
-        style={{ 
-          height: "85%", 
-          paddingBottom: insets.bottom,
-          backgroundColor: isDark ? "#0B120B" : "#FAFEEF",
-          borderTopWidth: 1,
-          borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
-        }}
-        className="rounded-t-[32px] absolute bottom-0 left-0 right-0 shadow-xl overflow-hidden"
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+      {/* Dimmed Backdrop */}
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(11, 18, 11, 0.6)" }, backdropStyle]}
+      >
+        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={onClose} />
+      </Animated.View>
+
+      {/* Bottom Sheet */}
+      <Animated.View
+        style={[
+          sheetStyle,
+          {
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: SHEET_HEIGHT,
+            paddingBottom: insets.bottom,
+            backgroundColor: isDark ? "#0B120B" : "#FAFEEF",
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
+            borderTopWidth: 1,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
+            overflow: "hidden",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 12,
+            elevation: 20,
+          },
+        ]}
       >
         {/* Drag Handle */}
-        <View 
+        <View
           style={{ backgroundColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)" }}
-          className="w-12 h-1.5 rounded-full self-center mt-4 mb-2" 
+          className="w-12 h-1.5 rounded-full self-center mt-4 mb-2"
         />
 
         {/* Header */}
         <View className="flex-row items-center justify-between px-6 py-2">
-          <Text 
-            style={{ 
+          <Text
+            style={{
               color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)",
               fontFamily: "Quicksand_700Bold",
             }}
@@ -163,7 +230,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
           >
             Scan Details
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={onClose}
             style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }}
             className="w-8 h-8 items-center justify-center rounded-full"
@@ -184,23 +251,23 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
           </View>
         ) : (
           <ScrollView contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
-            
+
             {/* Title & Favorite Badge */}
             <View className="px-6 pt-2 pb-6 flex-row items-start justify-between gap-4">
               <View className="flex-1">
-                <Text 
-                  style={{ 
+                <Text
+                  style={{
                     color: isDark ? "#F8FAFC" : "#22451C",
                     fontFamily: "serif",
                     fontStyle: "italic",
-                    fontWeight: "500" 
+                    fontWeight: "500",
                   }}
                   className="text-3xl tracking-tight mb-2"
                 >
                   {scan.plantName}
                 </Text>
-                
-                <View 
+
+                <View
                   style={{
                     backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(162,207,163,0.15)",
                     borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)",
@@ -216,7 +283,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
                 </View>
               </View>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => toggleFavorite(scan.id)}
                 style={{
                   backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
@@ -225,10 +292,10 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
                 }}
                 className="w-12 h-12 rounded-full items-center justify-center"
               >
-                <Ionicons 
-                  name={scan.isFavorite ? "heart" : "heart-outline"} 
-                  size={24} 
-                  color={scan.isFavorite ? "#ef4444" : isDark ? "rgba(248,250,252,0.7)" : "#4D8035"} 
+                <Ionicons
+                  name={scan.isFavorite ? "heart" : "heart-outline"}
+                  size={24}
+                  color={scan.isFavorite ? "#ef4444" : isDark ? "rgba(248,250,252,0.7)" : "#4D8035"}
                 />
               </TouchableOpacity>
             </View>
@@ -236,13 +303,13 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
             {/* Side-by-Side Images */}
             <View className="px-6 mb-6 flex-row justify-between gap-3">
               <View className="flex-1">
-                <Text 
+                <Text
                   style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_700Bold" }}
                   className="text-[11px] uppercase tracking-wider mb-2"
                 >
                   Your Scan
                 </Text>
-                <View 
+                <View
                   style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)", borderWidth: 1 }}
                   className="aspect-square bg-slate-200 rounded-2xl overflow-hidden"
                 >
@@ -251,17 +318,17 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
               </View>
 
               <View className="flex-1">
-                <Text 
+                <Text
                   style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_700Bold" }}
                   className="text-[11px] uppercase tracking-wider mb-2"
                 >
                   Reference
                 </Text>
-                <View 
-                  style={{ 
-                    borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)", 
+                <View
+                  style={{
+                    borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
                     borderWidth: 1,
-                    backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)"
+                    backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
                   }}
                   className="aspect-square rounded-2xl overflow-hidden items-center justify-center"
                 >
@@ -276,7 +343,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
 
             {/* Details Card */}
             <View className="px-6 mb-6">
-              <View 
+              <View
                 style={{
                   backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "#FAFEEF",
                   borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.55)",
@@ -286,7 +353,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
               >
                 <View className="mb-4">
                   <View className="flex-row justify-between items-end mb-2">
-                    <Text 
+                    <Text
                       style={{ color: isDark ? "rgba(248,250,252,0.8)" : "rgba(34,69,28,0.8)", fontFamily: "Quicksand_600SemiBold" }}
                       className="text-xs"
                     >
@@ -315,7 +382,6 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
 
             {/* Actions */}
             <View className="px-6 gap-3">
-              {/* Library navigation or fallback */}
               {libraryMatch ? (
                 <TouchableOpacity
                   activeOpacity={0.8}
@@ -328,11 +394,11 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
                 >
                   <Ionicons name="book-outline" size={18} color="white" />
                   <Text style={{ fontFamily: "Quicksand_700Bold" }} className="text-white text-sm tracking-wide">
-                    View Full MedicinalPlant Info
+                    View Full Plant Info
                   </Text>
                 </TouchableOpacity>
               ) : (
-                <View 
+                <View
                   style={{
                     backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(162,207,163,0.15)",
                     borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)",
@@ -367,7 +433,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
 
           </ScrollView>
         )}
-      </View>
-    </Modal>
+      </Animated.View>
+    </View>
   );
 }

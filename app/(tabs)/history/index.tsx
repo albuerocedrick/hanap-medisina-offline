@@ -112,77 +112,86 @@ export default function HistoryScreen() {
     setSelectedIds(new Set());
   };
 
+  const handlePressScan = (id: string) => {
+    // Defer state update so animations and gestures can finish cleanly
+    requestAnimationFrame(() => {
+      setSelectedScanId(id);
+    });
+  };
+
   // UI layout constants
   const pillHeight = 78;
   const bottomPadding = Math.max(insets.bottom, 24) + pillHeight + 100;
 
   return (
-    <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]" style={{ paddingTop: insets.top }}>
-      <StatusBar
-        barStyle={isDark ? "light-content" : "dark-content"}
-        backgroundColor="transparent"
-        translucent
-      />
-
-      <View className="bg-[#FAFEEF] dark:bg-[#0B120B] z-10">
-        <HistoryHeader
-          totalCount={totalCount}
-          favoriteCount={favoriteCount}
-          activeTab={activeTab}
-          sortBy={sortBy}
-          viewMode={viewMode}
-          isSelecting={isSelecting}
-          selectedCount={selectedIds.size}
-          onTabChange={setActiveTab}
-          onSortChange={() => setSortBy(sortBy === "newest" ? "oldest" : "newest")}
-          onViewModeChange={() => setViewMode(viewMode === "list" ? "grid" : "list")}
-          onDeleteSelected={handleDeleteSelected}
-          onCancelSelection={cancelSelection}
+    <View style={{ flex: 1 }}>
+      <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]" style={{ paddingTop: insets.top }}>
+        <StatusBar
+          barStyle={isDark ? "light-content" : "dark-content"}
+          backgroundColor="transparent"
+          translucent
         />
-      </View>
 
-      <FlatList
-        key={viewMode} // Force re-render on layout change
-        data={sortedScans}
-        keyExtractor={(item) => item.id}
-        numColumns={viewMode === "grid" ? 2 : 1}
-        columnWrapperStyle={viewMode === "grid" ? { paddingHorizontal: 16, justifyContent: "space-between" } : undefined}
-        renderItem={({ item }) => {
-          if (viewMode === "grid") {
+        <View className="bg-[#FAFEEF] dark:bg-[#0B120B] z-10">
+          <HistoryHeader
+            totalCount={totalCount}
+            favoriteCount={favoriteCount}
+            activeTab={activeTab}
+            sortBy={sortBy}
+            viewMode={viewMode}
+            isSelecting={isSelecting}
+            selectedCount={selectedIds.size}
+            onTabChange={setActiveTab}
+            onSortChange={() => setSortBy(sortBy === "newest" ? "oldest" : "newest")}
+            onViewModeChange={() => setViewMode(viewMode === "list" ? "grid" : "list")}
+            onDeleteSelected={handleDeleteSelected}
+            onCancelSelection={cancelSelection}
+          />
+        </View>
+
+        <FlatList
+          key={viewMode} // Force re-render on layout change
+          data={sortedScans}
+          keyExtractor={(item) => item.id}
+          numColumns={viewMode === "grid" ? 2 : 1}
+          columnWrapperStyle={viewMode === "grid" ? { paddingHorizontal: 16, justifyContent: "space-between" } : undefined}
+          renderItem={({ item }) => {
+            if (viewMode === "grid") {
+              return (
+                <HistoryGridCard
+                  item={item}
+                  onPress={() => handlePressScan(item.id)}
+                  onLongPress={handleLongPress}
+                  onToggleFavorite={toggleFavorite}
+                  isSelecting={isSelecting}
+                  isSelected={selectedIds.has(item.id)}
+                  onToggleSelect={handleToggleSelect}
+                />
+              );
+            }
             return (
-              <HistoryGridCard
+              <HistoryCard
                 item={item}
-                onPress={() => setSelectedScanId(item.id)}
+                onPress={() => handlePressScan(item.id)}
                 onLongPress={handleLongPress}
                 onToggleFavorite={toggleFavorite}
+                onDelete={handleDeleteScan}
                 isSelecting={isSelecting}
                 isSelected={selectedIds.has(item.id)}
                 onToggleSelect={handleToggleSelect}
               />
             );
+          }}
+          ListEmptyComponent={
+            <HistoryEmptyState activeTab={activeTab} />
           }
-          return (
-            <HistoryCard
-              item={item}
-              onPress={() => setSelectedScanId(item.id)}
-              onLongPress={handleLongPress}
-              onToggleFavorite={toggleFavorite}
-              onDelete={handleDeleteScan}
-              isSelecting={isSelecting}
-              isSelected={selectedIds.has(item.id)}
-              onToggleSelect={handleToggleSelect}
-            />
-          );
-        }}
-        ListEmptyComponent={
-          <HistoryEmptyState activeTab={activeTab} />
-        }
-        contentContainerStyle={[
-          sortedScans.length === 0 && { flex: 1 },
-          { paddingBottom: bottomPadding, paddingTop: 8 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      />
+          contentContainerStyle={[
+            sortedScans.length === 0 && { flex: 1 },
+            { paddingBottom: bottomPadding, paddingTop: 8 },
+          ]}
+          showsVerticalScrollIndicator={false}
+        />
+      </PageTransition>
 
       <ScanDetailSheet
         visible={!!selectedScanId}
@@ -191,6 +200,6 @@ export default function HistoryScreen() {
           setSelectedScanId(null);
         }}
       />
-    </PageTransition>
+    </View>
   );
 }
