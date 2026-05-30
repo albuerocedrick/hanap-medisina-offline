@@ -68,7 +68,7 @@ function IconButton({
 
 // ─── Main Header ──────────────────────────────────────────────────────────────
 export function HomeHeader() {
-  const { name, nickname } = useProfileStore();
+  const { firstName } = useProfileStore();
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -84,8 +84,6 @@ export function HomeHeader() {
       { scale: 0.95 + themeAnim.value * 0.1 },
     ],
   }));
-
-  const displayName = nickname || name;
 
   return (
     <Animated.View
@@ -112,7 +110,7 @@ export function HomeHeader() {
           className="text-lg"
           numberOfLines={1}
         >
-          {displayName} 🌿
+          {firstName}
         </Text>
       </View>
 

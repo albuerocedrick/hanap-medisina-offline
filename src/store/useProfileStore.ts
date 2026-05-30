@@ -3,14 +3,14 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface ProfileState {
-  name: string;
-  nickname: string;
+  firstName: string;
+  lastName: string;
   avatarUri: string | null;
   isFirstLaunch: boolean;
 
   // Actions
-  setName: (name: string) => void;
-  setNickname: (nickname: string) => void;
+  setFirstName: (firstName: string) => void;
+  setLastName: (lastName: string) => void;
   setAvatar: (uri: string) => void;
   removeAvatar: () => void;
   updateProfile: (data: Partial<ProfileState>) => void;
@@ -20,19 +20,19 @@ interface ProfileState {
 export const useProfileStore = create<ProfileState>()(
   persist(
     (set) => ({
-      name: "Plant Explorer",
-      nickname: "",
+      firstName: "Plant",
+      lastName: "Explorer",
       avatarUri: null,
       isFirstLaunch: true,
 
-      setName: (name) => set({ name }),
-      setNickname: (nickname) => set({ nickname }),
+      setFirstName: (firstName) => set({ firstName }),
+      setLastName: (lastName) => set({ lastName }),
       setAvatar: (uri) => set({ avatarUri: uri }),
       removeAvatar: () => set({ avatarUri: null }),
       updateProfile: (data) => set((state) => ({ ...state, ...data })),
       resetProfile: () => set({
-        name: "Plant Explorer",
-        nickname: "",
+        firstName: "Plant",
+        lastName: "Explorer",
         avatarUri: null,
       }),
     }),

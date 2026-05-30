@@ -27,7 +27,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   
-  const { name, nickname, avatarUri, setAvatar, setName, setNickname, resetProfile } = useProfileStore();
+  const { firstName, lastName, avatarUri, setAvatar, setFirstName, setLastName, resetProfile } = useProfileStore();
 
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -129,23 +129,16 @@ export default function ProfileScreen() {
         <View className="items-center mb-4">
           <ProfileAvatar
             avatarUri={avatarUri}
-            displayName={name}
+            displayName={firstName}
             onEditPress={handlePickImage}
           />
           <Text
             style={{ color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "Quicksand_700Bold" }}
             className="text-xl"
           >
-            {name}
+            {`${firstName} ${lastName}`.trim()}
           </Text>
-          {nickname ? (
-            <Text
-              style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_600SemiBold" }}
-              className="text-sm mt-0.5"
-            >
-              {nickname}
-            </Text>
-          ) : null}
+
         </View>
 
         <ProfileStats
@@ -189,11 +182,11 @@ export default function ProfileScreen() {
 
       <EditProfileModal
         visible={editProfileVisible}
-        currentName={name}
-        currentNickname={nickname}
-        onSave={(newName, newNickname) => {
-          setName(newName);
-          setNickname(newNickname);
+        currentFirstName={firstName}
+        currentLastName={lastName}
+        onSave={(newFirst, newLast) => {
+          setFirstName(newFirst);
+          setLastName(newLast);
         }}
         onClose={() => setEditProfileVisible(false)}
       />

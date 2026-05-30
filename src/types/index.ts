@@ -68,8 +68,8 @@ export interface ExportData {
   version: 1;                          // schema version for forward compatibility
   exportedAt: string;                  // ISO timestamp of export
   profile: {
-    name: string;
-    nickname: string;
+    firstName: string;
+    lastName: string;
     avatarBase64?: string;             // profile avatar as base64 (optional)
   };
   scans: ExportedScan[];               // scan history with embedded images

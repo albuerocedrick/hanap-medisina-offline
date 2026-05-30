@@ -1,6 +1,6 @@
 /**
  * src/components/profile/edit-profile-modal.tsx
- * Bottom-sheet style modal for editing the user's local profile (name + nickname).
+ * Bottom-sheet style modal for editing the user's local profile (first name + last name).
  */
 import { Feather } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
@@ -20,16 +20,16 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   visible: boolean;
-  currentName: string;
-  currentNickname: string;
-  onSave: (name: string, nickname: string) => void;
+  currentFirstName: string;
+  currentLastName: string;
+  onSave: (firstName: string, lastName: string) => void;
   onClose: () => void;
 }
 
 export function EditProfileModal({
   visible,
-  currentName,
-  currentNickname,
+  currentFirstName,
+  currentLastName,
   onSave,
   onClose,
 }: Props) {
@@ -37,31 +37,31 @@ export function EditProfileModal({
   const isDark = colorScheme === "dark";
   const insets = useSafeAreaInsets();
 
-  const [name, setName] = useState(currentName);
-  const [nickname, setNickname] = useState(currentNickname);
+  const [firstName, setFirstName] = useState(currentFirstName);
+  const [lastName, setLastName] = useState(currentLastName);
 
   // Sync fields when modal opens
   useEffect(() => {
     if (visible) {
-      setName(currentName);
-      setNickname(currentNickname);
+      setFirstName(currentFirstName);
+      setLastName(currentLastName);
     }
   }, [visible]);
 
   if (!visible) return null;
 
   const handleSave = () => {
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      Alert.alert("Name Required", "Please enter your name before saving.");
+    const trimmedFirst = firstName.trim();
+    if (!trimmedFirst) {
+      Alert.alert("First Name Required", "Please enter your first name before saving.");
       return;
     }
-    onSave(trimmedName, nickname.trim());
+    onSave(trimmedFirst, lastName.trim());
     onClose();
   };
 
   const hasChanges =
-    name.trim() !== currentName || nickname.trim() !== currentNickname;
+    firstName.trim() !== currentFirstName || lastName.trim() !== currentLastName;
 
   // ── Color tokens ────────────────────────────────────────────────────────────
   const sheetBg = isDark ? "#0F1A0F" : "#FAFEEF";
@@ -153,7 +153,7 @@ export function EditProfileModal({
           {/* Form */}
           <View style={{ paddingHorizontal: 24, paddingTop: 20, gap: 16 }}>
 
-            {/* Name field */}
+            {/* First Name field */}
             <View>
               <Text
                 style={{
@@ -166,19 +166,19 @@ export function EditProfileModal({
                   marginLeft: 2,
                 }}
               >
-                Name
+                First Name
               </Text>
               <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="Your name"
+                value={firstName}
+                onChangeText={setFirstName}
+                placeholder="Your first name"
                 placeholderTextColor={placeholderColor}
-                maxLength={40}
+                maxLength={30}
                 autoCorrect={false}
                 style={{
                   backgroundColor: inputBg,
                   borderWidth: 1,
-                  borderColor: name.length > 0 ? inputBorderActive : inputBorder,
+                  borderColor: firstName.length > 0 ? inputBorderActive : inputBorder,
                   borderRadius: 16,
                   paddingHorizontal: 16,
                   paddingVertical: 14,
@@ -189,7 +189,7 @@ export function EditProfileModal({
               />
             </View>
 
-            {/* Nickname field */}
+            {/* Last Name field */}
             <View>
               <Text
                 style={{
@@ -202,22 +202,22 @@ export function EditProfileModal({
                   marginLeft: 2,
                 }}
               >
-                Nickname{" "}
+                Last Name{" "}
                 <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 10, textTransform: "none" }}>
                   (optional)
                 </Text>
               </Text>
               <TextInput
-                value={nickname}
-                onChangeText={setNickname}
-                placeholder="e.g. Plant Explorer"
+                value={lastName}
+                onChangeText={setLastName}
+                placeholder="Your last name"
                 placeholderTextColor={placeholderColor}
                 maxLength={30}
                 autoCorrect={false}
                 style={{
                   backgroundColor: inputBg,
                   borderWidth: 1,
-                  borderColor: nickname.length > 0 ? inputBorderActive : inputBorder,
+                  borderColor: lastName.length > 0 ? inputBorderActive : inputBorder,
                   borderRadius: 16,
                   paddingHorizontal: 16,
                   paddingVertical: 14,
@@ -226,17 +226,6 @@ export function EditProfileModal({
                   fontSize: 15,
                 }}
               />
-              <Text
-                style={{
-                  color: placeholderColor,
-                  fontFamily: "Quicksand_500Medium",
-                  fontSize: 11,
-                  marginTop: 6,
-                  marginLeft: 2,
-                }}
-              >
-                Shown as your greeting on the home screen.
-              </Text>
             </View>
 
             {/* Save button */}

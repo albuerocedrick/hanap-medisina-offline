@@ -70,12 +70,12 @@ export function validateImportData(data: unknown): data is ExportData {
     return false;
   }
   const profile = d.profile as Record<string, unknown>;
-  if (typeof profile.name !== "string") {
-    console.warn("[dataTransfer] validateImportData: profile.name is not a string");
+  if (typeof profile.firstName !== "string") {
+    console.warn("[dataTransfer] validateImportData: profile.firstName is not a string");
     return false;
   }
-  if (typeof profile.nickname !== "string") {
-    console.warn("[dataTransfer] validateImportData: profile.nickname is not a string");
+  if (typeof profile.lastName !== "string") {
+    console.warn("[dataTransfer] validateImportData: profile.lastName is not a string");
     return false;
   }
   if (profile.avatarBase64 !== undefined && typeof profile.avatarBase64 !== "string") {
@@ -175,8 +175,8 @@ export async function exportData(): Promise<string> {
     version: 1,
     exportedAt: new Date().toISOString(),
     profile: {
-      name: profileState.name,
-      nickname: profileState.nickname,
+      firstName: profileState.firstName,
+      lastName: profileState.lastName,
       avatarBase64,
     },
     scans: exportedScans,
@@ -237,7 +237,7 @@ export async function importData(fileUri: string): Promise<ImportResult> {
   return {
     success: true,
     scansCount: parsed.scans.length,
-    profileName: parsed.profile.name,
+    profileName: `${parsed.profile.firstName} ${parsed.profile.lastName}`.trim(),
     favoritesCount: parsed.favorites.length,
     parsedData: parsed,
   };
@@ -289,8 +289,8 @@ export async function applyImport(
   // 3. Apply profile data (only in replace mode; merge keeps current profile)
   if (mode === "replace") {
     useProfileStore.getState().updateProfile({
-      name: data.profile.name,
-      nickname: data.profile.nickname,
+      firstName: data.profile.firstName,
+      lastName: data.profile.lastName,
     });
 
     // Restore avatar if present
