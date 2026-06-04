@@ -12,11 +12,12 @@ import { PageTransition } from "../../src/components/ui/PageTransition";
 
 import { SymptomGrid } from "../../src/components/home/SymptomGrid";
 import { DailyTrivia } from "../../src/components/home/DailyTrivia";
-import { FeaturedPlants } from "../../src/components/home/FeaturedPlants";
+import { QuickRemedies } from "../../src/components/home/QuickRemedies";
 import { HomeHeader } from "../../src/components/home/HomeHeader";
 import { HomeSearchBar } from "../../src/components/home/HomeSearchBar";
 import { MascotChatSlot } from "../../src/components/home/MascotChatSlot";
-import { PlantOfTheDay } from "../../src/components/home/PlantOfTheDay";
+import MySavedPlants from "../../src/components/home/MySavedPlants";
+import YourStats from "../../src/components/home/YourStats";
 import { RecentScans, RecentScansHandle } from "../../src/components/home/RecentScans";
 import { ScanNowBanner } from "../../src/components/home/ScanNowBanner";
 import { useFeedStore } from "../../src/store/useFeedStore";
@@ -81,10 +82,11 @@ export default function HomeScreen() {
               <MascotChatSlot />
               <ScanNowBanner />
               <SymptomGrid />
-              <PlantOfTheDay />
-              <FeaturedPlants />
+              <QuickRemedies />
+              <MySavedPlants />
               <RecentScans ref={recentScansRef} onScanPress={(scan) => setSelectedScanId(scan.id)} />
               <DailyTrivia />
+              <YourStats />
             </>
           )}
         </ScrollView>

@@ -14,9 +14,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getHomeFeed } from "../services/localFeed";
 import {
-  FeaturedPlant,
-  FeedCategory,
-  PlantOfTheDay,
   TriviaItem,
   SymptomItem,
   PreparationGroup,
@@ -47,15 +44,6 @@ export class FeedStoreError extends Error {
 // ─────────────────────────────────────────────
 
 interface FeedState {
-  /** The curated hero plant for the Home Tab. Null until first successful fetch. */
-  plantOfTheDay: PlantOfTheDay | null;
-
-  /** Category chips shown on the Home Tab. Empty until first successful fetch. */
-  categories: FeedCategory[];
-
-  /** Featured plant cards shown in the horizontal scroll row. */
-  featuredPlants: FeaturedPlant[];
-
   /**
    * 7 trivia facts — one per day of the week (index 0 = Sunday).
    * Rotated offline via getTodayTrivia().
@@ -113,9 +101,6 @@ export const useFeedStore = create<FeedStore>()(
   persist(
     (set, get) => ({
       // ── Initial State ──────────────────────────────────────────────────────
-      plantOfTheDay: null,
-      categories: [],
-      featuredPlants: [],
       weeklyTrivia: [],
       symptoms: [],
       preparationGroups: [],
@@ -134,9 +119,6 @@ export const useFeedStore = create<FeedStore>()(
           const feedData = getHomeFeed();
 
           set({
-            plantOfTheDay: feedData.plantOfTheDay,
-            categories: feedData.categories,
-            featuredPlants: feedData.featuredPlants,
             weeklyTrivia: feedData.weeklyTrivia,
             symptoms: feedData.symptoms,
             preparationGroups: feedData.preparationGroups,
@@ -174,9 +156,6 @@ export const useFeedStore = create<FeedStore>()(
       storage: createJSONStorage(() => AsyncStorage),
 
       partialize: (state) => ({
-        plantOfTheDay: state.plantOfTheDay,
-        categories: state.categories,
-        featuredPlants: state.featuredPlants,
         weeklyTrivia: state.weeklyTrivia,
         symptoms: state.symptoms,
         preparationGroups: state.preparationGroups,
@@ -191,9 +170,6 @@ export const useFeedStore = create<FeedStore>()(
 // Fine-grained selectors prevent full-store re-renders.
 // ─────────────────────────────────────────────
 
-export const selectPlantOfTheDay = (s: FeedStore) => s.plantOfTheDay;
-export const selectFeedCategories = (s: FeedStore) => s.categories;
-export const selectFeaturedPlants = (s: FeedStore) => s.featuredPlants;
 export const selectIsLoadingFeed = (s: FeedStore) => s.isLoadingFeed;
 export const selectFeedError = (s: FeedStore) => s.feedError;
 export const selectLastFetchedAt = (s: FeedStore) => s.lastFetchedAt;

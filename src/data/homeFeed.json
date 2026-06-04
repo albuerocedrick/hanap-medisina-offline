@@ -1,34 +1,4 @@
 {
-  "plantOfTheDayPool": [
-    "guava",
-    "oregano"
-  ],
-  "categories": [
-    {
-      "id": "digestive",
-      "label": "Digestive Health",
-      "icon": "stomach"
-    },
-    {
-      "id": "respiratory",
-      "label": "Respiratory Care",
-      "icon": "lungs"
-    },
-    {
-      "id": "wound-care",
-      "label": "Wound Healing",
-      "icon": "bandage"
-    },
-    {
-      "id": "immune-boost",
-      "label": "Immune Support",
-      "icon": "shield"
-    }
-  ],
-  "featuredPlants": [
-    "guava",
-    "oregano"
-  ],
   "triviaPool": [
     "Did you know? Guava leaves are rich in antioxidants, vitamin C, and flavonoids which contribute to their strong healing properties.",
     "Oregano gets its name from the Greek words 'oros' (mountain) and 'ganos' (joy), meaning 'joy of the mountain'.",

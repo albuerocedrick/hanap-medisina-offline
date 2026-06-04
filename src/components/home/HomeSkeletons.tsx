@@ -30,23 +30,7 @@ export function SkeletonChip() {
   return <Animated.View style={animatedStyle} className="h-[44px] w-[100px] rounded-full bg-[#A2CFA3]/60 dark:bg-white/10 mr-3" />;
 }
 
-export function SkeletonHeroCard() {
-  const animatedStyle = usePulseStyle();
-  return <Animated.View style={animatedStyle} className="w-full h-[280px] rounded-[36px] bg-[#A2CFA3]/60 dark:bg-white/10" />;
-}
 
-export function SkeletonPlantCard() {
-  const animatedStyle = usePulseStyle();
-  return (
-    <Animated.View style={animatedStyle} className="w-[150px] rounded-[32px] bg-[#FAFEEF] dark:bg-[#162916] border border-transparent dark:border-white/10 mr-4 p-2">
-      <View className="w-full h-[120px] rounded-[24px] bg-[#A2CFA3]/60 dark:bg-white/10" />
-      <View className="px-2 pt-3 gap-2 pb-2">
-        <View className="h-[12px] w-3/4 rounded-full bg-[#A2CFA3]/60 dark:bg-white/10" />
-        <View className="h-[10px] w-1/2 rounded-full bg-[#A2CFA3]/60 dark:bg-white/10" />
-      </View>
-    </Animated.View>
-  );
-}
 
 export function SkeletonTriviaCard() {
   const animatedStyle = usePulseStyle();
