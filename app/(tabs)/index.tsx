@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 // 🌟 Import your new transition wrapper
 import { PageTransition } from "../../src/components/ui/PageTransition"; 
 
-import { CategoryChips } from "../../src/components/home/CategoryChips";
+import { SymptomGrid } from "../../src/components/home/SymptomGrid";
 import { DailyTrivia } from "../../src/components/home/DailyTrivia";
 import { FeaturedPlants } from "../../src/components/home/FeaturedPlants";
 import { HomeHeader } from "../../src/components/home/HomeHeader";
@@ -78,9 +78,9 @@ export default function HomeScreen() {
           <HomeSearchBar onActiveChange={setIsSearchActive} />
           {!isSearchActive && (
             <>
-              <CategoryChips />
               <MascotChatSlot />
               <ScanNowBanner />
+              <SymptomGrid />
               <PlantOfTheDay />
               <FeaturedPlants />
               <RecentScans ref={recentScansRef} onScanPress={(scan) => setSelectedScanId(scan.id)} />

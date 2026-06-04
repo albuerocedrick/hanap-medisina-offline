@@ -50,6 +50,10 @@ export default function LibraryFeed() {
   const favorites = useLibraryStore((s) => s.favorites);
   const searchQuery = useLibraryStore((s) => s.searchQuery);
   const activeCategory = useLibraryStore((s) => s.activeCategory);
+  const activeSymptom = useLibraryStore((s) => s.activeSymptom);
+  const activePreparationMethod = useLibraryStore((s) => s.activePreparationMethod);
+  const setActiveSymptom = useLibraryStore((s) => s.setActiveSymptom);
+  const setActivePreparationMethod = useLibraryStore((s) => s.setActivePreparationMethod);
   const viewMode = useLibraryStore((s) => s.viewMode);
   const setViewMode = useLibraryStore((s) => s.setViewMode);
 
@@ -66,10 +70,11 @@ export default function LibraryFeed() {
   const displayedPlants = getDisplayedPlants();
 
   useEffect(() => {
-    if (plants.length === 0) {
-      fetchPlantsByActiveCategory();
+    // Only fetch all plants if no filter is active
+    if (!activeCategory && !activeSymptom && !activePreparationMethod) {
+      if (plants.length === 0) fetchPlants();
     }
-  }, []);
+  }, [activeCategory, activeSymptom, activePreparationMethod, plants.length, fetchPlants]);
 
   const handleRefresh = useCallback(() => {
     clearErrors();
@@ -176,11 +181,78 @@ export default function LibraryFeed() {
       );
     }
 
+    if (activeSymptom) {
+      return (
+        <View className="flex-1 items-center justify-center pt-20 px-6">
+          <View 
+            style={{ 
+              width: 56, height: 56, borderRadius: 28, 
+              backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
+              borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(162,207,163,0.5)",
+              alignItems: "center", justifyContent: "center", marginBottom: 16 
+            }}
+          >
+            <Ionicons name="medkit-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
+          </View>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
+            No plants found
+          </Text>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
+            No plants found for this symptom.
+          </Text>
+        </View>
+      );
+    }
+
+    if (activePreparationMethod) {
+      return (
+        <View className="flex-1 items-center justify-center pt-20 px-6">
+          <View 
+            style={{ 
+              width: 56, height: 56, borderRadius: 28, 
+              backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
+              borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(162,207,163,0.5)",
+              alignItems: "center", justifyContent: "center", marginBottom: 16 
+            }}
+          >
+            <Ionicons name="flask-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
+          </View>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
+            No plants found
+          </Text>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
+            No plants with this preparation method.
+          </Text>
+        </View>
+      );
+    }
+
     return null;
   };
 
   const renderHeader = () => (
     <View className="pb-2">
+      {activeSymptom && (
+        <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}>
+          <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#F8FAFC" : "#22451C", flex: 1 }}>
+            Showing plants for: "{activeSymptom}"
+          </Text>
+          <TouchableOpacity onPress={() => setActiveSymptom(null)} style={{ padding: 4 }}>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>✕ Clear</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {activePreparationMethod && (
+        <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}>
+          <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#F8FAFC" : "#22451C", flex: 1 }}>
+            Preparation: "{activePreparationMethod}"
+          </Text>
+          <TouchableOpacity onPress={() => setActivePreparationMethod(null)} style={{ padding: 4 }}>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>✕ Clear</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {displayedPlants.length > 0 && (
         <View className="mx-6 mt-4 mb-2 flex-row items-center justify-between">

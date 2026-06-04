@@ -47,6 +47,9 @@ export default function RootLayout() {
         {/* Tabs Group */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         
+        {/* All Symptoms screen — slides in from bottom as modal */}
+        <Stack.Screen name="symptoms" options={{ headerShown: false, presentation: "card" }} />
+
         {/* 404 Fallback */}
         <Stack.Screen name="+not-found" options={{ presentation: 'modal' }} />
       </Stack>

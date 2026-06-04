@@ -1,5 +1,5 @@
 import homeFeedData from '../data/homeFeed.json';
-import { getPlantById } from './localLibrary';
+import { getPlantById, getAllSymptoms, getAllPreparationGroups } from './localLibrary';
 import { HomeFeedData, TriviaItem, FeedCategory, FeaturedPlant } from '../types/homeFeed';
 
 // Simple seeded random number generator for deterministic daily shuffling
@@ -76,10 +76,16 @@ export function getHomeFeed(): HomeFeedData {
     });
   }
 
+  // 5. Symptoms and Preparations
+  const symptoms = getAllSymptoms();
+  const preparationGroups = getAllPreparationGroups();
+
   return {
     plantOfTheDay,
     categories,
     featuredPlants,
-    weeklyTrivia
+    weeklyTrivia,
+    symptoms,
+    preparationGroups
   };
 }

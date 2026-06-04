@@ -1,5 +1,6 @@
 import { Image } from 'react-native';
 import { MedicinalPlant, ComparisonTraits, ResearchEntry as ResearchItem } from '../types';
+import { SymptomItem, PreparationGroup } from '../types/homeFeed';
 import plantsData from '../data/plants.json';
 
 export { MedicinalPlant, ComparisonTraits, ResearchItem };
@@ -59,4 +60,95 @@ export function searchPlantsLocally(list: MedicinalPlant[], query: string): Medi
 
 export function searchPlants(query: string): MedicinalPlant[] {
   return searchPlantsLocally(plants, query);
+}
+
+const SYMPTOM_ICONS: Record<string, string> = {
+  "diarrhea relief": "fitness-outline",
+  "stomach ache": "fitness-outline",
+  "wound healing": "bandage-outline",
+  "anti-inflammatory": "medkit-outline",
+  "toothache": "happy-outline",
+  "gum disease": "happy-outline",
+  "cough relief": "cloud-outline",
+  "sore throat": "thermometer-outline",
+  "cold & flu": "snow-outline",
+  "digestion": "nutrition-outline",
+  "antibacterial": "shield-checkmark-outline",
+  "skin infections": "body-outline",
+};
+
+const METHOD_ICONS: Record<string, string> = {
+  "tea / decoction": "cafe-outline",
+  "tea": "cafe-outline",
+  "poultice": "bandage-outline",
+  "mouth rinse": "water-outline",
+  "juice extract": "beaker-outline",
+  "oil infusion": "flask-outline",
+};
+
+export function getAllSymptoms(): SymptomItem[] {
+  const symptomCounts: Record<string, number> = {};
+  plants.forEach(plant => {
+    plant.details?.preparation?.forEach(prep => {
+      prep.uses?.forEach(use => {
+        const key = use.trim();
+        symptomCounts[key] = (symptomCounts[key] || 0) + 1;
+      });
+    });
+  });
+  
+  return Object.entries(symptomCounts).map(([label, count]) => {
+    const lowerLabel = label.toLowerCase();
+    const id = lowerLabel.replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const icon = SYMPTOM_ICONS[lowerLabel] || "leaf-outline";
+    return {
+      id,
+      label,
+      icon,
+      plantCount: count
+    };
+  }).sort((a, b) => b.plantCount - a.plantCount);
+}
+
+export function getPlantsBySymptom(symptom: string): MedicinalPlant[] {
+  const query = symptom.toLowerCase();
+  return plants.filter(plant => 
+    plant.details?.preparation?.some(prep => 
+      prep.uses?.some(use => use.toLowerCase().includes(query))
+    )
+  );
+}
+
+export function getAllPreparationGroups(): PreparationGroup[] {
+  const methodMap: Record<string, { count: number; plantIds: Set<string> }> = {};
+  
+  plants.forEach(plant => {
+    plant.details?.preparation?.forEach(prep => {
+      const method = prep.method.trim();
+      if (!methodMap[method]) {
+        methodMap[method] = { count: 0, plantIds: new Set() };
+      }
+      methodMap[method].plantIds.add(plant.id);
+    });
+  });
+
+  return Object.entries(methodMap).map(([method, data]) => {
+    const lowerMethod = method.toLowerCase();
+    const icon = METHOD_ICONS[lowerMethod] || "leaf-outline";
+    return {
+      method,
+      icon,
+      plantCount: data.plantIds.size,
+      plantIds: Array.from(data.plantIds)
+    };
+  }).sort((a, b) => b.plantCount - a.plantCount);
+}
+
+export function getPlantsByPreparationMethod(method: string): MedicinalPlant[] {
+  const query = method.toLowerCase();
+  return plants.filter(plant => 
+    plant.details?.preparation?.some(prep => 
+      prep.method.toLowerCase().includes(query)
+    )
+  );
 }

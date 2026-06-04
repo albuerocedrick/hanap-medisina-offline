@@ -20,6 +20,8 @@ import {
   getAllPlants,
   getPlantsByCategory,
   getPlantsByIds,
+  getPlantsBySymptom,
+  getPlantsByPreparationMethod,
 } from "../services/localLibrary";
 
 
@@ -76,6 +78,9 @@ interface LibraryState {
    * Active category filter. `null` means "All".
    */
   activeCategory: string | null;
+
+  activeSymptom: string | null;
+  activePreparationMethod: string | null;
 
   /** Display mode for the Library feed. */
   viewMode: 'list' | 'grid';
@@ -134,6 +139,9 @@ interface LibraryActions {
    * Passing `null` resets to "All" and re-fetches the full list.
    */
   setActiveCategory: (category: string | null) => void;
+
+  setActiveSymptom: (symptom: string | null) => void;
+  setActivePreparationMethod: (method: string | null) => void;
 
   /**
    * Derived selector: filters plants by search query.
@@ -198,6 +206,8 @@ export const useLibraryStore = create<LibraryStore>()(
       isLoadingCategories: false,
       searchQuery: "",
       activeCategory: null,
+      activeSymptom: null,
+      activePreparationMethod: null,
       viewMode: 'list',
       favorites: [],
       favoriteIds: new Set<string>(),
@@ -292,10 +302,30 @@ export const useLibraryStore = create<LibraryStore>()(
       },
 
       setActiveCategory: (category) => {
-        set({ activeCategory: category });
+        set({ activeCategory: category, activeSymptom: null, activePreparationMethod: null });
         // Re-filter plants for the selected category.
         // getDisplayedPlants() will re-derive on next render.
         get().fetchPlantsByActiveCategory();
+      },
+
+      setActiveSymptom: (symptom) => {
+        set({ activeSymptom: symptom, activeCategory: null, activePreparationMethod: null });
+        if (symptom) {
+          const plants = getPlantsBySymptom(symptom);
+          set({ plants, isLoadingPlants: false });
+        } else {
+          get().fetchPlants();
+        }
+      },
+
+      setActivePreparationMethod: (method) => {
+        set({ activePreparationMethod: method, activeCategory: null, activeSymptom: null });
+        if (method) {
+          const plants = getPlantsByPreparationMethod(method);
+          set({ plants, isLoadingPlants: false });
+        } else {
+          get().fetchPlants();
+        }
       },
 
       getDisplayedPlants: () => {

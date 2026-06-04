@@ -18,6 +18,8 @@ import {
   FeedCategory,
   PlantOfTheDay,
   TriviaItem,
+  SymptomItem,
+  PreparationGroup,
 } from "../types/homeFeed";
 
 // ─────────────────────────────────────────────
@@ -59,6 +61,9 @@ interface FeedState {
    * Rotated offline via getTodayTrivia().
    */
   weeklyTrivia: TriviaItem[];
+
+  symptoms: SymptomItem[];
+  preparationGroups: PreparationGroup[];
 
   /** True while feed data is being computed. */
   isLoadingFeed: boolean;
@@ -112,6 +117,8 @@ export const useFeedStore = create<FeedStore>()(
       categories: [],
       featuredPlants: [],
       weeklyTrivia: [],
+      symptoms: [],
+      preparationGroups: [],
       isLoadingFeed: false,
       feedError: null,
       lastFetchedAt: null,
@@ -131,6 +138,8 @@ export const useFeedStore = create<FeedStore>()(
             categories: feedData.categories,
             featuredPlants: feedData.featuredPlants,
             weeklyTrivia: feedData.weeklyTrivia,
+            symptoms: feedData.symptoms,
+            preparationGroups: feedData.preparationGroups,
             isLoadingFeed: false,
             feedError: null,
             lastFetchedAt: Date.now(),
@@ -169,6 +178,8 @@ export const useFeedStore = create<FeedStore>()(
         categories: state.categories,
         featuredPlants: state.featuredPlants,
         weeklyTrivia: state.weeklyTrivia,
+        symptoms: state.symptoms,
+        preparationGroups: state.preparationGroups,
         lastFetchedAt: state.lastFetchedAt,
       }),
     },
@@ -186,3 +197,5 @@ export const selectFeaturedPlants = (s: FeedStore) => s.featuredPlants;
 export const selectIsLoadingFeed = (s: FeedStore) => s.isLoadingFeed;
 export const selectFeedError = (s: FeedStore) => s.feedError;
 export const selectLastFetchedAt = (s: FeedStore) => s.lastFetchedAt;
+export const selectSymptoms = (s: FeedStore) => s.symptoms;
+export const selectPreparationGroups = (s: FeedStore) => s.preparationGroups;
