@@ -91,22 +91,18 @@ export default function MySavedPlants() {
     <View style={{ marginTop: 8, marginBottom: 16 }}>
       {/* Header */}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 24, marginBottom: 14 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Ionicons
-            name="star-outline"
-            size={20}
-            color={isDark ? 'rgba(248,250,252,0.5)' : 'rgba(34,69,28,0.5)'}
-          />
-          <Text
-            style={{
-              fontFamily: 'Quicksand_700Bold',
-              fontSize: 16,
-              color: isDark ? 'rgba(248,250,252,0.7)' : 'rgba(34,69,28,0.7)',
-            }}
-          >
-            My Plants{favorites.length > 0 ? ` (${favorites.length})` : ''}
-          </Text>
-        </View>
+        <Text
+          style={{
+            fontSize: 22,
+            fontFamily: 'serif',
+            fontStyle: 'italic',
+            fontWeight: '500',
+            letterSpacing: 0.4,
+            color: isDark ? '#EAF3D5' : '#22451C',
+          }}
+        >
+          My Plants{favorites.length > 0 ? ` (${favorites.length})` : ''}
+        </Text>
 
         {favorites.length > 0 && (
           <TouchableOpacity

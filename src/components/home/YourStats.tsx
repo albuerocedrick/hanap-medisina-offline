@@ -34,23 +34,19 @@ export default function YourStats() {
 
   return (
     <View style={{ marginTop: 4, marginBottom: 32, paddingHorizontal: 24 }}>
-      {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-        <Ionicons
-          name="stats-chart-outline"
-          size={20}
-          color={isDark ? 'rgba(248,250,252,0.5)' : 'rgba(34,69,28,0.5)'}
-        />
-        <Text
-          style={{
-            fontFamily: 'Quicksand_700Bold',
-            fontSize: 16,
-            color: isDark ? 'rgba(248,250,252,0.7)' : 'rgba(34,69,28,0.7)',
-          }}
-        >
-          Your Plant Journey
-        </Text>
-      </View>
+      <Text
+        style={{
+          fontSize: 22,
+          fontFamily: 'serif',
+          fontStyle: 'italic',
+          fontWeight: '500',
+          letterSpacing: 0.4,
+          marginBottom: 14,
+          color: isDark ? '#EAF3D5' : '#22451C',
+        }}
+      >
+        Your Plant Journey
+      </Text>
 
       {/* Stats card */}
       <View

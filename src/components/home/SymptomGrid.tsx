@@ -111,12 +111,12 @@ export function SymptomGrid() {
   if (isLoadingFeed && symptoms.length === 0) {
     return (
       <View className="mb-6 px-6">
-        <View className="flex-row items-center gap-2 mb-4">
-          <Ionicons name="leaf-outline" size={20} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
-          <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 16, color: isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)" }}>
-            What's bothering you?
-          </Text>
-        </View>
+        <Text
+          className="text-[#22451C] dark:text-[#EAF3D5] mb-4"
+          style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+        >
+          What's bothering you?
+        </Text>
         <View className="flex-row flex-wrap justify-between">
           {Array.from({ length: 6 }).map((_, i) => (
             <View key={i} style={{ width: "31%", marginBottom: 12 }}>
@@ -137,12 +137,12 @@ export function SymptomGrid() {
   return (
     <View className="mb-6 px-6">
       <View className="flex-row items-center justify-between mb-4">
-        <View className="flex-row items-center gap-2">
-          <Ionicons name="leaf-outline" size={20} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
-          <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 16, color: isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)" }}>
-            What's bothering you?
-          </Text>
-        </View>
+        <Text
+          className="text-[#22451C] dark:text-[#EAF3D5]"
+          style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+        >
+          What's bothering you?
+        </Text>
         {hasMore && (
           <TouchableOpacity onPress={() => router.push("/symptoms" as any)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>

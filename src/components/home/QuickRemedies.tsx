@@ -104,12 +104,12 @@ export function QuickRemedies() {
   if (isLoadingFeed && preparationGroups.length === 0) {
     return (
       <View className="mb-8">
-        <View className="px-6 flex-row items-center gap-2 mb-4">
-          <Ionicons name="medkit-outline" size={20} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
-          <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 16, color: isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)" }}>
-            Quick Remedies
-          </Text>
-        </View>
+        <Text
+          className="text-[#22451C] dark:text-[#EAF3D5] px-6 mb-4"
+          style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+        >
+          Quick Remedies
+        </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
           {Array.from({ length: 3 }).map((_, i) => (
             <View 
@@ -132,12 +132,12 @@ export function QuickRemedies() {
 
   return (
     <View className="mb-8">
-      <View className="px-6 flex-row items-center gap-2 mb-4">
-        <Ionicons name="medkit-outline" size={20} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
-        <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 16, color: isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)" }}>
-          Quick Remedies
-        </Text>
-      </View>
+      <Text
+        className="text-[#22451C] dark:text-[#EAF3D5] px-6 mb-4"
+        style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+      >
+        Quick Remedies
+      </Text>
 
       <ScrollView
         horizontal
