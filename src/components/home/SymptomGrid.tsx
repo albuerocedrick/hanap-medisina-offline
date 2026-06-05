@@ -45,16 +45,15 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
       style={[{ width: "31%", marginBottom: 12 }, animatedStyle]}
     >
       <View 
-        className="rounded-2xl items-center justify-center p-3"
         style={{
+          borderRadius: 16,
+          alignItems: "center",
+          paddingHorizontal: 8,
+          paddingVertical: 12,
+          height: 95,
           backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "#FAFEEF",
           borderWidth: 1,
           borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
-          shadowColor: "#22451C",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.04,
-          shadowRadius: 3,
-          elevation: 1,
         }}
       >
         <View
@@ -64,16 +63,19 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
             borderRadius: 22,
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: isDark ? "rgba(162,207,163,0.12)" : "rgba(162,207,163,0.25)",
+            backgroundColor: isDark ? "transparent" : "rgba(162,207,163,0.25)",
           }}
         >
           <Ionicons name={symptom.icon as any} size={24} color={isDark ? "rgba(162,207,163,0.9)" : "#4D8035"} />
         </View>
-        <Text 
-          numberOfLines={1} 
-          className="mt-2 text-center font-semibold"
+        <Text
+          numberOfLines={1}
           style={{
-            fontSize: 12,
+            marginTop: 8,
+            fontSize: 11,
+            textAlign: "center",
+            lineHeight: 15,
+            fontFamily: "Quicksand_600SemiBold",
             color: isDark ? "#F8FAFC" : "#22451C",
           }}
         >
@@ -81,8 +83,15 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
         </Text>
         {symptom.plantCount > 1 && (
           <View 
-            className="absolute top-1 right-1 rounded-full px-1.5 py-0.5 items-center justify-center"
-            style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.3)" }}
+            style={{
+              position: "absolute",
+              top: 6,
+              right: 6,
+              borderRadius: 10,
+              paddingHorizontal: 5,
+              paddingVertical: 1,
+              backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.3)",
+            }}
           >
             <Text style={{ fontSize: 9, fontWeight: "bold", color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>
               {symptom.plantCount}

@@ -53,16 +53,18 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
           backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
           borderWidth: 1,
           borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
-          shadowColor: "#22451C",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.08,
-          shadowRadius: 8,
-          elevation: 2,
         }}
       >
         <View 
-          className="w-12 h-12 rounded-full items-center justify-center mb-2"
-          style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.3)" }}
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 8,
+            backgroundColor: isDark ? "transparent" : "rgba(162,207,163,0.3)",
+          }}
         >
           <Ionicons name={group.icon as any} size={24} color={isDark ? "rgba(162,207,163,0.9)" : "#4D8035"} />
         </View>
