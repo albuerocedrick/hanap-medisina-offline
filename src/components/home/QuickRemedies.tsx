@@ -44,10 +44,12 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
       style={[animatedStyle, { marginRight: SPACING }]}
     >
       <View
-        className="rounded-[24px] overflow-hidden p-4 justify-between"
         style={{
           width: CARD_WIDTH,
           height: CARD_HEIGHT,
+          borderRadius: 24,
+          padding: 16,
+          justifyContent: "space-between",
           backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
           borderWidth: 1,
           borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
@@ -60,9 +62,9 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
       >
         <View 
           className="w-12 h-12 rounded-full items-center justify-center mb-2"
-          style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }}
+          style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.3)" }}
         >
-          <Ionicons name={group.icon as any} size={24} color={isDark ? "rgba(248,250,252,0.9)" : "rgba(34,69,28,0.8)"} />
+          <Ionicons name={group.icon as any} size={24} color={isDark ? "rgba(162,207,163,0.9)" : "#4D8035"} />
         </View>
 
         <View>
@@ -75,7 +77,7 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
           </Text>
           <Text 
             className="font-medium text-[12px]"
-            style={{ color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)" }}
+            style={{ color: isDark ? "rgba(162,207,163,0.8)" : "#4D8035" }}
           >
             {group.plantCount} {group.plantCount === 1 ? 'plant' : 'plants'}
           </Text>

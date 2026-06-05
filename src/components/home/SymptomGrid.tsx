@@ -57,7 +57,18 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
           elevation: 1,
         }}
       >
-        <Ionicons name={symptom.icon as any} size={28} color={isDark ? "rgba(248,250,252,0.8)" : "rgba(34,69,28,0.7)"} />
+        <View
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 22,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: isDark ? "rgba(162,207,163,0.12)" : "rgba(162,207,163,0.25)",
+          }}
+        >
+          <Ionicons name={symptom.icon as any} size={24} color={isDark ? "rgba(162,207,163,0.9)" : "#4D8035"} />
+        </View>
         <Text 
           numberOfLines={1} 
           className="mt-2 text-center font-semibold"
@@ -71,9 +82,9 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
         {symptom.plantCount > 1 && (
           <View 
             className="absolute top-1 right-1 rounded-full px-1.5 py-0.5 items-center justify-center"
-            style={{ backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(162,207,163,0.3)" }}
+            style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.3)" }}
           >
-            <Text style={{ fontSize: 9, fontWeight: "bold", color: isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)" }}>
+            <Text style={{ fontSize: 9, fontWeight: "bold", color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>
               {symptom.plantCount}
             </Text>
           </View>

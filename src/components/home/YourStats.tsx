@@ -9,67 +9,123 @@ import { getAllPlants } from '../../services/localLibrary';
 export default function YourStats() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
-  
+
   const favoritesCount = useLibraryStore((state) => state.favorites?.length || 0);
   const scansCount = useHistoryStore((state) => state.scans?.length || 0);
   const totalPlantsCount = getAllPlants().length;
 
+  const stats = [
+    {
+      icon: 'scan-outline' as const,
+      value: scansCount,
+      label: 'Scanned',
+    },
+    {
+      icon: 'star-outline' as const,
+      value: favoritesCount,
+      label: 'Saved',
+    },
+    {
+      icon: 'book-outline' as const,
+      value: totalPlantsCount,
+      label: 'In Library',
+    },
+  ];
+
   return (
-    <View className="mt-4 mb-8 px-6">
-      <View className="flex-row items-center space-x-2 mb-4">
-        <Ionicons name="stats-chart-outline" size={20} color={isDark ? '#a1a1aa' : '#52525b'} />
-        <Text className={`text-lg font-bold ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}>
+    <View style={{ marginTop: 4, marginBottom: 32, paddingHorizontal: 24 }}>
+      {/* Header */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+        <Ionicons
+          name="stats-chart-outline"
+          size={20}
+          color={isDark ? 'rgba(248,250,252,0.5)' : 'rgba(34,69,28,0.5)'}
+        />
+        <Text
+          style={{
+            fontFamily: 'Quicksand_700Bold',
+            fontSize: 16,
+            color: isDark ? 'rgba(248,250,252,0.7)' : 'rgba(34,69,28,0.7)',
+          }}
+        >
           Your Plant Journey
         </Text>
       </View>
 
-      <View className={`rounded-2xl p-4 border flex-row justify-between ${isDark ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-white border-zinc-200/50'} shadow-sm`}>
-        
-        {/* Scanned */}
-        <View className="items-center flex-1">
-          <View className={`w-10 h-10 rounded-full items-center justify-center mb-2 ${isDark ? 'bg-emerald-900/40' : 'bg-emerald-50'}`}>
-            <Ionicons name="scan-outline" size={20} color={isDark ? '#34d399' : '#059669'} />
-          </View>
-          <Text className={`font-bold text-lg ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}>
-            {scansCount}
-          </Text>
-          <Text className={`text-xs ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
-            Scanned
-          </Text>
-        </View>
+      {/* Stats card */}
+      <View
+        style={{
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(162,207,163,0.5)',
+          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FAFEEF',
+          flexDirection: 'row',
+          shadowColor: '#22451C',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.06,
+          shadowRadius: 8,
+          elevation: 2,
+        }}
+      >
+        {stats.map((stat, i) => (
+          <React.Fragment key={stat.label}>
+            {/* Stat item */}
+            <View style={{ flex: 1, alignItems: 'center', paddingVertical: 18 }}>
+              <View
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: 21,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 8,
+                  backgroundColor: isDark
+                    ? 'rgba(162,207,163,0.12)'
+                    : 'rgba(162,207,163,0.25)',
+                }}
+              >
+                <Ionicons
+                  name={stat.icon}
+                  size={20}
+                  color={isDark ? 'rgba(162,207,163,0.9)' : '#4D8035'}
+                />
+              </View>
+              <Text
+                style={{
+                  fontFamily: 'Quicksand_700Bold',
+                  fontSize: 20,
+                  color: isDark ? '#F8FAFC' : '#22451C',
+                  lineHeight: 24,
+                }}
+              >
+                {stat.value}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Quicksand_500Medium',
+                  fontSize: 12,
+                  marginTop: 2,
+                  color: isDark ? 'rgba(162,207,163,0.8)' : '#4D8035',
+                }}
+              >
+                {stat.label}
+              </Text>
+            </View>
 
-        {/* Divider */}
-        <View className={`w-px h-full ${isDark ? 'bg-zinc-700' : 'bg-zinc-200'}`} />
-
-        {/* Saved */}
-        <View className="items-center flex-1">
-          <View className={`w-10 h-10 rounded-full items-center justify-center mb-2 ${isDark ? 'bg-amber-900/40' : 'bg-amber-50'}`}>
-            <Ionicons name="star-outline" size={20} color={isDark ? '#fbbf24' : '#d97706'} />
-          </View>
-          <Text className={`font-bold text-lg ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}>
-            {favoritesCount}
-          </Text>
-          <Text className={`text-xs ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
-            Saved
-          </Text>
-        </View>
-
-        {/* Divider */}
-        <View className={`w-px h-full ${isDark ? 'bg-zinc-700' : 'bg-zinc-200'}`} />
-
-        {/* In Library */}
-        <View className="items-center flex-1">
-          <View className={`w-10 h-10 rounded-full items-center justify-center mb-2 ${isDark ? 'bg-blue-900/40' : 'bg-blue-50'}`}>
-            <Ionicons name="book-outline" size={20} color={isDark ? '#60a5fa' : '#2563eb'} />
-          </View>
-          <Text className={`font-bold text-lg ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}>
-            {totalPlantsCount}
-          </Text>
-          <Text className={`text-xs ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
-            In Library
-          </Text>
-        </View>
-
+            {/* Divider between items */}
+            {i < stats.length - 1 && (
+              <View
+                style={{
+                  width: 1,
+                  marginVertical: 16,
+                  backgroundColor: isDark
+                    ? 'rgba(255,255,255,0.08)'
+                    : 'rgba(162,207,163,0.4)',
+                }}
+              />
+            )}
+          </React.Fragment>
+        ))}
       </View>
     </View>
   );

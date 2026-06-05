@@ -63,18 +63,18 @@ export function searchPlants(query: string): MedicinalPlant[] {
 }
 
 const SYMPTOM_ICONS: Record<string, string> = {
-  "diarrhea relief": "fitness-outline",
-  "stomach ache": "fitness-outline",
+  "diarrhea relief": "water-outline",
+  "stomach ache": "body-outline",
   "wound healing": "bandage-outline",
   "anti-inflammatory": "medkit-outline",
-  "toothache": "happy-outline",
-  "gum disease": "happy-outline",
+  "toothache": "medical-outline",
+  "gum disease": "fitness-outline",
   "cough relief": "cloud-outline",
   "sore throat": "thermometer-outline",
   "cold & flu": "snow-outline",
   "digestion": "nutrition-outline",
   "antibacterial": "shield-checkmark-outline",
-  "skin infections": "body-outline",
+  "skin infections": "color-palette-outline",
 };
 
 const METHOD_ICONS: Record<string, string> = {

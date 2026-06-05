@@ -86,16 +86,61 @@ function PermissionGate({ onRequest }: { onRequest: () => void }) {
 
   return (
     <View style={[styles.permissionContainer, { backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }]}>
-      <View style={[styles.permissionIcon, { backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.2)" }]}>
-        <Ionicons name="camera" size={32} color={isDark ? "#A2CFA3" : "#22451C"} />
+      {/* Icon circle */}
+      <View style={[styles.permissionIcon, { backgroundColor: isDark ? "rgba(162,207,163,0.12)" : "rgba(162,207,163,0.25)" }]}>
+        <Ionicons name="camera-outline" size={34} color={isDark ? "rgba(162,207,163,0.9)" : "#22451C"} />
       </View>
-      <Text style={[styles.permissionTitle, { color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "serif", fontStyle: "italic", fontWeight: "600" }]}>Camera Access</Text>
-      <Text style={[styles.permissionBody, { color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.7)", fontFamily: "Quicksand_500Medium" }]}>
-        We need access to your camera to identify plants in real time.
+
+      {/* Title */}
+      <Text style={[styles.permissionTitle, {
+        color: isDark ? "#F8FAFC" : "#22451C",
+        fontFamily: "serif",
+        fontStyle: "italic",
+        fontWeight: "600",
+      }]}>
+        Camera Access
       </Text>
-      <TouchableOpacity onPress={onRequest} activeOpacity={0.8} style={[styles.permissionButton, { backgroundColor: isDark ? "rgba(162,207,163,0.1)" : "rgba(162,207,163,0.2)", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(162,207,163,0.4)", shadowOpacity: 0 }]}>
-        <Text style={[styles.permissionButtonText, { color: isDark ? "#A2CFA3" : "#22451C", fontFamily: "Quicksand_700Bold" }]}>Enable Camera</Text>
+
+      {/* Body */}
+      <Text style={[styles.permissionBody, {
+        color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.65)",
+        fontFamily: "Quicksand_500Medium",
+      }]}>
+        HanapMedisina needs camera access to scan and identify medicinal plants in real time.
+      </Text>
+
+      {/* Button */}
+      <TouchableOpacity
+        onPress={onRequest}
+        activeOpacity={0.8}
+        style={[styles.permissionButton, {
+          backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.85)",
+          borderWidth: 1,
+          borderColor: isDark ? "rgba(162,207,163,0.3)" : "transparent",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 8,
+        }]}
+      >
+        <Ionicons name="camera" size={16} color={isDark ? "rgba(162,207,163,0.9)" : "#ffffff"} />
+        <Text style={[styles.permissionButtonText, {
+          color: isDark ? "rgba(162,207,163,0.9)" : "#ffffff",
+          fontFamily: "Quicksand_700Bold",
+        }]}>
+          Enable Camera
+        </Text>
       </TouchableOpacity>
+
+      {/* Small hint */}
+      <Text style={{
+        marginTop: 16,
+        fontSize: 12,
+        textAlign: "center",
+        color: isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.4)",
+        fontFamily: "Quicksand_500Medium",
+      }}>
+        You can change this anytime in Settings
+      </Text>
     </View>
   );
 }
@@ -559,27 +604,22 @@ const styles = StyleSheet.create({
   // ── Permission gate
   permissionContainer: {
     flex: 1, justifyContent: "center", alignItems: "center",
-    backgroundColor: tokens.bgCanvas, paddingHorizontal: 32,
+    paddingHorizontal: 32,
   },
   permissionIcon: {
-    width: 64, height: 64, borderRadius: 20, backgroundColor: tokens.greenDark,
-    alignItems: "center", justifyContent: "center", marginBottom: 24,
+    width: 72, height: 72, borderRadius: 36,
+    alignItems: "center", justifyContent: "center", marginBottom: 28,
   },
   permissionTitle: {
-    color: tokens.greenDark, fontSize: 20, fontWeight: "700",
-    textAlign: "center", marginBottom: 10, letterSpacing: -0.4,
+    fontSize: 26, textAlign: "center", marginBottom: 12, letterSpacing: 0.2,
   },
   permissionBody: {
-    color: tokens.muted, fontSize: 15, textAlign: "center",
-    lineHeight: 22, marginBottom: 32,
+    fontSize: 14, textAlign: "center", lineHeight: 22, marginBottom: 36,
   },
   permissionButton: {
-    backgroundColor: tokens.green, paddingHorizontal: 32, paddingVertical: 14,
-    borderRadius: 999,
-    shadowColor: tokens.green, shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25, shadowRadius: 12, elevation: 6,
+    paddingHorizontal: 36, paddingVertical: 14, borderRadius: 999,
   },
-  permissionButtonText: { color: "#fff", fontWeight: "700", fontSize: 15, letterSpacing: 0.3 },
+  permissionButtonText: { fontWeight: "700", fontSize: 15, letterSpacing: 0.3 },
 
   // ── Loading screen
   loadingScreen: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#000" },
