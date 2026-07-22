@@ -480,15 +480,18 @@ export default function ScanScreen() {
         if (probabilities[i] > maxConf) { maxConf = probabilities[i]; maxIdx = i; }
       }
 
-      const identifiedLabel   = labels[maxIdx] || "Unknown";
+      const identifiedId   = labels[maxIdx] || "unknown";
+      
+      const localPlant = getAllPlants().find(p => p.id === identifiedId);
+      const identifiedLabel = localPlant ? localPlant.name : (identifiedId === "unknown" ? "Unknown" : identifiedId);
 
       // ── 4. Validation gate ─────────────────────────────────────────────────
       // Case-insensitive unknown check + confidence floor.
       // Any of these conditions means we cannot reliably identify the MedicinalPlant.
       const isUnknownLabel =
-        !identifiedLabel ||
-        identifiedLabel.toLowerCase() === "unknown" ||
-        identifiedLabel.toLowerCase().startsWith("unknown");
+        !identifiedId ||
+        identifiedId.toLowerCase() === "unknown" ||
+        identifiedId.toLowerCase().startsWith("unknown");
 
       const isRejected = isUnknownLabel || maxConf < MIN_CONFIDENCE;
 
@@ -514,7 +517,7 @@ export default function ScanScreen() {
           
           addScan({
             plantName: identifiedLabel,
-            plantId: "", // Optional linkage
+            plantId: localPlant ? localPlant.id : "", // Link to library ID
             confidence: maxConf,
             imageUri: permanentFileUri,
             scannedAt: new Date().toISOString()

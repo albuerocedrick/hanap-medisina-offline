@@ -8,6 +8,12 @@ export { MedicinalPlant, ComparisonTraits, ResearchItem };
 const imageMap: Record<string, any> = {
   'guava.jpg': require('../../assets/images/plants/guava.jpg'),
   'oregano.jpg': require('../../assets/images/plants/oregano.jpg'),
+  'tsaang-gubat.jpg': require('../../assets/images/plants/tsaang-gubat.jpg'),
+  'tawa-tawa.jpg': require('../../assets/images/plants/tawa-tawa.jpg'),
+  'mango.jpg': require('../../assets/images/plants/mango.jpg'),
+  'guyabano.jpg': require('../../assets/images/plants/guyabano.jpg'),
+  'pansit-pansitan.jpg': require('../../assets/images/plants/pansit-pansitan.jpg'),
+  'malunggay.jpg': require('../../assets/images/plants/malunggay.jpg'),
 };
 
 const rawPlants = plantsData as any[];
