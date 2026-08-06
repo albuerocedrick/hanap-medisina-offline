@@ -476,6 +476,15 @@ export const useLibraryStore = create<LibraryStore>()(
   ),
 );
 
+// Subscribe to language changes to instantly update data
+import { useSettingsStore } from './useSettingsStore';
+useSettingsStore.subscribe((state, prevState) => {
+  if (state.language !== prevState?.language) {
+    useLibraryStore.getState().fetchPlants();
+    useLibraryStore.getState().fetchCategories();
+  }
+});
+
 // ─────────────────────────────────────────────
 // SELECTOR HOOKS
 // Fine-grained selectors prevent full-store re-renders.

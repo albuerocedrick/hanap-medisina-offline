@@ -8,6 +8,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { exportData, importData, applyImport } from '@/src/services/dataTransfer';
 import { ProfileMenuItem } from './profile-menu-item';
 import { useColorScheme } from "nativewind";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 export function ExportImportSection() {
   const [isExporting, setIsExporting] = useState(false);
@@ -15,6 +16,7 @@ export function ExportImportSection() {
   
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const handleExport = async () => {
     if (isExporting || isImporting) return;
@@ -114,7 +116,7 @@ export function ExportImportSection() {
       <View style={{ opacity: isExporting ? 0.7 : 1 }}>
         <ProfileMenuItem
           icon="download"
-          label={isExporting ? "Exporting..." : "Export Data"}
+          label={isExporting ? t('profile_exporting') : t('profile_export')}
           onPress={handleExport}
         />
         {isExporting && (
@@ -129,7 +131,7 @@ export function ExportImportSection() {
       <View style={{ opacity: isImporting ? 0.7 : 1 }}>
         <ProfileMenuItem
           icon="upload"
-          label={isImporting ? "Importing..." : "Import Data"}
+          label={isImporting ? t('profile_importing') : t('profile_import')}
           onPress={handleImport}
         />
         {isImporting && (

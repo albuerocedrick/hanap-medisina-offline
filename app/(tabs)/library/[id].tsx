@@ -26,7 +26,7 @@ import {
 } from "../../../src/services/localLibrary";
 type PlantSummary = Plant;
 import { useLibraryStore } from "../../../src/store/useLibraryStore";
-
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 // ─────────────────────────────────────────────
 // TYPES & CONSTANTS
@@ -42,6 +42,7 @@ export default function PlantDetailsScreen() {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   // ─── Global State ────────────────────────────────────────────────────────
 
@@ -80,13 +81,13 @@ export default function PlantDetailsScreen() {
         if (fetchedPlant) {
           setIsPartialOffline(false);
         } else if (isMounted) {
-          setError("Plant not found in the database.");
+          setError(t('details_error_not_found'));
         }
         
         if (isMounted && fetchedPlant) setPlant(fetchedPlant);
       } catch (err) {
         if (isMounted) {
-          setError("Failed to load plant details. Please try again.");
+          setError(t('details_error_load_failed'));
         }
       } finally {
         if (isMounted) setIsLoading(false);
@@ -138,7 +139,7 @@ export default function PlantDetailsScreen() {
         <Stack.Screen options={{ headerShown: false }} />
         <ActivityIndicator size="large" color="#16a34a" />
         <Text className="text-gray-500 mt-4 font-medium">
-          Loading details...
+          {t('details_loading')}
         </Text>
       </View>
     );
@@ -156,14 +157,14 @@ export default function PlantDetailsScreen() {
           />
         </View>
         <Text className="text-gray-900 font-semibold text-lg text-center">
-          Oops!
+          {t('details_error_title')}
         </Text>
         <Text className="text-gray-500 mt-2 text-center mb-6">{error}</Text>
         <TouchableOpacity
           onPress={() => router.back()}
           className="bg-gray-100 px-6 py-3 rounded-xl active:bg-gray-200"
         >
-          <Text className="text-gray-700 font-medium">Go Back</Text>
+          <Text className="text-gray-700 font-medium">{t('details_go_back')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -269,7 +270,7 @@ export default function PlantDetailsScreen() {
             }}>
               <Ionicons name="archive-outline" size={16} color={isDark ? "#FBBF24" : "#D97706"} />
               <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 12, color: isDark ? "#FDE68A" : "#B45309", marginLeft: 8, flex: 1 }}>
-                Offline — showing basic info only. Connect to see full details.
+                {t('details_offline_banner')}
               </Text>
             </View>
           )}
@@ -319,7 +320,7 @@ export default function PlantDetailsScreen() {
                     color: isActive ? (isDark ? "#A2CFA3" : "#22451C") : (isDark ? "rgba(255,255,255,0.4)" : "rgba(34,69,28,0.5)")
                   }}
                 >
-                  {tab}
+                  {t(`details_tab_${tab}` as any)}
                 </Text>
               </TouchableOpacity>
             );

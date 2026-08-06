@@ -21,6 +21,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { searchPlantsLocally } from "../../services/localLibrary";
 import { useLibraryStore } from "../../store/useLibraryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 const AnimatedView = Animated.View;
 
@@ -32,6 +33,7 @@ export function HomeSearchBar({
   const router = useRouter();
   const plants = useLibraryStore((s) => s.plants);
   const setLibrarySearchQuery = useLibraryStore((s) => s.setSearchQuery);
+  const { t } = useTranslation();
 
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -170,7 +172,7 @@ export function HomeSearchBar({
             onChangeText={handleSearchChange}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Search your plant"
+            placeholder={t('home_search_placeholder')}
             placeholderTextColor={isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)"}
             style={{
               flex: 1,

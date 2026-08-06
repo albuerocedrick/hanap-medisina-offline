@@ -16,6 +16,7 @@ import {
   selectCategories,
   useLibraryStore,
 } from "@/src/store/useLibraryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 
 const ALL_LABEL = "All";
@@ -100,6 +101,7 @@ export function FilterPills({ onCategoryChange }: FilterPillsProps) {
   const fetchCategories = useLibraryStore((s) => s.fetchCategories);
   const isLoadingCategories = useLibraryStore((s) => s.isLoadingCategories);
   const categoriesError = useLibraryStore((s) => s.categoriesError);
+  const { t } = useTranslation();
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -156,7 +158,7 @@ export function FilterPills({ onCategoryChange }: FilterPillsProps) {
         accessibilityRole="menu"
       >
         <Pill
-          label={ALL_LABEL}
+          label={t('lib_filter_all')}
           isActive={activeCategory === null}
           isDisabled={false}
           onPress={() => handleSelect(null)}

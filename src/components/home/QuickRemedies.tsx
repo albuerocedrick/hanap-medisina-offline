@@ -8,6 +8,7 @@ import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from "
 import { PreparationGroup } from "../../types/homeFeed";
 import { selectPreparationGroups, useFeedStore } from "../../store/useFeedStore";
 import { useLibraryStore } from "../../store/useLibraryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -91,6 +92,7 @@ export function QuickRemedies() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const preparationGroups = useFeedStore(selectPreparationGroups);
   const isLoadingFeed = useFeedStore((s) => s.isLoadingFeed);
@@ -108,7 +110,7 @@ export function QuickRemedies() {
           className="text-[#22451C] dark:text-[#EAF3D5] px-6 mb-4"
           style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
         >
-          Quick Remedies
+          {t('home_remedies_title')}
         </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
           {Array.from({ length: 3 }).map((_, i) => (
@@ -136,7 +138,7 @@ export function QuickRemedies() {
         className="text-[#22451C] dark:text-[#EAF3D5] px-6 mb-4"
         style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
       >
-        Quick Remedies
+        {t('home_remedies_title')}
       </Text>
 
       <ScrollView

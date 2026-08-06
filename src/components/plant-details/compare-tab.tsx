@@ -30,6 +30,7 @@ import { MedicinalPlant } from "../../services/localLibrary";
 
 import { useColorScheme } from "nativewind";
 import { StyleSheet } from "react-native";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 // ─────────────────────────────────────────────
 // CONSTANTS
@@ -68,6 +69,7 @@ function LookAlikeCard({
   const [imgError, setImgError] = React.useState(false);
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   if (!plant?.id) return null;
 
@@ -122,11 +124,10 @@ function LookAlikeCard({
           </Text>
         </View>
 
-        {/* Compare CTA chip */}
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 6, backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.2)", borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.3)" }}>
           <Ionicons name="git-compare-outline" size={11} color={isDark ? "#A2CFA3" : "#22451C"} />
           <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C", fontSize: 11, marginLeft: 4 }}>
-            Compare
+            {t('details_compare')}
           </Text>
         </View>
       </View>
@@ -162,6 +163,7 @@ export function CompareTab({
   const router = useRouter();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   // ── Guard ─────────────────────────────────────────────────────────────────
   if (!currentPlantId) {
@@ -222,7 +224,7 @@ export function CompareTab({
             <Ionicons name="copy-outline" size={16} color={isDark ? "#A2CFA3" : "#22451C"} />
           </View>
           <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Look-alike Plants
+            {t('details_lookalike')}
           </Text>
         </View>
 
@@ -248,27 +250,24 @@ export function CompareTab({
           <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "rgba(34,69,28,0.03)", borderRadius: 16, paddingHorizontal: 16, paddingVertical: 24, alignItems: "center" }}>
             <Ionicons name="leaf-outline" size={28} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
             <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 13, textAlign: "center", marginTop: 8 }}>
-              No look-alike plants found for {currentPlantName}.
+              {t('details_no_lookalike').replace('{name}', currentPlantName)}
             </Text>
           </View>
         )}
       </View>
 
-      {/* ── Divider ────────────────────────────────────────────────────────── */}
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
         <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }} />
-        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.4)", fontSize: 12, paddingHorizontal: 12 }}>or</Text>
+        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.4)", fontSize: 12, paddingHorizontal: 12 }}>{t('details_or')}</Text>
         <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }} />
       </View>
 
-      {/* ── CTA: Select from Library ───────────────────────────────────────── */}
       <View style={{ backgroundColor: isDark ? "rgba(162,207,163,0.05)" : "rgba(162,207,163,0.1)", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(162,207,163,0.2)" : "rgba(162,207,163,0.4)", borderRadius: 16, padding: 16 }}>
         <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C", fontSize: 14, marginBottom: 4 }}>
-          Compare with any MedicinalPlant
+          {t('details_compare_any_title')}
         </Text>
         <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.7)" : "#334155", fontSize: 12, lineHeight: 18, marginBottom: 16 }}>
-          Browse the full library and select any MedicinalPlant to compare its physical
-          traits side-by-side with {currentPlantName}.
+          {t('details_compare_any_body').replace('{name}', currentPlantName)}
         </Text>
 
         <TouchableOpacity
@@ -285,7 +284,7 @@ export function CompareTab({
               style={{ marginRight: 8 }}
             />
             <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#ffffff", fontSize: 13 }}>
-              Select MedicinalPlant from Library
+              {t('details_compare_btn')}
             </Text>
           </View>
         </TouchableOpacity>

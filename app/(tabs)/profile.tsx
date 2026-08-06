@@ -22,12 +22,16 @@ import { ProfileMenuItem } from "@/src/components/profile/profile-menu-item";
 import { ProfileStats } from "@/src/components/profile/profile-stats";
 import { useProfileStore } from "@/src/store/useProfileStore";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
+import { useSettingsStore, AppLanguage } from "@/src/store/useSettingsStore";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   
   const { firstName, lastName, avatarUri, setAvatar, setFirstName, setLastName, resetProfile } = useProfileStore();
+  const { language, setLanguage } = useSettingsStore();
+  const { t } = useTranslation();
 
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -80,8 +84,8 @@ export default function ProfileScreen() {
   }, [setAvatar]);
 
   const handleResetProfile = useCallback(() => {
-    Alert.alert("Reset Profile", "Are you sure? This will reset your name and avatar.", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("profile_reset"), "Are you sure? This will reset your name and avatar.", [
+      { text: t("cancel"), style: "cancel" },
       {
         text: "Reset",
         style: "destructive",
@@ -90,7 +94,12 @@ export default function ProfileScreen() {
         },
       },
     ]);
-  }, [resetProfile]);
+  }, [resetProfile, t]);
+
+  const toggleLanguage = () => {
+    const newLang: AppLanguage = language === "en" ? "tl" : "en";
+    setLanguage(newLang);
+  };
 
   return (
     <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]" style={{ paddingTop: insets.top }}>
@@ -111,7 +120,7 @@ export default function ProfileScreen() {
             color: isDark ? "#F8FAFC" : "#22451C",
           }}
         >
-          Profile
+          {t("profile_title")}
         </Text>
         <Text
           style={{
@@ -120,7 +129,7 @@ export default function ProfileScreen() {
           }}
           className="text-sm mt-1"
         >
-          Your profile & preferences
+          {t("profile_subtitle")}
         </Text>
       </View>
 
@@ -151,13 +160,18 @@ export default function ProfileScreen() {
             style={{ color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)", fontFamily: "Quicksand_700Bold" }}
             className="text-xs uppercase tracking-wider mb-3 ml-2"
           >
-            Account
+            {t("profile_account")}
           </Text>
 
           <ProfileMenuItem
             icon="edit-2"
-            label="Edit Profile"
+            label={t("profile_edit")}
             onPress={() => setEditProfileVisible(true)}
+          />
+          <ProfileMenuItem
+            icon="globe"
+            label={`${t("profile_language")}: ${language === 'en' ? 'English' : 'Tagalog'}`}
+            onPress={toggleLanguage}
           />
           <ExportImportSection />
         </View>
@@ -167,12 +181,12 @@ export default function ProfileScreen() {
             style={{ color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)", fontFamily: "Quicksand_700Bold" }}
             className="text-xs uppercase tracking-wider mb-3 ml-2"
           >
-            Session
+            {t("profile_session")}
           </Text>
 
           <ProfileMenuItem
             icon="log-out"
-            label="Reset Profile"
+            label={t("profile_reset")}
             onPress={handleResetProfile}
             destructive
           />

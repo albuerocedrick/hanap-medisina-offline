@@ -9,11 +9,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-
 import { SymptomItem } from "../../types/homeFeed";
 import { selectSymptoms, useFeedStore } from "../../store/useFeedStore";
 import { useLibraryStore } from "../../store/useLibraryStore";
 import { SkeletonChip } from "./HomeSkeletons";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -98,6 +98,7 @@ export function SymptomGrid() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const symptoms = useFeedStore(selectSymptoms);
   const isLoadingFeed = useFeedStore((s) => s.isLoadingFeed);
@@ -115,7 +116,7 @@ export function SymptomGrid() {
           className="text-[#22451C] dark:text-[#EAF3D5] mb-4"
           style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
         >
-          What's bothering you?
+          {t('home_symptoms_title')}
         </Text>
         <View className="flex-row flex-wrap justify-between">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -141,12 +142,12 @@ export function SymptomGrid() {
           className="text-[#22451C] dark:text-[#EAF3D5]"
           style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
         >
-          What's bothering you?
+          {t('home_symptoms_title')}
         </Text>
         {hasMore && (
           <TouchableOpacity onPress={() => router.push("/symptoms" as any)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>
-              See All →
+              {t('home_see_all')} →
             </Text>
           </TouchableOpacity>
         )}

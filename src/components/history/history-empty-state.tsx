@@ -2,11 +2,13 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 export const HistoryEmptyState = ({ activeTab }: { activeTab: "all" | "favorites" }) => {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
   const isFavorites = activeTab === "favorites";
+  const { t } = useTranslation();
   
   return (
     <View className="flex-1 items-center justify-center px-10 pt-20">
@@ -31,7 +33,7 @@ export const HistoryEmptyState = ({ activeTab }: { activeTab: "all" | "favorites
         }}
         className="text-lg text-center mb-2"
       >
-        {isFavorites ? "No favorites yet" : "No history found"}
+        {isFavorites ? t('history_no_favorites') : t('history_no_history')}
       </Text>
       <Text 
         style={{
@@ -41,8 +43,8 @@ export const HistoryEmptyState = ({ activeTab }: { activeTab: "all" | "favorites
         className="text-sm text-center leading-relaxed"
       >
         {isFavorites
-          ? "Tap the heart icon on any scan to add it to your favorites."
-          : "Scans you perform will automatically appear here."}
+          ? t('history_fav_desc')
+          : t('history_hist_desc')}
       </Text>
     </View>
   );

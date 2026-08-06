@@ -26,6 +26,7 @@ import { useRouter } from "expo-router";
 import { getAllPlants } from "../../src/services/localLibrary";
 import { useCameraStore } from "../../src/store/useCameraStore";
 import { useHistoryStore } from "../../src/store/useHistoryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -83,6 +84,7 @@ const CornerMark = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
 function PermissionGate({ onRequest }: { onRequest: () => void }) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.permissionContainer, { backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }]}>
@@ -98,7 +100,7 @@ function PermissionGate({ onRequest }: { onRequest: () => void }) {
         fontStyle: "italic",
         fontWeight: "600",
       }]}>
-        Camera Access
+        {t('scan_perm_title')}
       </Text>
 
       {/* Body */}
@@ -106,7 +108,7 @@ function PermissionGate({ onRequest }: { onRequest: () => void }) {
         color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.65)",
         fontFamily: "Quicksand_500Medium",
       }]}>
-        HanapMedisina needs camera access to scan and identify medicinal plants in real time.
+        {t('scan_perm_body')}
       </Text>
 
       {/* Button */}
@@ -127,7 +129,7 @@ function PermissionGate({ onRequest }: { onRequest: () => void }) {
           color: isDark ? "rgba(162,207,163,0.9)" : "#ffffff",
           fontFamily: "Quicksand_700Bold",
         }]}>
-          Enable Camera
+          {t('scan_perm_btn')}
         </Text>
       </TouchableOpacity>
 
@@ -139,7 +141,7 @@ function PermissionGate({ onRequest }: { onRequest: () => void }) {
         color: isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.4)",
         fontFamily: "Quicksand_500Medium",
       }}>
-        You can change this anytime in Settings
+        {t('scan_perm_hint')}
       </Text>
     </View>
   );
@@ -151,6 +153,7 @@ function PermissionGate({ onRequest }: { onRequest: () => void }) {
 function LoadingState() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
   const shimmer = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -169,7 +172,7 @@ function LoadingState() {
       <ActivityIndicator size="small" color={isDark ? "#A2CFA3" : "#22451C"} style={{ marginBottom: 14 }} />
       <Animated.View style={[styles.shimmerLine, styles.shimmerWide, { opacity, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }]} />
       <Animated.View style={[styles.shimmerLine, styles.shimmerNarrow, { opacity, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }]} />
-      <Text style={[styles.loadingHint, { color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_500Medium" }]}>Analyzing plant…</Text>
+      <Text style={[styles.loadingHint, { color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_500Medium" }]}>{t('scan_analyzing')}</Text>
     </View>
   );
 }
@@ -188,6 +191,7 @@ function SuccessState({
 }) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const isHigh = confidence >= 0.70;
   const isMid  = confidence >= MIN_CONFIDENCE && confidence < 0.70;
@@ -197,7 +201,7 @@ function SuccessState({
 
   return (
     <View style={styles.resultContainer}>
-      <Text style={[styles.overline, { color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_700Bold" }]}>Identified Plant</Text>
+      <Text style={[styles.overline, { color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_700Bold" }]}>{t('scan_identified')}</Text>
 
       <Text style={[styles.plantName, { color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "serif", fontStyle: "italic", fontWeight: "600" }]} numberOfLines={1} adjustsFontSizeToFit>
         {label}
@@ -207,7 +211,7 @@ function SuccessState({
         <View style={[styles.confidencePill, { backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: tierBorder }]}>
           <View style={[styles.dot, { backgroundColor: tierColor }]} />
           <Text style={[styles.confidenceText, { color: tierColor, fontFamily: "Quicksand_700Bold" }]}>
-            {(confidence * 100).toFixed(2)}% match
+            {(confidence * 100).toFixed(2)}{t('scan_match')}
           </Text>
         </View>
       </View>
@@ -220,7 +224,7 @@ function SuccessState({
       </View>
 
       <TouchableOpacity onPress={onViewDetails} activeOpacity={0.85} style={[styles.ctaButton, { backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.85)", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "transparent", shadowOpacity: 0 }]}>
-        <Text style={[styles.ctaText, { color: isDark ? "#A2CFA3" : "#ffffff", fontFamily: "Quicksand_700Bold" }]}>View Full Details</Text>
+        <Text style={[styles.ctaText, { color: isDark ? "#A2CFA3" : "#ffffff", fontFamily: "Quicksand_700Bold" }]}>{t('scan_view_details')}</Text>
         <Ionicons name="arrow-forward" size={16} color={isDark ? "#A2CFA3" : "#ffffff"} />
       </TouchableOpacity>
     </View>
@@ -231,16 +235,16 @@ function SuccessState({
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
   return (
     <View style={[styles.resultContainer, { justifyContent: "flex-start", paddingTop: 16 }]}>
-      <Text style={[styles.errorTitle, { color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "serif", fontStyle: "italic", fontWeight: "600", marginTop: 12 }]}>Plant Not Recognized</Text>
+      <Text style={[styles.errorTitle, { color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "serif", fontStyle: "italic", fontWeight: "600", marginTop: 12 }]}>{t('scan_not_recognized')}</Text>
       <Text style={[styles.errorBody, { color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.7)", fontFamily: "Quicksand_500Medium" }]}>
-        Try taking a clearer, closer photo with good lighting. Make sure the plant
-        fills most of the frame.
+        {t('scan_error_body')}
       </Text>
       <TouchableOpacity onPress={onRetry} activeOpacity={0.85} style={[styles.retryButton, { marginBottom: 32, backgroundColor: "transparent", borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)" }]}>
         <Ionicons name="camera-outline" size={16} color={isDark ? "rgba(248,250,252,0.8)" : "#22451C"} style={{ marginRight: 6 }} />
-        <Text style={[styles.retryText, { color: isDark ? "rgba(248,250,252,0.8)" : "#22451C", fontFamily: "Quicksand_700Bold" }]}>Try Again</Text>
+        <Text style={[styles.retryText, { color: isDark ? "rgba(248,250,252,0.8)" : "#22451C", fontFamily: "Quicksand_700Bold" }]}>{t('scan_try_again')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -372,6 +376,7 @@ export default function ScanScreen() {
   const { model, labels } = useTFLite();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const { captureTrigger, setIsProcessing } = useCameraStore();
   const addScan = useHistoryStore((s) => s.addScan);
@@ -422,8 +427,8 @@ export default function ScanScreen() {
           router.push(`/(tabs)/library/${matchedPlant.id}`);
         } else {
           Alert.alert(
-            "Plant Not Found",
-            "This plant is not yet documented in our library database."
+            t('scan_not_found_title'),
+            t('scan_not_found_body')
           );
         }
       }, 300);

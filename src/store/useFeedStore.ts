@@ -165,6 +165,14 @@ export const useFeedStore = create<FeedStore>()(
   ),
 );
 
+// Subscribe to language changes to instantly update data
+import { useSettingsStore } from './useSettingsStore';
+useSettingsStore.subscribe((state, prevState) => {
+  if (state.language !== prevState?.language) {
+    useFeedStore.getState().fetchHomeFeed();
+  }
+});
+
 // ─────────────────────────────────────────────
 // SELECTOR HOOKS
 // Fine-grained selectors prevent full-store re-renders.

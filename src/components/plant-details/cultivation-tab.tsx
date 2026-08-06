@@ -3,6 +3,7 @@ import React from "react";
 import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { useColorScheme } from "nativewind";
 import { CultivationGuide } from "../../types";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 interface CultivationTabProps {
   cultivationGuide: CultivationGuide;
@@ -67,13 +68,14 @@ function EmptySection({ message }: { message: string }) {
 export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   if (!cultivationGuide) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 64 }}>
         <Ionicons name="leaf-outline" size={40} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
         <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 14, marginTop: 12 }}>
-          No cultivation guide available.
+          {t('details_no_cultivation')}
         </Text>
       </View>
     );
@@ -87,17 +89,17 @@ export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
       contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
       showsVerticalScrollIndicator={false}
     >
-      <SectionHeader icon="rose-outline" title="Growing Requirements" />
+      <SectionHeader icon="rose-outline" title={t('details_growing_req')} />
       <View style={{ backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)", borderRadius: 16, overflow: "hidden" }}>
-        <SectionItem icon="thermometer-outline" label="Climate" value={cultivationGuide.climate || "N/A"} />
-        <SectionItem icon="earth-outline" label="Soil" value={cultivationGuide.soil || "N/A"} />
-        <SectionItem icon="sunny-outline" label="Sunlight" value={cultivationGuide.sunlight || "N/A"} />
-        <SectionItem icon="water-outline" label="Watering" value={cultivationGuide.watering || "N/A"} />
-        <SectionItem icon="git-branch-outline" label="Propagation" value={cultivationGuide.propagation || "N/A"} />
-        <SectionItem icon="time-outline" label="Growth Time" value={cultivationGuide.growthTime || "N/A"} />
+        <SectionItem icon="thermometer-outline" label={t('details_climate')} value={cultivationGuide.climate || t('details_na')} />
+        <SectionItem icon="earth-outline" label={t('details_soil')} value={cultivationGuide.soil || t('details_na')} />
+        <SectionItem icon="sunny-outline" label={t('details_sunlight')} value={cultivationGuide.sunlight || t('details_na')} />
+        <SectionItem icon="water-outline" label={t('details_watering')} value={cultivationGuide.watering || t('details_na')} />
+        <SectionItem icon="git-branch-outline" label={t('details_propagation')} value={cultivationGuide.propagation || t('details_na')} />
+        <SectionItem icon="time-outline" label={t('details_growth_time')} value={cultivationGuide.growthTime || t('details_na')} />
       </View>
 
-      <SectionHeader icon="bulb-outline" title="Tips & Care" />
+      <SectionHeader icon="bulb-outline" title={t('details_tips_care')} />
       {tips.length > 0 ? (
         <View style={{ gap: 8 }}>
           {tips.map((tip, index) => (
@@ -113,7 +115,7 @@ export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
           ))}
         </View>
       ) : (
-        <EmptySection message="No cultivation tips available." />
+        <EmptySection message={t('details_no_tips')} />
       )}
     </ScrollView>
   );

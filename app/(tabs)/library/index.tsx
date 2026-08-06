@@ -27,6 +27,7 @@ import { SearchBar } from "@/src/components/library/search-bar";
 
 // Stores
 import { useLibraryStore } from "@/src/store/useLibraryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 
 export default function LibraryFeed() {
@@ -36,6 +37,7 @@ export default function LibraryFeed() {
 
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (scanIdFromParams) {
@@ -95,7 +97,7 @@ export default function LibraryFeed() {
             style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_500Medium" }}
             className="mt-4 text-center"
           >
-            Loading plant library...
+            {t('lib_loading')}
           </Text>
         </View>
       );
@@ -115,7 +117,7 @@ export default function LibraryFeed() {
             <Ionicons name="alert-circle-outline" size={28} color="#ef4444" />
           </View>
           <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
-            Failed to Load Library
+            {t('lib_error_title')}
           </Text>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, marginBottom: 24 }}>
             {plantsError.message}
@@ -127,7 +129,7 @@ export default function LibraryFeed() {
               paddingHorizontal: 24, paddingVertical: 12, borderRadius: 16
             }}
           >
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>Try Again</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>{t('lib_try_again')}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -149,10 +151,10 @@ export default function LibraryFeed() {
             <Ionicons name="search-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
           </View>
           <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
-            No matching plants
+            {t('lib_no_match_title')}
           </Text>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
-            We couldn't find anything matching "{searchQuery}". Try adjusting your search or category filter.
+            {t('lib_no_match_body').replace('{query}', searchQuery)}
           </Text>
         </View>
       );
@@ -172,10 +174,10 @@ export default function LibraryFeed() {
             <Ionicons name="leaf-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
           </View>
           <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
-            Category is empty
+            {t('lib_cat_empty_title')}
           </Text>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
-            There are currently no plants available under the "{activeCategory}" category.
+            {t('lib_cat_empty_body').replace('{category}', activeCategory)}
           </Text>
         </View>
       );
@@ -195,10 +197,10 @@ export default function LibraryFeed() {
             <Ionicons name="medkit-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
           </View>
           <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
-            No plants found
+            {t('lib_no_plants_title')}
           </Text>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
-            No plants found for this symptom.
+            {t('lib_no_plants_symptom')}
           </Text>
         </View>
       );
@@ -218,10 +220,10 @@ export default function LibraryFeed() {
             <Ionicons name="flask-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
           </View>
           <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
-            No plants found
+            {t('lib_no_plants_title')}
           </Text>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
-            No plants with this preparation method.
+            {t('lib_no_plants_prep')}
           </Text>
         </View>
       );
@@ -235,10 +237,10 @@ export default function LibraryFeed() {
       {activeSymptom && (
         <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}>
           <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#F8FAFC" : "#22451C", flex: 1 }}>
-            Showing plants for: "{activeSymptom}"
+            {t('lib_showing_symptom').replace('{symptom}', activeSymptom)}
           </Text>
           <TouchableOpacity onPress={() => setActiveSymptom(null)} style={{ padding: 4 }}>
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>✕ Clear</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>{t('lib_clear')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -246,10 +248,10 @@ export default function LibraryFeed() {
       {activePreparationMethod && (
         <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}>
           <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#F8FAFC" : "#22451C", flex: 1 }}>
-            Preparation: "{activePreparationMethod}"
+            {t('lib_showing_prep').replace('{prep}', activePreparationMethod)}
           </Text>
           <TouchableOpacity onPress={() => setActivePreparationMethod(null)} style={{ padding: 4 }}>
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>✕ Clear</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>{t('lib_clear')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -257,7 +259,7 @@ export default function LibraryFeed() {
       {displayedPlants.length > 0 && (
         <View className="mx-6 mt-4 mb-2 flex-row items-center justify-between">
           <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)", fontSize: 12, letterSpacing: 0.5, textTransform: "uppercase" }}>
-            {displayedPlants.length} {displayedPlants.length === 1 ? "Plant" : "Plants"} Found
+            {t('lib_plants_found').replace('{count}', displayedPlants.length.toString())}
           </Text>
           <TouchableOpacity 
             onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
@@ -284,7 +286,7 @@ export default function LibraryFeed() {
               color: isDark ? "#F8FAFC" : "#22451C",
             }}
           >
-            Library
+            {t('lib_title')}
           </Text>
         </View>
 

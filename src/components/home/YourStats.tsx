@@ -5,10 +5,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLibraryStore } from '../../store/useLibraryStore';
 import { useHistoryStore } from '../../store/useHistoryStore';
 import { getAllPlants } from '../../services/localLibrary';
+import { useTranslation } from '@/src/i18n/useTranslation';
 
 export default function YourStats() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const { t } = useTranslation();
 
   const favoritesCount = useLibraryStore((state) => state.favorites?.length || 0);
   const scansCount = useHistoryStore((state) => state.scans?.length || 0);
@@ -18,17 +20,17 @@ export default function YourStats() {
     {
       icon: 'scan-outline' as const,
       value: scansCount,
-      label: 'Scanned',
+      label: t('stats_scanned'),
     },
     {
       icon: 'star-outline' as const,
       value: favoritesCount,
-      label: 'Saved',
+      label: t('stats_saved'),
     },
     {
       icon: 'book-outline' as const,
       value: totalPlantsCount,
-      label: 'In Library',
+      label: t('stats_in_library'),
     },
   ];
 
@@ -45,7 +47,7 @@ export default function YourStats() {
           color: isDark ? '#EAF3D5' : '#22451C',
         }}
       >
-        Your Plant Journey
+        {t('home_stats_title')}
       </Text>
 
       {/* Stats card */}

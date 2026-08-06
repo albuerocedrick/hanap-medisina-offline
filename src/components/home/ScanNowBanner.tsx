@@ -3,10 +3,12 @@ import { router } from "expo-router";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 export function ScanNowBanner() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   return (
     <View className="px-[22px] mb-6">
@@ -39,13 +41,13 @@ export function ScanNowBanner() {
               className="font-bold text-[15px] leading-tight"
               style={{ color: isDark ? "rgba(248,250,252,0.92)" : "#1E3A2F" }}
             >
-              Scan a plant
+              {t('home_scan_banner_title')}
             </Text>
             <Text
               className="text-[12px] mt-0.5"
               style={{ color: isDark ? "rgba(226,232,240,0.62)" : "#4D8035" }}
             >
-              Identify species in seconds with AI
+              {t('home_scan_banner_sub')}
             </Text>
           </View>
 

@@ -4,6 +4,7 @@ import { Text, View } from "react-native";
 import { selectIsLoadingFeed, useFeedStore } from "../../store/useFeedStore";
 import { SkeletonTriviaCard } from "./HomeSkeletons";
 import { useColorScheme } from "nativewind";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 export function DailyTrivia() {
   const getTodayTrivia = useFeedStore((s) => s.getTodayTrivia);
@@ -11,6 +12,7 @@ export function DailyTrivia() {
   const trivia = getTodayTrivia();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   if (trivia === null && isLoadingFeed) return <View className="px-6 mb-8"><SkeletonTriviaCard /></View>;
   if (trivia === null) return null;
@@ -21,7 +23,7 @@ export function DailyTrivia() {
         className="text-[#22451C] dark:text-[#EAF3D5] mb-3"
         style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
       >
-        Daily Trivia
+        {t('home_trivia_title')}
       </Text>
 
       <View className="bg-[#FAFEEF] dark:bg-white/5 border border-[#A2CFA3]/35 dark:border-white/10 rounded-[24px] p-4">

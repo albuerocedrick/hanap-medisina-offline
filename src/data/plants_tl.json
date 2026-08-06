@@ -1,0 +1,692 @@
+[
+  {
+    "id": "tsaang-gubat",
+    "name": "Tsaang Gubat (TL)",
+    "scientificName": "Ehretia microphylla Lam.",
+    "shortDescription": "Isang halamang palaging luntian na katutubo sa Pilipinas at iba pang bahagi ng Asya. Ang mga dahon nito ay napatunayang may bisa laban sa pagtatae, pananakit, at mikrobyo. Isa ito sa 10 halamang gamot na ineendorso ng DOH at ginawa nang aprubadong tableta para sa pananakit ng tiyan.",
+    "imageSource": "tsaang-gubat.jpg",
+    "categories": [
+      "digestive",
+      "anti-inflammatory",
+      "pain-relief",
+      "antibacterial"
+    ],
+    "lookAlikeIds": [
+      "oregano",
+      "malunggay"
+    ],
+    "details": {
+      "localName": "Tsaang gubat (Philippine tea tree)",
+      "preparation": [
+        {
+          "method": "Tea / Decoction",
+          "description": "Boil 5–6 fresh leaves in 2 cups of water for 10 minutes. Strain and drink while warm.",
+          "uses": [
+            "Diarrhea",
+            "Stomach ache",
+            "Gastrointestinal colic"
+          ]
+        },
+        {
+          "method": "Poultice",
+          "description": "Crush fresh leaves into a paste and apply directly to the affected area.",
+          "uses": [
+            "Wound healing",
+            "Skin irritation"
+          ]
+        },
+        {
+          "method": "Tablet / Capsule (Commercial)",
+          "description": "Tsaang gubat tablet has been formulated and registered with the Philippine Food and Drug Administration (FDA) after Phase I–III clinical trials. Listed in the Philippine National Formulary.",
+          "uses": [
+            "Biliary colic",
+            "Gastrointestinal pain"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Philippines, India, China, Southeast Asia",
+        "family": "Boraginaceae",
+        "habitat": "Tropical lowland forests; grows wild in disturbed areas and open fields"
+      },
+      "warnings": [
+        "Consult a doctor before using for medicinal purposes.",
+        "Do not consume in excessive amounts.",
+        "Avoid use if allergic to plants in the Boraginaceae family.",
+        "Pregnant or breastfeeding women should consult a healthcare professional before use.",
+        "Not a substitute for professional medical treatment."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Well-drained, loamy to sandy soil; tolerates poor soil",
+      "sunlight": "Full sun to partial shade (4–6 hours daily)",
+      "watering": "Moderate; drought-tolerant once established",
+      "propagation": "Seeds, stem cuttings",
+      "growthTime": "1–2 years to reach usable size; shrub matures at 1.5–4 meters",
+      "tips": [
+        "Prune regularly to encourage bushy growth.",
+        "Harvest leaves before flowering for highest potency.",
+        "Can be grown as a hedge or ornamental shrub."
+      ]
+    },
+    "research": [
+      {
+        "title": "Evaluation of the bioactivity of triterpene mixture isolated from Carmona retusa (Vahl.) Masam leaves",
+        "summary": "The major constituent of C. retusa leaves is a triterpene mixture (α-amyrin, β-amyrin, and bauerenol). At 100 mg/kg, the triterpene mixture exhibited 51% analgesic activity and 29% anti-diarrheal activity (charcoal tracing test), which increased to 55% at 250 mg/kg. The triterpene mixture showed moderate antimicrobial activity against S. aureus, C. albicans, and T. mentagrophytes. Results were comparable to mefenamic acid (a commercial NSAID) at α = 0.01.",
+        "reference": "Villaseñor IM, Canlas AP, Faustino KM, Plana KG. J Ethnopharmacol. 2004 May;92(1):53–6. DOI: 10.1016/j.jep.2004.01.017",
+        "year": 2004
+      },
+      {
+        "title": "Ehretia microphylla Tablet Formulation for Biliary and Gastrointestinal Colic: A Review of its Phytochemical Constituents, Pharmacologic Activities and Clinical Researches",
+        "summary": "Comprehensive review of tsaang gubat's phytochemical constituents (flavonoids, phenolics, triterpenes, alkaloids) and pharmacologic activities (antibacterial, antioxidant, anti-inflammatory, anti-diarrheal, anti-angiogenesis, wound healing, anti-cancer). The tsaang gubat tablet has been granted a full patent and is registered with the Philippine FDA. It is listed in the Philippine National Formulary after Phase I–III clinical trials.",
+        "reference": "Legaspi CLB, Bagaoisan DM. Acta Medica Philippina. 2020 Feb;54(1):80–85. DOI: 10.47895/amp.v54i1.1108",
+        "year": 2020
+      },
+      {
+        "title": "Ehretia genus: a comprehensive review of its botany, ethnomedicinal uses, phytochemistry, and pharmacology",
+        "summary": "Comprehensive review of the Ehretia genus covering botany, ethnomedicinal uses, phytochemistry, and pharmacology. Confirms anti-diarrheal, anti-inflammatory, analgesic, antibacterial, and antioxidant properties of E. microphylla. Identifies key bioactive compounds including triterpenes and rosmarinic acid.",
+        "reference": "Jiang S et al. Frontiers in Pharmacology. 2025. DOI: 10.3389/fphar.2025.1526359",
+        "year": 2025
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Small, rounded, obovate leaves approximately 1–2.5 cm in length with lobed apex and short bristly hairs",
+      "flower": "Small white flowers, axillary, solitary or in pairs on a slender hairy peduncle",
+      "stem": "Highly branched, divaricate with brown bark approximately 3 mm thick",
+      "smell": "Mild, herbal tea-like scent when leaves are crushed"
+    }
+  },
+  {
+    "id": "tawa-tawa",
+    "name": "Tawa-tawa (TL)",
+    "scientificName": "Euphorbia hirta L.",
+    "shortDescription": "Isang taunang damo na malawak na nakakalat sa mga tropikal na rehiyon kabilang ang Pilipinas. Kilala sa tradisyonal na paggamit sa pamamahala ng dengue fever. Ipinakita ng mga klinikal na pag-aaral na nakakatulong itong mapataas ang bilang ng platelet.",
+    "imageSource": "tawa-tawa.jpg",
+    "categories": [
+      "immune-boost",
+      "anti-inflammatory",
+      "antibacterial",
+      "fever"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Tawa-tawa, Asthma plant, Gatas-gatas",
+      "preparation": [
+        {
+          "method": "Tea / Decoction",
+          "description": "Boil 1 cup of fresh whole plant (roots, stems, leaves) in 2 cups of water for 15 minutes. Strain and drink warm, 1 cup 3 times daily.",
+          "uses": [
+            "Dengue fever",
+            "Thrombocytopenia (low platelet count)",
+            "Flu-like symptoms"
+          ]
+        },
+        {
+          "method": "Poultice",
+          "description": "Crush fresh leaves and apply as a paste to cuts, wounds, and skin irritations.",
+          "uses": [
+            "Wound healing",
+            "Skin diseases",
+            "Ringworm"
+          ]
+        },
+        {
+          "method": "Infusion",
+          "description": "Steep dried aerial parts in hot water for 10 minutes. Strain and drink.",
+          "uses": [
+            "Respiratory ailments (cough, asthma, bronchitis)",
+            "Intestinal worms"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical Americas; naturalized worldwide in tropical regions",
+        "family": "Euphorbiaceae",
+        "habitat": "Waste places, roadsides, lawns, and disturbed areas in tropical regions"
+      },
+      "warnings": [
+        "Consult a doctor before using for medicinal purposes, especially for dengue.",
+        "Do not consume in excessive amounts; the plant contains latex which can be irritating.",
+        "Avoid contact with latex sap — it may cause skin and eye irritation.",
+        "Not a substitute for professional medical treatment for dengue fever.",
+        "Pregnant women should avoid use due to potential uterine stimulant effects.",
+        "Euphorbia hirta should not be the sole treatment for severe thrombocytopenia."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Adaptable; grows in sandy, loamy, and clay soils; tolerates poor soil",
+      "sunlight": "Full sun (6–8 hours daily)",
+      "watering": "Moderate; tolerates drought",
+      "propagation": "Seeds (self-sows readily)",
+      "growthTime": "Fast-growing annual; mature in 2–4 months",
+      "tips": [
+        "Grows readily as a weed; collect from open fields or grow in a garden pot.",
+        "Harvest the whole plant when flowering for maximum potency.",
+        "No special fertilization needed."
+      ]
+    },
+    "research": [
+      {
+        "title": "Management of thrombocytopenia and flu-like symptoms in dengue patients with herbal water of Euphorbia hirta",
+        "summary": "A clinical study of 125 dengue patients showed that over 70% of patients had improvement in platelet count, white blood cell count, fever, and flu-like symptoms after consuming herbal water of E. hirta. Leucopoenia improved significantly after use of the aqueous extract.",
+        "reference": "Mir M, Khurshid R, Aftab R. J Ayub Med Coll Abbottabad. 2012 Jul-Dec;24(3-4):6–9. PMID: 24669596",
+        "year": 2012
+      },
+      {
+        "title": "Potential Use of Euphorbia hirta for Dengue: A Systematic Review of Scientific Evidence",
+        "summary": "Systematic review confirming that E. hirta has significantly increased platelet counts in both animal models and clinical studies of dengue patients. Mean platelet count was increased by 80% following E. hirta treatment for 9 days in one clinical study. The plant shows promise as a complementary treatment for dengue.",
+        "reference": "Perera SD, Kumarasinghe G, Abeysinghe M. Evid Based Complement Alternat Med. 2018. DOI: 10.1155/2018/2048530",
+        "year": 2018
+      },
+      {
+        "title": "Euphorbia hirta: Its chemistry, traditional and medicinal uses, and pharmacological activities",
+        "summary": "Comprehensive review (cited 479 times) covering the chemistry, traditional uses, and pharmacological activities of E. hirta. Confirmed antimicrobial, antioxidant, anti-inflammatory, antidiarrheal, anti-asthmatic, and antiviral properties. Key phytochemicals include quercetin, gallic acid, tannins, and flavonoids.",
+        "reference": "Kumar S, Malhotra R, Kumar D. Pharmacogn Rev. 2010;4(8):174–184. DOI: 10.4103/0973-7847.70915",
+        "year": 2010
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Small, hairy, oblong leaves with a reddish-purple center spot, arranged oppositely on hairy stems",
+      "flower": "Tiny reddish flowers clustered in the leaf axils",
+      "stem": "Hairy, prostrate or erect stems that exude milky latex when broken",
+      "smell": "Mild, slightly pungent herbal scent"
+    }
+  },
+  {
+    "id": "oregano",
+    "name": "Oregano (TL)",
+    "scientificName": "Plectranthus amboinicus (Lour.) Spreng.",
+    "shortDescription": "Isang halamang may makapal at mabangong mga dahon, malawakang ginagamit sa tradisyonal na panggagamot. Napatunayang may matapang na katangiang laban sa mikrobyo, pamamaga, at nakatutulong sa paghilom ng sugat.",
+    "imageSource": "oregano.jpg",
+    "categories": [
+      "respiratory",
+      "antibacterial",
+      "anti-inflammatory",
+      "skin-care",
+      "pain-relief"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Oregano, Orégano, Indian borage",
+      "preparation": [
+        {
+          "method": "Tea / Decoction",
+          "description": "Boil 5–6 fresh leaves in 1 cup of water for 5–10 minutes. Strain and drink warm. For children, add honey.",
+          "uses": [
+            "Cough",
+            "Colds",
+            "Sore throat",
+            "Asthma",
+            "Flu"
+          ]
+        },
+        {
+          "method": "Juice / Syrup",
+          "description": "Crush fresh leaves and extract juice. Mix with honey for a soothing cough syrup. Take 1 teaspoon 2–3 times daily.",
+          "uses": [
+            "Cough relief",
+            "Sore throat",
+            "Congestion"
+          ]
+        },
+        {
+          "method": "Poultice / Topical",
+          "description": "Crush fresh leaves into a paste and apply to the affected area for insect bites, rashes, or minor wounds.",
+          "uses": [
+            "Insect bites",
+            "Skin rashes",
+            "Minor burns",
+            "Wound healing"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Native to Southern and Eastern Africa; naturalized throughout the tropics",
+        "family": "Lamiaceae",
+        "habitat": "Tropical and subtropical gardens; thrives in warm, dry conditions"
+      },
+      "warnings": [
+        "Consult a doctor before using for medicinal purposes.",
+        "Do not consume essential oil directly — it is highly concentrated.",
+        "May cause allergic reactions in some individuals.",
+        "Pregnant or breastfeeding women should consult a healthcare professional before use.",
+        "Avoid prolonged use of essential oil on skin without dilution."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Well-drained, sandy to loamy soil; tolerates drought",
+      "sunlight": "Full sun to partial shade (6 hours daily)",
+      "watering": "Water moderately; allow soil to dry between waterings (succulent plant)",
+      "propagation": "Stem cuttings (very easy to root)",
+      "growthTime": "Rapid growth; harvestable in 4–6 weeks from cuttings",
+      "tips": [
+        "Very easy to grow from stem cuttings in pots or garden beds.",
+        "Prune regularly to encourage bushy growth.",
+        "Can be grown indoors near a sunny window.",
+        "Drought-tolerant — avoid overwatering."
+      ]
+    },
+    "research": [
+      {
+        "title": "Plectranthus amboinicus (Lour.) Spreng: A multi therapeutic agent — A review",
+        "summary": "Comprehensive review (cited 519 times) confirming numerous pharmacological properties including antimicrobial, anti-inflammatory, antitumor, wound healing, anti-epileptic, larvicidal, and antidiabetic activities. The essential oil is rich in carvacrol and thymol, potent antimicrobial and antioxidant compounds.",
+        "reference": "Arumugam G, Manjula S, Paari K. Biomed Pharmacother. 2016;84:341–349. DOI: 10.1016/j.biopha.2016.09.006. PMC6274163",
+        "year": 2016
+      },
+      {
+        "title": "Plectranthus amboinicus: A Systematic Review of Traditional Uses, Phytochemical Properties, and Therapeutic Applications",
+        "summary": "Systematic review confirming significant antimicrobial activity of P. amboinicus extracts and essential oils against both Gram-positive and Gram-negative bacteria, notable antioxidant and anti-inflammatory activities, and wound healing properties. Validates diverse therapeutic potential across infectious diseases, oncology, and wound care.",
+        "reference": "Filipe MS, Bangay G, Brauning FZ et al. Pharmaceuticals (MDPI). 2025;18(5):707. DOI: 10.3390/ph18050707",
+        "year": 2025
+      },
+      {
+        "title": "Evaluation of the Effect of Plectranthus amboinicus L. Leaf Extracts on the Bacterial Antioxidant System and Cell Membrane Integrity of Pseudomonas aeruginosa PA01",
+        "summary": "Study demonstrated that P. amboinicus leaf extracts disrupt the bacterial antioxidant system and compromise cell membrane integrity of P. aeruginosa, confirming its potent antimicrobial mechanism of action.",
+        "reference": "Sawant S, Baldwin TC, Metryka O, Rahman A. Pathogens. 2023;12(6):853. DOI: 10.3390/pathogens12060853",
+        "year": 2023
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Thick, succulent, oval-shaped leaves with scalloped edges; covered in fine hairs; strongly aromatic",
+      "flower": "Small pale blue-purple flowers in loose spikes",
+      "stem": "Fleshy, square cross-section (characteristic of Lamiaceae), green to purplish",
+      "smell": "Strong, pungent oregano-like aroma when leaves are crushed (due to carvacrol and thymol)"
+    }
+  },
+  {
+    "id": "mango",
+    "name": "Mangga (TL)",
+    "scientificName": "Mangifera indica L.",
+    "shortDescription": "Isang malawakang itinatanim na tropikal na puno na ang mga dahon, balat ng kahoy, at prutas ay nagtataglay ng mangiferin at iba pang mga sangkap na may napatunayang katangiang laban sa diabetes, pamamaga, at nakakabuti sa puso.",
+    "imageSource": "mango.jpg",
+    "categories": [
+      "anti-inflammatory",
+      "immune-boost",
+      "digestive",
+      "antioxidant"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Mangga (Philippine mango)",
+      "preparation": [
+        {
+          "method": "Tea / Decoction (Leaf)",
+          "description": "Boil 5–10 fresh or dried mango leaves in 2 cups of water for 15 minutes. Strain and drink warm, 1–2 times daily.",
+          "uses": [
+            "Diabetes management",
+            "Hypertension",
+            "Digestive problems"
+          ]
+        },
+        {
+          "method": "Poultice (Bark)",
+          "description": "Crush fresh bark into a paste and apply to the affected area.",
+          "uses": [
+            "Burns",
+            "Wound healing",
+            "Skin conditions"
+          ]
+        },
+        {
+          "method": "Fresh Fruit Consumption",
+          "description": "Eat ripe mango fruit fresh for nutritional benefits. Rich in vitamins A, C, and fiber.",
+          "uses": [
+            "Immune support",
+            "Digestive health",
+            "Vitamin deficiency"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "South Asia (India, Myanmar, Bangladesh); widely cultivated in tropical regions",
+        "family": "Anacardiaceae",
+        "habitat": "Tropical and subtropical regions; thrives in warm, humid climates"
+      },
+      "warnings": [
+        "Mango sap and peel can cause contact dermatitis (allergic skin reaction) in sensitive individuals.",
+        "People with latex allergy may also be allergic to mango.",
+        "Mango leaves are not a substitute for prescribed diabetes medication.",
+        "Consult a doctor before using mango leaf decoction for medicinal purposes.",
+        "Pregnant or breastfeeding women should consult a healthcare professional before use."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Deep, well-drained, slightly acidic to neutral soil (pH 5.5–7.5)",
+      "sunlight": "Full sun (6–8 hours daily)",
+      "watering": "Regular watering for young trees; mature trees are drought-tolerant",
+      "propagation": "Seeds, grafting, air layering",
+      "growthTime": "3–6 years from grafting; 8–10 years from seed to bear fruit",
+      "tips": [
+        "Protect young trees from frost.",
+        "Prune to shape the canopy and improve air circulation.",
+        "Apply balanced fertilizer before flowering and after fruit harvest.",
+        "Bag fruits on the tree to protect from pests."
+      ]
+    },
+    "research": [
+      {
+        "title": "Mangifera indica (Mango)",
+        "summary": "Comprehensive review (cited 690 times) documenting mango's antidiabetic, antioxidant, anti-viral, cardiotonic, hypotensive, and anti-inflammatory properties. Mangiferin, a polyphenolic antioxidant and glucosyl xanthone, is identified as a key bioactive compound responsible for many of these effects.",
+        "reference": "Shah KA, Patel MB, Patel RJ, Parmar PK. Pharmacogn Rev. 2010;4(8):112–118. DOI: 10.4103/0973-7847.70910. PMC3249901",
+        "year": 2010
+      },
+      {
+        "title": "Multifaceted Health Benefits of Mangifera indica L. (Mango): The Fruit That Should Be Included in Everyone's Diet",
+        "summary": "Review (cited 302 times) providing an overview of the antioxidant, anti-inflammatory, and anticancer properties of mango. Confirms that mango extracts reduce oxidative stress, inflammation, and cancer cell proliferation through mangiferin and other polyphenols.",
+        "reference": "Lauricella M, Emanuele S, Di Sano C et al. Nutrients. 2017;9(5):525. DOI: 10.3390/nu9050525",
+        "year": 2017
+      },
+      {
+        "title": "A Review on Ethnopharmacological Applications, Pharmacological Activities, and Phytochemical Composition of Mangifera indica",
+        "summary": "Review (cited 318 times) documenting the ethnopharmacological applications and pharmacological activities of M. indica, including antidiabetic, antioxidant, antimicrobial, anti-inflammatory, and anticancer activities. Identifies mangiferin, quercetin, gallic acid, and phenolic acids as key bioactive constituents.",
+        "reference": "Ediriweera MK, Tennekoon KH, Samarakoon SR. Evid Based Complement Alternat Med. 2017. DOI: 10.1155/2017/6949805",
+        "year": 2017
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Long, lanceolate, dark green, glossy leaves with prominent midrib; 15–45 cm long",
+      "flower": "Small, pale yellow-pink flowers in large panicles (up to 60 cm long)",
+      "stem": "Tall, evergreen tree up to 30–40 meters with dense canopy; thick, rough, dark gray bark",
+      "smell": "Sweet, fruity aroma from flowers and ripe fruit; leaves have a mild resinous scent"
+    }
+  },
+  {
+    "id": "guyabano",
+    "name": "Guyabano (TL)",
+    "scientificName": "Annona muricata L.",
+    "shortDescription": "Isang tropikal na puno ng prutas kung saan ang mga dahon at buto ay nagtataglay ng malalakas na sangkap na may napatunayang katangiang laban sa kanser, pamamaga, at mikrobyo.",
+    "imageSource": "guyabano.jpg",
+    "categories": [
+      "anti-inflammatory",
+      "antioxidant",
+      "pain-relief",
+      "immune-boost"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Guyabano, Soursop, Graviola",
+      "preparation": [
+        {
+          "method": "Tea / Decoction (Leaf)",
+          "description": "Boil 5–10 dried or fresh guyabano leaves in 2 cups of water for 15 minutes. Strain and drink warm, 1 cup 2–3 times daily.",
+          "uses": [
+            "Antioxidant support",
+            "Inflammation",
+            "General wellness"
+          ]
+        },
+        {
+          "method": "Juice / Fresh Fruit",
+          "description": "Blend ripe guyabano fruit flesh and drink as juice. Rich in vitamin C, fiber, and natural sugars.",
+          "uses": [
+            "Immune support",
+            "Digestive health",
+            "Nutritional supplement"
+          ]
+        },
+        {
+          "method": "Poultice (Leaf)",
+          "description": "Crush fresh leaves into a paste and apply to the affected area.",
+          "uses": [
+            "Eczema",
+            "Skin conditions",
+            "Headache (applied to temples)"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Central America, Caribbean, and northern South America; cultivated worldwide in tropics",
+        "family": "Annonaceae",
+        "habitat": "Tropical lowlands; thrives in warm, humid environments at sea level to 1,500 m elevation"
+      },
+      "warnings": [
+        "Consult a doctor before using for medicinal purposes, especially for cancer.",
+        "Guyabano leaf tea is not a substitute for professional cancer treatment.",
+        "Excessive consumption of seeds may be neurotoxic (linked to atypical Parkinsonism in some studies).",
+        "Avoid use during pregnancy; may cause uterine contractions.",
+        "Do not exceed recommended doses; consult healthcare professional for long-term use.",
+        "Not a substitute for chemotherapy or prescribed cancer treatment."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Deep, well-drained, sandy or loamy soil with good organic matter",
+      "sunlight": "Full sun (6–8 hours daily); tolerates partial shade when young",
+      "watering": "Regular watering; prefers consistent moisture but not waterlogged",
+      "propagation": "Seeds, grafting (for improved fruit varieties)",
+      "growthTime": "3–5 years from seed to bear fruit; 2–3 years from grafted tree",
+      "tips": [
+        "Protect from strong winds.",
+        "Mulch around the base to retain moisture.",
+        "Hand-pollinate flowers for better fruit set.",
+        "Harvest fruit when spines begin to separate and color changes to yellowish-green."
+      ]
+    },
+    "research": [
+      {
+        "title": "A Review on Annona muricata and Its Anticancer Activity",
+        "summary": "Comprehensive review (cited 124 times) focusing on A. muricata extract's role against various types of cancer, modulation of cellular proliferation and necrosis, and bioactive compounds responsible for anticancer effects. Confirms that acetogenins selectively target cancer cells while sparing normal cells, making it a promising complementary cancer therapy.",
+        "reference": "Ilango S, Sahoo DK, Paital B, Kathirvel K, Gabriel JI. Cancers (MDPI). 2022;14(18):4539. DOI: 10.3390/cancers14184539. PMC9497149",
+        "year": 2022
+      },
+      {
+        "title": "Anticancer Properties of Graviola (Annona muricata): A Comprehensive Scientific Review",
+        "summary": "Review (cited 262 times) summarizing the current understanding of anticancer effects of A. muricata and its constituents on diverse cancer types. Acetogenins inhibit mitochondrial complex I, selectively targeting ATP-deficient cancer cells. Activity confirmed against breast, prostate, lung, colon, pancreatic, and leukemia cell lines.",
+        "reference": "Radi I, Nair JJ, Che CT, Abbasi AH, Chowdhury S, Akhtar MS. J Exp Pharmacol. 2018;10:115–127. DOI: 10.2147/JEP.S169645. PMC6091294",
+        "year": 2018
+      },
+      {
+        "title": "Potential Benefits of Annona muricata in Combating Cancer: A Review",
+        "summary": "Review (cited 127 times) exploring A. muricata as a potential complementary cancer treatment agent. Documents anticancer mechanisms including induction of apoptosis, inhibition of angiogenesis, and suppression of tumor growth. Confirms bioactivity across multiple cancer cell lines with acetogenins as the primary active compounds.",
+        "reference": "Yajid AI, Ibrahim TH, Ahmad S, Zainal Abidin Z. Biomed Pharmacother. 2018;104:376–387. DOI: 10.1016/j.biopha.2018.05.074. PMC5862046",
+        "year": 2018
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Large, oblong, glossy dark green leaves with prominent midrib; 7–20 cm long",
+      "flower": "Solitary, creamy yellow-green, bell-shaped flowers with a strong fruity scent; 3–5 cm long",
+      "stem": "Medium-sized tree up to 6–8 meters; dark gray bark with irregular scaly plates",
+      "smell": "Flowers have a strong, sweet, fruity aroma; leaves have a mild herbal scent when crushed"
+    }
+  },
+  {
+    "id": "pansit-pansitan",
+    "name": "Pansit-pansitan (TL)",
+    "scientificName": "Peperomia pellucida (L.) Kunth",
+    "shortDescription": "Isang damong karaniwang matatagpuan sa mga hardin at malilim na lugar sa Pilipinas. Napatunayang mabisang lunas laban sa rayuma (anti-gout), pamamaga, at pananakit ng katawan.",
+    "imageSource": "pansit-pansitan.jpg",
+    "categories": [
+      "anti-inflammatory",
+      "pain-relief",
+      "antioxidant",
+      "digestive"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Pansit-pansitan, Ulasimang bato, Shiny bush",
+      "preparation": [
+        {
+          "method": "Tea / Decoction",
+          "description": "Boil 1 handful of fresh whole plant in 2 cups of water for 10 minutes. Strain and drink warm, 1 cup 2–3 times daily.",
+          "uses": [
+            "Gout",
+            "Arthritis",
+            "Joint pain",
+            "Abdominal pain"
+          ]
+        },
+        {
+          "method": "Fresh / Raw",
+          "description": "Eat fresh leaves and stems raw as a salad vegetable.",
+          "uses": [
+            "Nutritional supplement",
+            "Mild digestive aid"
+          ]
+        },
+        {
+          "method": "Poultice",
+          "description": "Crush fresh leaves into a paste and apply directly to the affected area.",
+          "uses": [
+            "Abscesses",
+            "Acne",
+            "Headache (applied to forehead)"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical Americas; naturalized in tropical regions worldwide",
+        "family": "Piperaceae",
+        "habitat": "Shady, moist areas in gardens, lawns, and waste places in tropical regions"
+      },
+      "warnings": [
+        "Consult a doctor before using for medicinal purposes.",
+        "Not a substitute for prescribed gout medication (e.g., allopurinol, colchicine).",
+        "Do not consume in excessive amounts.",
+        "Pregnant or breastfeeding women should consult a healthcare professional before use.",
+        "Ensure correct plant identification — some look-alikes may not have the same properties."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Moist, rich, well-drained soil; thrives in shaded, humid conditions",
+      "sunlight": "Partial shade to full shade (prefers filtered light)",
+      "watering": "Keep soil consistently moist; does not tolerate drought well",
+      "propagation": "Seeds, stem cuttings, self-sows readily",
+      "growthTime": "Fast-growing annual; mature in 4–8 weeks",
+      "tips": [
+        "Grows readily in shady garden spots or between stepping stones.",
+        "Requires consistent moisture and protection from direct sun.",
+        "Harvest the whole plant when flowering for maximum potency."
+      ]
+    },
+    "research": [
+      {
+        "title": "Anti-inflammatory and analgesic activity of Peperomia pellucida (L.) Kunth (Piperaceae)",
+        "summary": "Study confirmed significant anti-inflammatory (paw edema induced by carrageenin and arachidonic acid) and analgesic activity (abdominal writhes and formalin tests) of P. pellucida. Effects were dose-dependent and comparable to standard anti-inflammatory drugs. (Cited 167 times)",
+        "reference": "de Fátima Arrigoni-Blank M, Andrade FA, Bolognese AM, Blank AF, Niculau ES, de Aquino AM. J Ethnopharmacol. 2004;91(2-3):215–218. DOI: 10.1016/j.jep.2003.12.010. PMID: 15120441",
+        "year": 2004
+      },
+      {
+        "title": "Anti-hyperuricemic and Anti-inflammatory Effects of Micropropagated Plants of Peperomia pellucida (L.) Kunth",
+        "summary": "Study demonstrated anti-hyperuricemic activity of P. pellucida leaf extract and anti-inflammatory activity of root extract, indicating its potential as a complementary therapy for gout. (Cited 47 times)",
+        "reference": "Rahmi EP, Rachmawati S, Rahayuningsih E, Widyasari A. Scientia Pharmaceutica. 2020;88(1):9. DOI: 10.3390/scipharm88010009. PMC7092620",
+        "year": 2020
+      },
+      {
+        "title": "The chemistry and biological activities of Peperomia pellucida (L.) Kunth (Piperaceae)",
+        "summary": "Comprehensive review (cited 98 times) documenting the chemistry and biological activities of P. pellucida, including anti-inflammatory, analgesic, antihyperuricemic, antioxidant, antimicrobial, and antihyperglycemic properties. Key compounds include pellucidin A, a sterol derivative with potent anti-inflammatory activity.",
+        "reference": "Alves NSF, Pereira MCR, da Costa Silva D et al. J Ethnopharmacol. 2019;236:391–408. DOI: 10.1016/j.jep.2019.02.029",
+        "year": 2019
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Small, heart-shaped, translucent green leaves on thin, watery stems",
+      "flower": "Tiny, spike-like greenish flowers (characteristic of Piperaceae); no petals",
+      "stem": "Translucent, succulent, watery stems that appear almost glass-like",
+      "smell": "Mild, slightly peppery scent when crushed (family Piperaceae)"
+    }
+  },
+  {
+    "id": "malunggay",
+    "name": "Malunggay (TL)",
+    "scientificName": "Moringa oleifera Lam.",
+    "shortDescription": "Isang punong siksik sa nutrisyon na ang mga dahon ay mayaman sa bitamina at protina. Napatunayang may katangiang laban sa pamamaga at diabetes. Madalas itong tawaging 'miracle tree'.",
+    "imageSource": "malunggay.jpg",
+    "categories": [
+      "immune-boost",
+      "antioxidant",
+      "anti-inflammatory",
+      "digestive",
+      "nutritional"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Malunggay, Horseradish tree, Drumstick tree",
+      "preparation": [
+        {
+          "method": "Fresh Leaves (Cooked)",
+          "description": "Add fresh malunggay leaves to soups (tinola, sinigang) during the last 2–3 minutes of cooking to preserve nutrients.",
+          "uses": [
+            "Nutritional supplement",
+            "Immune support",
+            "Anemia prevention"
+          ]
+        },
+        {
+          "method": "Tea / Decoction (Leaf)",
+          "description": "Boil 1 cup of fresh or dried leaves in 2 cups of water for 10 minutes. Strain and drink warm.",
+          "uses": [
+            "Anti-inflammatory",
+            "Blood sugar regulation",
+            "Digestive health"
+          ]
+        },
+        {
+          "method": "Powder (Leaf)",
+          "description": "Dry leaves in shade, grind into powder. Mix 1 teaspoon into food, drinks, or smoothies daily.",
+          "uses": [
+            "Nutritional supplement",
+            "Antioxidant support",
+            "Lactation support"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Northern India (Himalayan foothills); cultivated throughout the tropics",
+        "family": "Moringaceae",
+        "habitat": "Tropical and subtropical regions; extremely drought-tolerant"
+      },
+      "warnings": [
+        "Root bark extract can be toxic in large doses — do not consume roots or bark extracts.",
+        "Pregnant women should avoid consuming root bark (may cause uterine contractions).",
+        "Consult a doctor before using for medicinal purposes.",
+        "Do not replace prescribed medications with malunggay alone.",
+        "Pregnant or breastfeeding women should consult a healthcare professional before use."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical; extremely drought-tolerant",
+      "soil": "Well-drained, sandy or loamy soil; tolerates poor and alkaline soil",
+      "sunlight": "Full sun (6–8 hours daily)",
+      "watering": "Minimal once established; drought-tolerant",
+      "propagation": "Seeds, stem cuttings (20–30 cm cuttings root easily)",
+      "growthTime": "Fast-growing; harvestable in 6–8 months from cuttings; produces pods in 6–8 months",
+      "tips": [
+        "Cut back the trunk to 1 meter to encourage bushy leaf growth for leaf harvest.",
+        "Prune regularly for continuous leaf production.",
+        "Extremely resilient — survives drought, poor soil, and neglect.",
+        "Harvest leaves every 2–3 weeks for continuous supply."
+      ]
+    },
+    "research": [
+      {
+        "title": "Moringa oleifera: An Updated Comprehensive Review of Its Nutritional and Medicinal Properties",
+        "summary": "Comprehensive review (cited 575 times) documenting M. oleifera's nutritional composition and medicinal properties including antioxidant, anti-inflammatory, antidiabetic, antimicrobial, hepatoprotective, cardioprotective, and neuroprotective activities. Confirms it as one of the cheapest and most reliable alternatives for good nutrition.",
+        "reference": "Pareek A, Suthar M, Rathore GS, Bansal V. Nutrients. 2023;15(4):860. DOI: 10.3390/nu15040860. PMC9916933",
+        "year": 2023
+      },
+      {
+        "title": "Moringa oleifera: A review on nutritive importance and its medicinal application",
+        "summary": "Highly cited review (cited 2,323 times) documenting that M. oleifera provides 7 times more vitamin C than oranges, 10 times more vitamin A than carrots, 2 times more protein than milk, and 4 times more calcium than milk. Confirms antioxidant, antimicrobial, anti-inflammatory, and antitumor properties.",
+        "reference": "Gopalakrishnan L, Doriya K, Kumar DS. Food Sci Hum Wellness. 2016;5(2):49–56. DOI: 10.1016/j.fshw.2016.04.001",
+        "year": 2016
+      },
+      {
+        "title": "Moringa oleifera is a Prominent Source of Nutrients with Potential Health Benefits",
+        "summary": "Review (cited 506 times) confirming M. oleifera as a rich source of macro- and micronutrients and bioactive compounds including flavonoids, phenolic acids, glucosinolates, and thiocarbamates. Documents antidiabetic, antioxidant, anti-inflammatory, antimicrobial, and hepatoprotective properties.",
+        "reference": "Islam Z, Fatima R, Saeed B et al. Int J Food Sci. 2021;2021:6696925. DOI: 10.1155/2021/6696925. PMC8373516",
+        "year": 2021
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Compound leaves with small, oval leaflets arranged in pairs along a central stem; soft, green, fern-like appearance",
+      "flower": "White, fragrant flowers with yellow centers in loose drooping clusters; about 2.5 cm wide",
+      "stem": "Slender, fast-growing trunk with soft, light gray bark; young stems are green and flexible",
+      "smell": "Mild, slightly horseradish-like scent when leaves or roots are crushed (milder than true horseradish)"
+    }
+  }
+]

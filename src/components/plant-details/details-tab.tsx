@@ -18,6 +18,7 @@ import { PlantDetails } from "../../types/index";
 
 import { useColorScheme } from "nativewind";
 import { StyleSheet } from "react-native";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 // ─────────────────────────────────────────────
 // PROPS
@@ -74,6 +75,7 @@ function EmptySection({ message }: { message: string }) {
 export function DetailsTab({ localName, details }: DetailsTabProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   // ── Guard: graceful degradation if details is undefined/null ─────────────
   if (!details) {
@@ -81,7 +83,7 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 64 }}>
         <Ionicons name="leaf-outline" size={40} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
         <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 14, marginTop: 12 }}>
-          No details available for this plant.
+          {t('details_no_details')}
         </Text>
       </View>
     );
@@ -111,7 +113,7 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12, paddingHorizontal: 4 }}>
           <Ionicons name="pricetag-outline" size={13} color={isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)"} style={{ marginRight: 6 }} />
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontSize: 13, marginRight: 6 }}>
-            Known locally as
+            {t('details_known_locally')}
           </Text>
           <Text style={{ fontFamily: "serif", fontStyle: "italic", fontWeight: "500", color: isDark ? "#F8FAFC" : "#22451C", fontSize: 15, marginTop: -2 }}>
             {localName}
@@ -120,7 +122,7 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
       )}
 
       {/* ── Preparation ────────────────────────────────────────────────────── */}
-      <SectionHeader icon="flask-outline" title="Preparation" />
+      <SectionHeader icon="flask-outline" title={t('details_preparation_title')} />
       {preparation.length > 0 ? (
         <View style={{ gap: 12 }}>
           {preparation.map((prep: any, index: number) => (
@@ -149,11 +151,11 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
           ))}
         </View>
       ) : (
-        <EmptySection message="No preparation steps available." />
+        <EmptySection message={t('details_no_prep')} />
       )}
 
       {/* ── Identification Facts ────────────────────────────────────────────── */}
-      <SectionHeader icon="eye-outline" title="Identification" />
+      <SectionHeader icon="eye-outline" title={t('details_identification')} />
       {factsEntries.length > 0 ? (
         <View style={{ backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)", borderRadius: 16, overflow: "hidden" }}>
           {factsEntries.map(([key, value], index) => {
@@ -174,11 +176,11 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
           })}
         </View>
       ) : (
-        <EmptySection message="No identification facts available." />
+        <EmptySection message={t('details_no_facts')} />
       )}
 
       {/* ── Warnings ───────────────────────────────────────────────────────── */}
-      <SectionHeader icon="warning-outline" title="Warnings & Precautions" />
+      <SectionHeader icon="warning-outline" title={t('details_warnings_title')} />
       {warnings.length > 0 ? (
         <View style={{ gap: 8 }}>
           {warnings.map((warning, index) => (
@@ -199,7 +201,7 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
           ))}
         </View>
       ) : (
-        <EmptySection message="No warnings listed for this plant." />
+        <EmptySection message={t('details_no_warnings')} />
       )}
     </ScrollView>
   );

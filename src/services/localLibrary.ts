@@ -1,7 +1,11 @@
 import { Image } from 'react-native';
 import { MedicinalPlant, ComparisonTraits, ResearchEntry as ResearchItem } from '../types';
 import { SymptomItem, PreparationGroup } from '../types/homeFeed';
-import plantsData from '../data/plants.json';
+import { useSettingsStore } from '../store/useSettingsStore';
+
+// Load both datasets
+import plantsDataEn from '../data/plants_en.json';
+import plantsDataTl from '../data/plants_tl.json';
 
 export { MedicinalPlant, ComparisonTraits, ResearchItem };
 
@@ -16,40 +20,49 @@ const imageMap: Record<string, any> = {
   'malunggay.jpg': require('../../assets/images/plants/malunggay.jpg'),
 };
 
-const rawPlants = plantsData as any[];
-const plants: MedicinalPlant[] = rawPlants.map(p => {
-  let resolvedUrl = '';
-  if (p.imageSource && imageMap[p.imageSource]) {
-    resolvedUrl = Image.resolveAssetSource(imageMap[p.imageSource]).uri;
-  }
-  return {
-    ...p,
-    imageUrl: resolvedUrl
-  };
-});
+const processPlants = (data: any[]): MedicinalPlant[] => {
+  return data.map(p => {
+    let resolvedUrl = '';
+    if (p.imageSource && imageMap[p.imageSource]) {
+      resolvedUrl = Image.resolveAssetSource(imageMap[p.imageSource]).uri;
+    }
+    return {
+      ...p,
+      imageUrl: resolvedUrl
+    };
+  });
+};
+
+const plantsEn = processPlants(plantsDataEn);
+const plantsTl = processPlants(plantsDataTl);
+
+export function getActivePlants(): MedicinalPlant[] {
+  const language = useSettingsStore.getState().language;
+  return language === 'tl' ? plantsTl : plantsEn;
+}
 
 export function getAllPlants(): MedicinalPlant[] {
-  return plants;
+  return getActivePlants();
 }
 
 export function getAllCategories(): string[] {
   const categories = new Set<string>();
-  plants.forEach(plant => {
+  getActivePlants().forEach(plant => {
     plant.categories.forEach(cat => categories.add(cat));
   });
   return Array.from(categories).sort();
 }
 
 export function getPlantById(id: string): MedicinalPlant | undefined {
-  return plants.find(plant => plant.id === id);
+  return getActivePlants().find(plant => plant.id === id);
 }
 
 export function getPlantsByIds(ids: string[]): MedicinalPlant[] {
-  return plants.filter(plant => ids.includes(plant.id));
+  return getActivePlants().filter(plant => ids.includes(plant.id));
 }
 
 export function getPlantsByCategory(category: string): MedicinalPlant[] {
-  return plants.filter(plant => plant.categories.includes(category));
+  return getActivePlants().filter(plant => plant.categories.includes(category));
 }
 
 export function searchPlantsLocally(list: MedicinalPlant[], query: string): MedicinalPlant[] {
@@ -65,7 +78,7 @@ export function searchPlantsLocally(list: MedicinalPlant[], query: string): Medi
 }
 
 export function searchPlants(query: string): MedicinalPlant[] {
-  return searchPlantsLocally(plants, query);
+  return searchPlantsLocally(getActivePlants(), query);
 }
 
 const SYMPTOM_ICONS: Record<string, string> = {
@@ -94,7 +107,7 @@ const METHOD_ICONS: Record<string, string> = {
 
 export function getAllSymptoms(): SymptomItem[] {
   const symptomCounts: Record<string, number> = {};
-  plants.forEach(plant => {
+  getActivePlants().forEach(plant => {
     plant.details?.preparation?.forEach(prep => {
       prep.uses?.forEach(use => {
         const key = use.trim();
@@ -118,7 +131,7 @@ export function getAllSymptoms(): SymptomItem[] {
 
 export function getPlantsBySymptom(symptom: string): MedicinalPlant[] {
   const query = symptom.toLowerCase();
-  return plants.filter(plant => 
+  return getActivePlants().filter(plant => 
     plant.details?.preparation?.some(prep => 
       prep.uses?.some(use => use.toLowerCase().includes(query))
     )
@@ -128,7 +141,7 @@ export function getPlantsBySymptom(symptom: string): MedicinalPlant[] {
 export function getAllPreparationGroups(): PreparationGroup[] {
   const methodMap: Record<string, { count: number; plantIds: Set<string> }> = {};
   
-  plants.forEach(plant => {
+  getActivePlants().forEach(plant => {
     plant.details?.preparation?.forEach(prep => {
       const method = prep.method.trim();
       if (!methodMap[method]) {
@@ -152,7 +165,7 @@ export function getAllPreparationGroups(): PreparationGroup[] {
 
 export function getPlantsByPreparationMethod(method: string): MedicinalPlant[] {
   const query = method.toLowerCase();
-  return plants.filter(plant => 
+  return getActivePlants().filter(plant => 
     plant.details?.preparation?.some(prep => 
       prep.method.toLowerCase().includes(query)
     )

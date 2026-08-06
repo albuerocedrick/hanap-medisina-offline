@@ -1,6 +1,8 @@
-import homeFeedData from '../data/homeFeed.json';
+import homeFeedEn from '../data/homeFeed.json';
+import homeFeedTl from '../data/homeFeed_tl.json';
 import { getAllSymptoms, getAllPreparationGroups } from './localLibrary';
 import { HomeFeedData, TriviaItem } from '../types/homeFeed';
+import { useSettingsStore } from '../store/useSettingsStore';
 
 // Simple seeded random number generator for deterministic daily shuffling
 function mulberry32(a: number) {
@@ -13,6 +15,8 @@ function mulberry32(a: number) {
 }
 
 export function getHomeFeed(): HomeFeedData {
+  const language = useSettingsStore.getState().language;
+  const homeFeedData = language === 'tl' ? homeFeedTl : homeFeedEn;
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const diff = now.getTime() - start.getTime();

@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -46,6 +47,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
 }) => {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   // ── Reusable Pill Component ───────────────────────────────────────────────
   const FilterPill = ({
@@ -193,7 +195,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
                 color: isDark ? "#F8FAFC" : "#22451C",
               }}
             >
-              {selectedCount} Selected
+              {selectedCount} {t('history_selected')}
             </Text>
           </View>
 
@@ -222,7 +224,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
                 fontSize: 13,
               }}
             >
-              Delete
+              {t('history_delete')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -235,18 +237,18 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
     <View style={{ backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }} className="px-5 pt-5 pb-3">
       {/* ── Top Row: Title & Controls ──────────────────────────────────────── */}
       <View className="flex-row items-center justify-between mb-1">
-        <Text
-          style={{
-            fontSize: 28,
-            fontFamily: "serif",
-            fontStyle: "italic",
-            fontWeight: "500",
-            letterSpacing: 0.3,
-            color: isDark ? "#F8FAFC" : "#22451C",
-          }}
-        >
-          Scan History
-        </Text>
+          <Text
+            style={{
+              fontSize: 28,
+              fontFamily: "serif",
+              fontStyle: "italic",
+              fontWeight: "500",
+              letterSpacing: 0.3,
+              color: isDark ? "#F8FAFC" : "#22451C",
+            }}
+          >
+            {t('history_title')}
+          </Text>
 
         <View className="flex-row gap-2">
           {/* View Mode Toggle */}
@@ -319,7 +321,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
         }}
         className="text-sm mb-5"
       >
-        {totalCount} {totalCount === 1 ? "Scan" : "Scans"} Total
+        {totalCount} {t('history_total')}
       </Text>
 
       {/* ── Bottom Row: Filter Pills ────────────────────────────────────────── */}
@@ -328,9 +330,9 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ gap: 8, paddingRight: 16 }}
       >
-        <FilterPill label="All Scans" tab="all" />
+        <FilterPill label={t('history_all_scans')} tab="all" />
         <FilterPill
-          label="Favorites"
+          label={t('history_favorites')}
           tab="favorites"
           icon={activeTab === "favorites" ? "heart" : "heart-outline"}
           badge={favoriteCount}

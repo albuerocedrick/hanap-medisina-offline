@@ -25,6 +25,7 @@ import {
   selectSearchQuery,
   useLibraryStore,
 } from "@/src/store/useLibraryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 
 const DEBOUNCE_MS = 320;
@@ -37,13 +38,13 @@ interface SearchBarProps {
 }
 
 export function SearchBar({
-  placeholder = "Search plants or categories…",
   debounceMs = DEBOUNCE_MS,
   onSearch,
   onFocusChange,
 }: SearchBarProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const committedQuery = useLibraryStore(selectSearchQuery);
   const setSearchQuery = useLibraryStore((s) => s.setSearchQuery);
@@ -152,7 +153,7 @@ export function SearchBar({
           onChangeText={handleChangeText}
           onFocus={() => { setIsFocused(true); onFocusChange?.(true); }}
           onBlur={() => { setIsFocused(false); onFocusChange?.(false); }}
-          placeholder={placeholder}
+          placeholder={t('library_search')}
           placeholderTextColor={isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)"}
           returnKeyType="search"
           autoCapitalize="none"
@@ -197,7 +198,7 @@ export function SearchBar({
           {/* Header */}
           <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(34,69,28,0.07)" }}>
             <Text style={{ fontSize: 10, fontFamily: "Quicksand_700Bold", letterSpacing: 1.4, textTransform: "uppercase", color: isDark ? "rgba(226,232,240,0.75)" : "#4D8035" }}>
-              Suggestions
+              {t('lib_suggestions')}
             </Text>
           </View>
           {suggestions.map((s: any, index: number) => (

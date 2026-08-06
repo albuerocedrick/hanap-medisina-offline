@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeIn, useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated';
 import { useLibraryStore } from '../../store/useLibraryStore';
 import { MedicinalPlant } from '../../types';
+import { useTranslation } from '@/src/i18n/useTranslation';
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -84,6 +85,7 @@ export default function MySavedPlants() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const favorites = useLibraryStore((state) => state.favorites);
+  const { t } = useTranslation();
 
   if (!favorites) return null;
 
@@ -101,7 +103,7 @@ export default function MySavedPlants() {
             color: isDark ? '#EAF3D5' : '#22451C',
           }}
         >
-          My Plants{favorites.length > 0 ? ` (${favorites.length})` : ''}
+          {t('home_saved_title')}{favorites.length > 0 ? ` (${favorites.length})` : ''}
         </Text>
 
         {favorites.length > 0 && (
@@ -116,7 +118,7 @@ export default function MySavedPlants() {
                 color: isDark ? 'rgba(162,207,163,0.9)' : '#4D8035',
               }}
             >
-              See All →
+              {t('home_see_all')} →
             </Text>
           </TouchableOpacity>
         )}

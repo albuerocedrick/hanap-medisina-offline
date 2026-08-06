@@ -5,6 +5,7 @@ import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useHistoryStore } from "../../store/useHistoryStore";
 import { LocalScanRecord } from "../../types";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 export interface RecentScansHandle { refresh: () => Promise<void>; }
 
@@ -15,6 +16,7 @@ interface RecentScansProps {
 export const RecentScans = forwardRef<RecentScansHandle, RecentScansProps>(function RecentScans({ onScanPress }, ref) {
   const { colorScheme } = useColorScheme(); 
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const allScans = useHistoryStore((s) => s.scans);
   
@@ -46,14 +48,14 @@ export const RecentScans = forwardRef<RecentScansHandle, RecentScansProps>(funct
           className="text-[#22451C] dark:text-[#EAF3D5]"
           style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
         >
-          Recent Scans
+          {t('home_recent_scans_title')}
         </Text>
         <TouchableOpacity onPress={() => router.push("/(tabs)/history")} activeOpacity={0.7}>
           <Text
             className="text-[#4D8035] dark:text-[#A2CFA3]"
             style={{ fontSize: 15, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.2 }}
           >
-            See All
+            {t('home_see_all')}
           </Text>
         </TouchableOpacity>
       </View>

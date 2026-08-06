@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 interface Props {
   visible: boolean;
@@ -36,6 +37,7 @@ export function EditProfileModal({
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const [firstName, setFirstName] = useState(currentFirstName);
   const [lastName, setLastName] = useState(currentLastName);
@@ -129,7 +131,7 @@ export function EditProfileModal({
                 textTransform: "uppercase",
               }}
             >
-              Edit Profile
+              {t('profile_edit')}
             </Text>
             <TouchableOpacity
               onPress={onClose}
@@ -166,12 +168,12 @@ export function EditProfileModal({
                   marginLeft: 2,
                 }}
               >
-                First Name
+                {t('profile_first_name')}
               </Text>
               <TextInput
                 value={firstName}
                 onChangeText={setFirstName}
-                placeholder="Your first name"
+                placeholder={t('profile_your_first_name')}
                 placeholderTextColor={placeholderColor}
                 maxLength={30}
                 autoCorrect={false}
@@ -202,15 +204,15 @@ export function EditProfileModal({
                   marginLeft: 2,
                 }}
               >
-                Last Name{" "}
+                {t('profile_last_name')}{" "}
                 <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 10, textTransform: "none" }}>
-                  (optional)
+                  {t('profile_optional')}
                 </Text>
               </Text>
               <TextInput
                 value={lastName}
                 onChangeText={setLastName}
-                placeholder="Your last name"
+                placeholder={t('profile_your_last_name')}
                 placeholderTextColor={placeholderColor}
                 maxLength={30}
                 autoCorrect={false}
@@ -255,7 +257,7 @@ export function EditProfileModal({
                     : isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.35)",
                 }}
               >
-                Save Changes
+                {t('profile_save_changes')}
               </Text>
             </TouchableOpacity>
           </View>

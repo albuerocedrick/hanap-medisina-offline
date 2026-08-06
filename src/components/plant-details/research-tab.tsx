@@ -15,6 +15,7 @@ import { ResearchItem } from "../../services/localLibrary";
 
 import { useColorScheme } from "nativewind";
 import { StyleSheet } from "react-native";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 // ─────────────────────────────────────────────
 // PROPS
@@ -36,6 +37,7 @@ interface ResearchCardProps {
 function ResearchCard({ item, index }: ResearchCardProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   // Per-card guard: skip rendering if the entire item is unusable
   if (!item || typeof item !== "object") {
@@ -45,7 +47,7 @@ function ResearchCard({ item, index }: ResearchCardProps) {
     return null;
   }
 
-  const title = item.title?.trim() || "Untitled Study";
+  const title = item.title?.trim() || t('details_untitled_study');
   const summary = item.summary?.trim();
   const reference = item.reference?.trim();
   const year =
@@ -81,7 +83,7 @@ function ResearchCard({ item, index }: ResearchCardProps) {
       ) : (
         <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.4)", fontSize: 13, fontStyle: "italic" }}>
-            No summary available.
+            {t('details_no_summary')}
           </Text>
         </View>
       )}
@@ -114,6 +116,7 @@ function ResearchCard({ item, index }: ResearchCardProps) {
 export function ResearchTab({ research }: ResearchTabProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   // ── Guard ─────────────────────────────────────────────────────────────────
   const safeResearch = Array.isArray(research)
@@ -127,10 +130,10 @@ export function ResearchTab({ research }: ResearchTabProps) {
           <Ionicons name="flask-outline" size={32} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.3)"} />
         </View>
         <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.7)" : "#22451C", fontSize: 16, textAlign: "center", marginBottom: 8 }}>
-          No Research Available
+          {t('details_no_research_title')}
         </Text>
         <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.6)", fontSize: 13, textAlign: "center", lineHeight: 20 }}>
-          Supporting studies for this MedicinalPlant have not been added yet.
+          {t('details_no_research_body')}
         </Text>
       </View>
     );
@@ -145,8 +148,7 @@ export function ResearchTab({ research }: ResearchTabProps) {
       {/* Count header */}
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16, paddingLeft: 4 }}>
         <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontSize: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
-          {safeResearch.length}{" "}
-          {safeResearch.length === 1 ? "study" : "studies"} found
+          {t('details_studies_found').replace('{count}', safeResearch.length.toString())}
         </Text>
       </View>
 
@@ -163,8 +165,7 @@ export function ResearchTab({ research }: ResearchTabProps) {
           style={{ marginRight: 6 }}
         />
         <Text style={{ flex: 1, fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)", fontSize: 11, lineHeight: 16 }}>
-          Research summaries are for informational purposes only. Consult a
-          qualified healthcare professional before use.
+          {t('details_research_disclaimer')}
         </Text>
       </View>
     </ScrollView>

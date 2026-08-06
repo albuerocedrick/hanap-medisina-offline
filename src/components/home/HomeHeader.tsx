@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useProfileStore } from "../../store/useProfileStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -69,6 +70,7 @@ function IconButton({
 // ─── Main Header ──────────────────────────────────────────────────────────────
 export function HomeHeader() {
   const { firstName } = useProfileStore();
+  const { t } = useTranslation();
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -103,7 +105,7 @@ export function HomeHeader() {
           style={{ color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.7)", fontFamily: "Quicksand_600SemiBold" }}
           className="text-xs uppercase tracking-wider"
         >
-          Welcome Back
+          {t('home_welcome_back')}
         </Text>
         <Text
           style={{ color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "Quicksand_700Bold" }}
