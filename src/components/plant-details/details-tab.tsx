@@ -55,7 +55,37 @@ function SectionHeader({
   );
 }
 
+/**
+ * Classifies a warning as "critical" or "caution" from its wording.
+ *
+ * The dataset stores warnings as plain strings with no severity field, so we
+ * infer it. Terms are matched in both English and Tagalog because the same
+ * component renders plants_tl.json. Anything unrecognised stays "caution" —
+ * the safe direction to fail, since over-flagging every line red would rebuild
+ * the flat hierarchy this is meant to break.
+ */
+type WarningSeverity = "critical" | "caution";
+
+const CRITICAL_WARNING_TERMS = [
+  // English
+  "toxic", "poison", "fatal", "death", "overdose", "do not", "never",
+  "pregnan", "breastfeed", "nursing", "infant", "children under",
+  "kidney damage", "liver damage", "seek medical", "emergency", "hospital",
+  "allergic reaction", "anaphyla",
+  // Tagalog
+  "lason", "nakakalason", "huwag", "buntis", "nagpapasuso", "sanggol",
+  "delikado", "kamatayan", "agad na magpatingin",
+];
+
+function getWarningSeverity(warning: string): WarningSeverity {
+  const haystack = warning.toLowerCase();
+  return CRITICAL_WARNING_TERMS.some((term) => haystack.includes(term))
+    ? "critical"
+    : "caution";
+}
+
 function EmptySection({ message }: { message: string }) {
+
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -183,24 +213,66 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
       <SectionHeader icon="warning-outline" title={t('details_warnings_title')} />
       {warnings.length > 0 ? (
         <View style={{ gap: 8 }}>
-          {warnings.map((warning, index) => (
-            <View
-              key={index}
-              style={{ flexDirection: "row", backgroundColor: isDark ? "rgba(217,119,6,0.08)" : "#FFFBEB", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(217,119,6,0.2)" : "#FDE68A", borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start" }}
-            >
-              <Ionicons
-                name="alert-circle"
-                size={16}
-                color={isDark ? "#FBBF24" : "#D97706"}
-                style={{ marginTop: 2, marginRight: 10 }}
-              />
-              <Text style={{ flex: 1, fontFamily: "Quicksand_500Medium", color: isDark ? "#FDE68A" : "#B45309", fontSize: 14, lineHeight: 20 }}>
-                {warning}
-              </Text>
-            </View>
-          ))}
+          {/*
+            Warnings are sorted so critical ones surface first, and are colored
+            by severity. Previously every warning shared one amber treatment,
+            which flattened "may cause mild drowsiness" and "toxic in high
+            doses — do not use while pregnant" into the same visual weight. On
+            a screen whose whole purpose is guiding people to ingest a plant,
+            uniform styling means the reader has to parse all the prose to find
+            the one line that matters. Red + a filled octagon gives the
+            dangerous cases a shape and color the eye catches before reading.
+          */}
+          {[...warnings]
+            .map((warning) => ({ warning, severity: getWarningSeverity(warning) }))
+            .sort((a, b) => (a.severity === b.severity ? 0 : a.severity === "critical" ? -1 : 1))
+            .map(({ warning, severity }, index) => {
+              const critical = severity === "critical";
+              const palette = critical
+                ? {
+                    bg: isDark ? "rgba(220,38,38,0.10)" : "#FEF2F2",
+                    border: isDark ? "rgba(248,113,113,0.28)" : "#FECACA",
+                    icon: isDark ? "#F87171" : "#DC2626",
+                    text: isDark ? "#FECACA" : "#B91C1C",
+                  }
+                : {
+                    bg: isDark ? "rgba(217,119,6,0.08)" : "#FFFBEB",
+                    border: isDark ? "rgba(217,119,6,0.2)" : "#FDE68A",
+                    icon: isDark ? "#FBBF24" : "#D97706",
+                    text: isDark ? "#FDE68A" : "#B45309",
+                  };
+
+              return (
+                <View
+                  key={index}
+                  accessibilityRole="text"
+                  accessibilityLabel={`${critical ? t("details_warning_critical") : t("details_warning_caution")}: ${warning}`}
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: palette.bg,
+                    borderWidth: critical ? 1 : StyleSheet.hairlineWidth,
+                    borderColor: palette.border,
+                    borderRadius: 16,
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Ionicons
+                    name={critical ? "warning" : "alert-circle"}
+                    size={16}
+                    color={palette.icon}
+                    style={{ marginTop: 2, marginRight: 10 }}
+                  />
+                  <Text style={{ flex: 1, fontFamily: "Quicksand_500Medium", color: palette.text, fontSize: 14, lineHeight: 20 }}>
+                    {warning}
+                  </Text>
+                </View>
+              );
+            })}
         </View>
       ) : (
+
         <EmptySection message={t('details_no_warnings')} />
       )}
     </ScrollView>

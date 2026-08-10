@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -26,6 +27,8 @@ import { SearchBar } from "../../../src/components/library/search-bar";
 import { MedicinalPlant as Plant } from "../../../src/types";
 import { getPlantsByIds } from "../../../src/services/localLibrary";
 import { useLibraryStore } from "../../../src/store/useLibraryStore";
+import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
+
 
 
 const PLACEHOLDER_IMAGE = require("../../../assets/images/plant-placeholder.jpg");
@@ -171,66 +174,56 @@ export default function PlantComparisonScreen() {
     );
   };
 
+  // Each of these three states now renders the same in-content ScreenHeader.
+  // Previously the back affordance came from the stack's native header, so the
+  // loading and error states inherited a bare title with no themed control —
+  // and on Android the solid green bar clashed with the screen beneath it.
   if (isLoading && !isPickerOpen) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", alignItems: "center", justifyContent: "center" }}>
-        <Stack.Screen options={{ headerTitle: "Comparing..." }} />
-        <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#22451C"} />
+      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
+        <ScreenHeader title="Compare" fallbackHref="/(tabs)/library" />
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#22451C"} />
+        </View>
       </View>
     );
   }
 
   if (error || !plantA) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
-        <Stack.Screen options={{ headerTitle: "Error" }} />
-        <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
-        <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", marginTop: 16, textAlign: "center", marginBottom: 24 }}>
-          {error || "Could not load comparison."}
-        </Text>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)", paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}
-        >
-          <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>Go Back</Text>
-        </TouchableOpacity>
+      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
+        <ScreenHeader title="Compare" fallbackHref="/(tabs)/library" />
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
+          <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", marginTop: 16, textAlign: "center", marginBottom: 24 }}>
+            {error || "Could not load comparison."}
+          </Text>
+          <TouchableOpacity
+            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/library"))}
+            accessibilityRole="button"
+            style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)", paddingHorizontal: 24, paddingVertical: 14, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}
+          >
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
         {renderPickerModal()}
       </View>
     );
   }
 
+
   // ─── Main Comparison Render ──────────────────────────────────────────────
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
-      <Stack.Screen
-        options={{
-          headerTitle: "Compare",
-          headerTitleStyle: { color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "serif", fontStyle: "italic" as const, fontSize: 22, letterSpacing: 0.6 } as any,
-          headerTintColor: "white",
-          headerBackTitle: "",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={{
-                width: 40, height: 40, borderRadius: 20,
-                alignItems: "center", justifyContent: "center",
-                backgroundColor: "rgba(0,0,0,0.3)",
-                borderWidth: StyleSheet.hairlineWidth,
-                borderColor: "rgba(255,255,255,0.2)",
-                marginLeft: Platform.OS === "ios" ? 4 : 8,
-                marginRight: 20,
-              }}
-              accessibilityLabel="Go Back"
-            >
-              <Ionicons name="chevron-back" size={20} color="white" />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: isDark ? "#0B120B" : "#FAFEEF" },
-        }}
+    <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
+      <ScreenHeader
+        title="Compare"
+        subtitle={plantB ? `${plantA.name} vs ${plantB.name}` : plantA.name}
+        fallbackHref="/(tabs)/library"
+        bordered
       />
 
       <ScrollView
+
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 140 }}
       >

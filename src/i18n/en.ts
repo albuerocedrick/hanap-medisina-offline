@@ -56,6 +56,19 @@ export default {
   home_symptoms_title: "Common Symptoms",
   home_see_all: "See all",
   home_remedies_title: "Quick Remedies",
+  // Was hardcoded English inside QuickRemedies, so it stayed "plants" even with
+  // the app set to Tagalog.
+  common_plant: "plant",
+  common_plants: "plants",
+
+  // All Symptoms screen — these were hardcoded English in app/symptoms.tsx.
+  symptoms_title: "All Symptoms",
+  symptoms_hint: "Tap a symptom to find matching plants",
+  symptoms_found: "{count} symptoms found",
+  view_grid: "Grid view",
+  view_list: "List view",
+
+
   home_saved_title: "My Saved Plants",
   home_recent_scans_title: "Recent Scans",
   home_trivia_title: "Daily Trivia",
@@ -98,6 +111,16 @@ export default {
   lib_plants_found: "{count} Plant(s) Found",
   lib_filter_all: "All",
   lib_suggestions: "Suggestions",
+  lib_cancel: "Cancel",
+
+  // Language picker
+  lang_sheet_title: "Choose language",
+  lang_sheet_subtitle: "You can change this any time in your profile.",
+  lang_en_name: "English",
+  lang_en_native: "English",
+  lang_tl_name: "Filipino",
+  lang_tl_native: "Tagalog",
+
 
   // Stats
   stats_scanned: "Scanned",
@@ -138,6 +161,9 @@ export default {
   details_no_facts: "No identification facts available.",
   details_warnings_title: "Warnings & Precautions",
   details_no_warnings: "No warnings listed for this plant.",
+  details_warning_critical: "Important warning",
+  details_warning_caution: "Caution",
+
   details_untitled_study: "Untitled Study",
   details_no_summary: "No summary available.",
   details_no_research_title: "No Research Available",

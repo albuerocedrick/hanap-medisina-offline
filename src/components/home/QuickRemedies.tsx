@@ -2,7 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import React from "react";
-import { Text, View, Pressable, ScrollView } from "react-native";
+import { Text, View, Pressable, ScrollView, useWindowDimensions } from "react-native";
+
 import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 
 import { PreparationGroup } from "../../types/homeFeed";
@@ -12,15 +13,41 @@ import { useTranslation } from "@/src/i18n/useTranslation";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const CARD_WIDTH = 130;
-const CARD_HEIGHT = 150;
+const BASE_CARD_WIDTH = 130;
+const BASE_CARD_HEIGHT = 150;
 const SPACING = 16;
-const SNAP_INTERVAL = CARD_WIDTH + SPACING;
+
+/**
+ * The card was a hard-coded 130×150 box holding a 48pt icon disc, a two-line
+ * title and a count line. That budget only works at the default font scale —
+ * a user with larger text in their OS accessibility settings got the method
+ * name clipped mid-word, which is the one string on the card that identifies
+ * what it does. Growing the box with the scale keeps the text intact.
+ *
+ * The scale is capped at 1.6 so a very large setting can't produce a card
+ * wider than the viewport, and the snap interval is derived from the same
+ * numbers so the carousel keeps landing cards flush at any size.
+ */
+function useRemedyCardMetrics() {
+  const { fontScale } = useWindowDimensions();
+  const scale = Math.min(Math.max(fontScale, 1), 1.6);
+  const width = Math.round(BASE_CARD_WIDTH * scale);
+  return {
+    width,
+    height: Math.round(BASE_CARD_HEIGHT * scale),
+    snapInterval: width + SPACING,
+  };
+}
+
 
 function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index: number, onPress: (group: PreparationGroup) => void }) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
+  const { width: cardWidth, height: cardHeight } = useRemedyCardMetrics();
   const scale = useSharedValue(1);
+
+
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -46,9 +73,10 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
     >
       <View
         style={{
-          width: CARD_WIDTH,
-          height: CARD_HEIGHT,
+          width: cardWidth,
+          height: cardHeight,
           borderRadius: 24,
+
           padding: 16,
           justifyContent: "space-between",
           backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
@@ -82,8 +110,9 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
             className="font-medium text-[12px]"
             style={{ color: isDark ? "rgba(162,207,163,0.8)" : "#4D8035" }}
           >
-            {group.plantCount} {group.plantCount === 1 ? 'plant' : 'plants'}
+            {group.plantCount} {t(group.plantCount === 1 ? 'common_plant' : 'common_plants')}
           </Text>
+
         </View>
       </View>
     </AnimatedPressable>
@@ -99,11 +128,22 @@ export function QuickRemedies() {
   const preparationGroups = useFeedStore(selectPreparationGroups);
   const isLoadingFeed = useFeedStore((s) => s.isLoadingFeed);
   const setActivePreparationMethod = useLibraryStore((s) => s.setActivePreparationMethod);
+  const { width: cardWidth, height: cardHeight, snapInterval } = useRemedyCardMetrics();
+
 
   const handleMethodPress = (group: PreparationGroup) => {
     setActivePreparationMethod(group.method);
     router.push("/(tabs)/library");
   };
+
+  // "See all" opens the Methods tab of the Library with no method preselected.
+  // Passing null (rather than leaving the previous value) clears any filter left
+  // over from an earlier card tap, so the user actually lands on the full list.
+  const handleSeeAll = () => {
+    setActivePreparationMethod(null);
+    router.push("/(tabs)/library");
+  };
+
 
   if (isLoadingFeed && preparationGroups.length === 0) {
     return (
@@ -119,9 +159,10 @@ export function QuickRemedies() {
             <View 
               key={i} 
               style={{ 
-                width: CARD_WIDTH, 
-                height: CARD_HEIGHT, 
+                width: cardWidth, 
+                height: cardHeight, 
                 backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", 
+
                 borderRadius: 24,
                 marginRight: SPACING 
               }} 
@@ -136,17 +177,42 @@ export function QuickRemedies() {
 
   return (
     <View className="mb-8">
-      <Text
-        className="text-[#22451C] dark:text-[#EAF3D5] px-6 mb-4"
-        style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+      {/* Title + "See all", matching the header row already used by Common
+          Symptoms, My Saved Plants and Recent Scans. Quick Remedies was the only
+          carousel without one. */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 24,
+          marginBottom: 16,
+        }}
       >
-        {t('home_remedies_title')}
-      </Text>
+        <Text
+          className="text-[#22451C] dark:text-[#EAF3D5]"
+          style={{ flex: 1, fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+        >
+          {t('home_remedies_title')}
+        </Text>
+        <Pressable
+          onPress={handleSeeAll}
+          accessibilityRole="button"
+          accessibilityLabel={t('home_see_all')}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>
+            {t('home_see_all')} →
+          </Text>
+        </Pressable>
+      </View>
 
       <ScrollView
+
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToInterval={SNAP_INTERVAL}
+        snapToInterval={snapInterval}
+
         decelerationRate="fast"
         contentContainerStyle={{ paddingHorizontal: 24 }}
       >

@@ -10,14 +10,11 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React, { memo, useState } from "react";
 import {
   Image,
   ImageErrorEventData,
   NativeSyntheticEvent,
-  Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -25,39 +22,49 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  useReducedMotion,
   withSpring,
 } from "react-native-reanimated";
 import { MedicinalPlant } from "@/src/services/localLibrary";
 import { useLibraryStore } from "@/src/store/useLibraryStore";
-
+import { useTheme } from "@/src/theme/useTheme";
+import { elevation, MIN_TOUCH_TARGET, radius, spacing } from "@/src/theme/tokens";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const PLACEHOLDER_IMAGE = require("../../../assets/images/plant-placeholder.jpg");
 const MAX_VISIBLE_CATEGORIES = 2;
+const THUMB_SIZE = 88;
 
 interface PlantCardProps {
-  plant: MedicinalPlant | any;
+  plant: MedicinalPlant;
   shortDescription?: string;
-  onPress?: (plant: any) => void;
+  onPress?: (plant: MedicinalPlant) => void;
   hideFavoriteIndicator?: boolean;
 }
 
 const CategoryChip = memo(function CategoryChip({ label }: { label: string }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const t = useTheme();
 
   if (!label?.trim()) return null;
   return (
-    <View 
+    <View
       style={{
-        backgroundColor: isDark ? "rgba(255,255,255,0.04)" : "rgba(162,207,163,0.15)",
-        borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)",
-        borderWidth: StyleSheet.hairlineWidth,
-        borderRadius: 12, paddingHorizontal: 8, paddingVertical: 2, marginRight: 6, marginTop: 4
+        backgroundColor: t.accentSubtle,
+        borderColor: t.borderSubtle,
+        borderWidth: 1,
+        borderRadius: radius.chip,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: 2,
+        marginRight: spacing.xs + 2,
+        marginTop: spacing.xs,
       }}
     >
-      <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 10, color: isDark ? "rgba(248,250,252,0.6)" : "#22451C" }} numberOfLines={1}>
+      <Text
+        style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 10, color: t.textSecondary }}
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.4}
+      >
         {label}
       </Text>
     </View>
@@ -71,15 +78,17 @@ export function PlantCardComponent({
   hideFavoriteIndicator = false,
 }: PlantCardProps) {
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const t = useTheme();
+
+  // Respect the OS "reduce motion" setting — skip the press-scale spring entirely.
+  const reduceMotion = useReducedMotion();
 
   const scale = useSharedValue(1);
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
 
-  const isFavorite = useLibraryStore((s) => s.isFavorite(plant.id));
+  const isFavorite = useLibraryStore((s) => s.isFavorite(plant?.id));
   const toggleFavorite = useLibraryStore((s) => s.toggleFavorite);
 
   const [imageError, setImageError] = useState<boolean>(false);
@@ -111,90 +120,178 @@ export function PlantCardComponent({
     setImageLoading(false);
   };
 
+  const setScale = (to: number) => {
+    if (reduceMotion) return;
+    scale.value = withSpring(to, { damping: 15, stiffness: 300 });
+  };
+
   const safeCategories = Array.isArray(plant.categories) ? plant.categories : [];
   const visibleCategories = safeCategories.slice(0, MAX_VISIBLE_CATEGORIES);
   const overflowCount = safeCategories.length - MAX_VISIBLE_CATEGORIES;
 
+  const description = shortDescription || plant?.shortDescription;
+
   return (
     <AnimatedTouchable
-      onPressIn={() => { scale.value = withSpring(0.97, { damping: 15, stiffness: 300 }); }}
-      onPressOut={() => { scale.value = withSpring(1, { damping: 15, stiffness: 300 }); }}
+      onPressIn={() => setScale(0.97)}
+      onPressOut={() => setScale(1)}
       onPress={handlePress}
       activeOpacity={1}
-      style={[animStyle, { marginHorizontal: 24, marginBottom: 12 }]}
+      accessibilityRole="button"
+      accessibilityLabel={plant.name ?? "Unknown plant"}
+      accessibilityHint="Opens plant details"
+      style={[animStyle, { marginHorizontal: spacing.xl, marginBottom: spacing.md }]}
     >
+      {/* Outer surface carries background, border and shadow.
+          `overflow: hidden` lives on the inner row so it cannot clip the shadow. */}
       <View
         style={{
-          flexDirection: "row",
-          backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "transparent",
-          borderRadius: 24, overflow: "hidden",
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(162,207,163,0.6)",
-          minHeight: 100,
+          backgroundColor: t.surface,
+          borderRadius: radius.card,
+          borderWidth: 1,
+          borderColor: t.borderSubtle,
+          ...elevation.card,
         }}
       >
-        <View style={{ width: 100, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)" }}>
-          <Image
-            source={!imageError && plant.imageUrl ? { uri: plant.imageUrl } : PLACEHOLDER_IMAGE}
-            style={StyleSheet.absoluteFill}
-            resizeMode="cover"
-            onError={handleImageError}
-            onLoad={handleImageLoad}
-          />
-          {imageLoading && !imageError && (
-            <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]}>
-              <Ionicons name="leaf-outline" size={24} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
-            </View>
-          )}
-        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            borderRadius: radius.card - 1,
+            overflow: "hidden",
+            padding: spacing.md,
+            alignItems: "center",
+          }}
+        >
+          {/* Inset thumbnail with its own radius, rather than a flush square edge */}
+          <View
+            style={{
+              width: THUMB_SIZE,
+              height: THUMB_SIZE,
+              borderRadius: radius.input,
+              overflow: "hidden",
+              backgroundColor: t.surfaceTint,
+            }}
+          >
+            <Image
+              source={!imageError && plant.imageUrl ? { uri: plant.imageUrl } : PLACEHOLDER_IMAGE}
+              style={{ width: "100%", height: "100%", opacity: !imageError && plant.imageUrl ? 1 : 0 }}
+              resizeMode="cover"
+              onError={handleImageError}
 
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 12, justifyContent: "center" }}>
-          <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" }}>
-            <View style={{ flex: 1, paddingRight: 8 }}>
-              <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 16, color: isDark ? "#F8FAFC" : "#22451C" }} numberOfLines={1}>
-                {plant.name ?? "Unknown plant"}
-              </Text>
-              <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 13, color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", marginTop: 2 }} numberOfLines={1}>
-                {plant.scientificName ?? ""}
-              </Text>
-              {(shortDescription || plant?.shortDescription) ? (
-                <Text 
-                  style={{ fontFamily: "Quicksand_500Medium", fontSize: 12, color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", marginTop: 4 }} 
-                  numberOfLines={2} 
-                  ellipsizeMode="tail"
-                >
-                  {shortDescription || plant.shortDescription}
-                </Text>
-              ) : null}
-            </View>
-
-            {!hideFavoriteIndicator && (
-              <TouchableOpacity 
-                style={{ marginTop: 2 }}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                onPress={() => toggleFavorite(plant)}
+              onLoad={handleImageLoad}
+              accessible={false}
+            />
+            {imageLoading && !imageError && (
+              <View
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                {isFavorite ? (
-                  <Ionicons name="heart" size={16} color="#ef4444" />
-                ) : (
-                  <Ionicons name="heart-outline" size={16} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
-                )}
-              </TouchableOpacity>
+                <Ionicons name="leaf-outline" size={24} color={t.iconInactive} />
+              </View>
             )}
           </View>
 
-          {safeCategories.length > 0 && (
-            <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 4, alignItems: "center" }}>
-              {visibleCategories.map((cat: string) => (
-                <CategoryChip key={cat} label={cat} />
-              ))}
-              {overflowCount > 0 && (
-                <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 10, color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.4)", marginTop: 4 }}>
-                  +{overflowCount} more
+          <View style={{ flex: 1, paddingLeft: spacing.md, justifyContent: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <View style={{ flex: 1, paddingRight: spacing.sm }}>
+                <Text
+                  style={{ fontFamily: "Quicksand_700Bold", fontSize: 16, color: t.textPrimary }}
+                  numberOfLines={1}
+                  maxFontSizeMultiplier={1.6}
+                >
+                  {plant.name ?? "Unknown plant"}
                 </Text>
+
+                {/* Italic alone signals binomial nomenclature. The previous
+                    fontFamily: "serif" pulled a different platform default on
+                    Android vs iOS and clashed with Quicksand. */}
+                <Text
+                  style={{
+                    fontFamily: "Quicksand_500Medium",
+                    fontStyle: "italic",
+                    fontSize: 13,
+                    color: t.textSecondary,
+                    marginTop: 2,
+                  }}
+                  numberOfLines={1}
+                  maxFontSizeMultiplier={1.6}
+                >
+                  {plant.scientificName ?? ""}
+                </Text>
+
+                {description ? (
+                  <Text
+                    style={{
+                      fontFamily: "Quicksand_500Medium",
+                      fontSize: 12,
+                      color: t.textSecondary,
+                      marginTop: spacing.xs,
+                    }}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                  >
+                    {description}
+                  </Text>
+                ) : null}
+              </View>
+
+              {!hideFavoriteIndicator && (
+                <TouchableOpacity
+                  // 48dp target (Android minimum; iOS asks 44pt). Negative margins
+                  // keep the icon optically aligned without shrinking the target.
+                  style={{
+                    width: MIN_TOUCH_TARGET,
+                    height: MIN_TOUCH_TARGET,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: -spacing.md,
+                    marginRight: -spacing.md,
+                  }}
+                  onPress={() => toggleFavorite(plant)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isFavorite }}
+                  accessibilityLabel={
+                    isFavorite
+                      ? `Remove ${plant.name ?? "plant"} from favorites`
+                      : `Add ${plant.name ?? "plant"} to favorites`
+                  }
+                >
+                  <Ionicons
+                    name={isFavorite ? "heart" : "heart-outline"}
+                    size={20}
+                    color={isFavorite ? t.danger : t.iconInactive}
+                  />
+                </TouchableOpacity>
               )}
             </View>
-          )}
+
+            {safeCategories.length > 0 && (
+              <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: spacing.xs, alignItems: "center" }}>
+                {visibleCategories.map((cat: string) => (
+                  <CategoryChip key={cat} label={cat} />
+                ))}
+                {overflowCount > 0 && (
+                  <Text
+                    style={{
+                      fontFamily: "Quicksand_500Medium",
+                      fontSize: 10,
+                      color: t.textSecondary,
+                      marginTop: spacing.xs,
+                    }}
+                  >
+                    +{overflowCount} more
+                  </Text>
+                )}
+              </View>
+            )}
+          </View>
         </View>
       </View>
     </AnimatedTouchable>
@@ -202,4 +299,3 @@ export function PlantCardComponent({
 }
 
 export const PlantCard = memo(PlantCardComponent);
-

@@ -56,6 +56,18 @@ export default {
   home_symptoms_title: "Karaniwang Sintomas",
   home_see_all: "Tingnan lahat",
   home_remedies_title: "Mabilisang Lunas",
+  // Tagalog marks plurality with the particle "mga", not a suffix.
+  common_plant: "halaman",
+  common_plants: "mga halaman",
+
+  // All Symptoms screen
+  symptoms_title: "Lahat ng Sintomas",
+  symptoms_hint: "I-tap ang sintomas para makita ang mga katugmang halaman",
+  symptoms_found: "{count} na sintomas ang nahanap",
+  view_grid: "Tingnan bilang grid",
+  view_list: "Tingnan bilang listahan",
+
+
   home_saved_title: "Aking Mga Na-save",
   home_recent_scans_title: "Kamakailang Na-scan",
   home_trivia_title: "Kaalaman Ngayon",
@@ -98,6 +110,16 @@ export default {
   lib_plants_found: "{count} Halamang Nahanap",
   lib_filter_all: "Lahat",
   lib_suggestions: "Mga Mungkahi",
+  lib_cancel: "Kanselahin",
+
+  // Language picker
+  lang_sheet_title: "Pumili ng wika",
+  lang_sheet_subtitle: "Mababago mo ito anumang oras sa iyong profile.",
+  lang_en_name: "Ingles",
+  lang_en_native: "English",
+  lang_tl_name: "Filipino",
+  lang_tl_native: "Tagalog",
+
 
   // Stats
   stats_scanned: "Na-scan",
@@ -138,6 +160,9 @@ export default {
   details_no_facts: "Walang naitalang detalye ng pagkakakilanlan.",
   details_warnings_title: "Babala at Pag-iingat",
   details_no_warnings: "Walang naitalang babala para sa halamang ito.",
+  details_warning_critical: "Mahalagang babala",
+  details_warning_caution: "Pag-iingat",
+
   details_untitled_study: "Walang Pamagat na Pag-aaral",
   details_no_summary: "Walang summary.",
   details_no_research_title: "Walang Pananaliksik",

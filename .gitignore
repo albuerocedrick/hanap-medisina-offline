@@ -24,3 +24,12 @@ android
 
 expo-env.d.ts
 # @end expo-cli
+
+# Local debug/verification artifacts
+bundle_test.js
+emulator_screen.png
+rebuild-home.png
+verify_shots/
+*.apk
+
+

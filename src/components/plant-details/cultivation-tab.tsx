@@ -4,6 +4,8 @@ import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { useColorScheme } from "nativewind";
 import { CultivationGuide } from "../../types";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { useTheme } from "@/src/theme/useTheme";
+
 
 interface CultivationTabProps {
   cultivationGuide: CultivationGuide;
@@ -69,6 +71,8 @@ export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
   const { t } = useTranslation();
+  const theme = useTheme();
+
 
   if (!cultivationGuide) {
     return (
@@ -90,7 +94,11 @@ export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
       showsVerticalScrollIndicator={false}
     >
       <SectionHeader icon="rose-outline" title={t('details_growing_req')} />
-      <View style={{ backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)", borderRadius: 16, overflow: "hidden" }}>
+      {/* Was backgroundColor "transparent" while the Tips cards below were a
+          different pale green (#F2F9F2) — two sibling cards on one screen with
+          two different surfaces. Both now use the shared surfaceTint token. */}
+      <View style={{ backgroundColor: theme.surfaceTint, borderWidth: 1, borderColor: theme.borderSubtle, borderRadius: 16, overflow: "hidden" }}>
+
         <SectionItem icon="thermometer-outline" label={t('details_climate')} value={cultivationGuide.climate || t('details_na')} />
         <SectionItem icon="earth-outline" label={t('details_soil')} value={cultivationGuide.soil || t('details_na')} />
         <SectionItem icon="sunny-outline" label={t('details_sunlight')} value={cultivationGuide.sunlight || t('details_na')} />
@@ -105,10 +113,11 @@ export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
           {tips.map((tip, index) => (
             <View
               key={index}
-              style={{ flexDirection: "row", paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start", backgroundColor: isDark ? "rgba(162,207,163,0.08)" : "#F2F9F2", borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(162,207,163,0.2)" : "rgba(162,207,163,0.5)" }}
+              style={{ flexDirection: "row", paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start", backgroundColor: theme.surfaceTint, borderRadius: 16, borderWidth: 1, borderColor: theme.borderSubtle }}
             >
-              <Ionicons name="checkmark-circle" size={16} color={isDark ? "#A2CFA3" : "#4A7A44"} style={{ marginTop: 2, marginRight: 10 }} />
-              <Text style={{ flex: 1, fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.85)" : "#22451C", fontSize: 14, lineHeight: 20 }}>
+              <Ionicons name="checkmark-circle" size={16} color={theme.accent} style={{ marginTop: 2, marginRight: 10 }} />
+              <Text style={{ flex: 1, fontFamily: "Quicksand_500Medium", color: theme.textPrimary, fontSize: 14, lineHeight: 20 }}>
+
                 {tip}
               </Text>
             </View>

@@ -14,6 +14,8 @@ import {
   Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
 
 // 🌟 IMPORT PAGE TRANSITION
 import { PageTransition } from "@/src/components/ui/PageTransition";
@@ -275,23 +277,44 @@ export default function LibraryFeed() {
   return (
     <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]">
       <SafeAreaView edges={["top"]} className="flex-1">
-        <View className="px-6 py-5 flex-row items-center justify-between">
-          <Text 
-            style={{
-              fontSize: 28,
-              fontFamily: "serif",
-              fontStyle: "italic",
-              fontWeight: "500",
-              letterSpacing: 0.3,
-              color: isDark ? "#F8FAFC" : "#22451C",
-            }}
+        {/* Search focus mode.
+            The title and the filter pills are ~120pt of chrome that is useless
+            while typing — on a small phone the keyboard plus that chrome left
+            almost no room for results. Both now collapse away on focus (as the
+            dashboard search already did) and animate back on cancel, so the
+            search owns the screen while it is active. */}
+        {!isSearchFocused && (
+          <Animated.View
+            entering={FadeIn.duration(180)}
+            exiting={FadeOut.duration(120)}
+            className="px-6 py-5 flex-row items-center justify-between"
           >
-            {t('lib_title')}
-          </Text>
-        </View>
+            <Text
+              style={{
+                fontSize: 28,
+                fontFamily: "serif",
+                fontStyle: "italic",
+                fontWeight: "500",
+                letterSpacing: 0.3,
+                color: isDark ? "#F8FAFC" : "#22451C",
+              }}
+            >
+              {t('lib_title')}
+            </Text>
+          </Animated.View>
+        )}
 
         <SearchBar onFocusChange={setIsSearchFocused} />
-        <FilterPills />
+
+        {!isSearchFocused && (
+          <Animated.View
+            entering={FadeIn.duration(180)}
+            exiting={FadeOut.duration(120)}
+          >
+            <FilterPills />
+          </Animated.View>
+        )}
+
 
         <View className="flex-1 relative">
           <FlatList

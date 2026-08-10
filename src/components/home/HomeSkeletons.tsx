@@ -1,26 +1,42 @@
 import React, { useEffect } from "react";
 import { View } from "react-native";
 import Animated, {
+  cancelAnimation,
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
   withRepeat,
   withSequence,
   withTiming,
 } from "react-native-reanimated";
 
+/**
+ * An infinite pulse is appropriate here — unlike the mascot, skeletons unmount as
+ * soon as data arrives, so the loop is naturally bounded. It still needs to respect
+ * "reduce motion", and to be cancelled on unmount rather than left running.
+ */
 function usePulseStyle() {
-  const opacity = useSharedValue(0.4);
+  const reduceMotion = useReducedMotion();
+  const opacity = useSharedValue(reduceMotion ? 0.7 : 0.4);
 
   useEffect(() => {
+    if (reduceMotion) {
+      // A single steady value still reads as "loading" without any motion.
+      opacity.value = 0.7;
+      return;
+    }
+
     opacity.value = withRepeat(
       withSequence(
         withTiming(1.0, { duration: 800 }),
         withTiming(0.4, { duration: 800 })
       ),
-      -1, 
-      true 
+      -1,
+      true
     );
-  },[]);
+
+    return () => cancelAnimation(opacity);
+  }, [opacity, reduceMotion]);
 
   return useAnimatedStyle(() => ({ opacity: opacity.value }));
 }

@@ -27,6 +27,10 @@ import {
 type PlantSummary = Plant;
 import { useLibraryStore } from "../../../src/store/useLibraryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { BackButton } from "@/src/components/ui/BackButton";
+import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
+
+
 
 // ─────────────────────────────────────────────
 // TYPES & CONSTANTS
@@ -133,42 +137,84 @@ export default function PlantDetailsScreen() {
 
   // ─── Rendering Helpers ───────────────────────────────────────────────────
 
+  // Both of these states previously rendered on a hardcoded `bg-white` with no
+  // back control at all. On a slow load or a bad id, that stranded the user on a
+  // blank screen — and the white ignored dark mode. The header is now rendered
+  // first in both cases so an exit always exists before content resolves.
   if (isLoading) {
     return (
-      <View className="flex-1 bg-white items-center justify-center">
+      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
         <Stack.Screen options={{ headerShown: false }} />
-        <ActivityIndicator size="large" color="#16a34a" />
-        <Text className="text-gray-500 mt-4 font-medium">
-          {t('details_loading')}
-        </Text>
+        <View style={{ paddingTop: Math.max(insets.top, 20) }}>
+          <ScreenHeader fallbackHref="/(tabs)/library" />
+        </View>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#22451C"} />
+          <Text
+            style={{
+              marginTop: 16,
+              fontFamily: "Quicksand_500Medium",
+              color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)",
+            }}
+          >
+            {t('details_loading')}
+          </Text>
+        </View>
       </View>
     );
   }
 
   if (error || !plant) {
     return (
-      <View className="flex-1 bg-white items-center justify-center px-6">
+      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
         <Stack.Screen options={{ headerShown: false }} />
-        <View className="w-16 h-16 bg-red-50 rounded-full items-center justify-center mb-4">
-          <Ionicons
-            name="alert-circle-outline"
-            size={32}
-            color="#dc2626"
-          />
+        <View style={{ paddingTop: Math.max(insets.top, 20) }}>
+          <ScreenHeader fallbackHref="/(tabs)/library" />
         </View>
-        <Text className="text-gray-900 font-semibold text-lg text-center">
-          {t('details_error_title')}
-        </Text>
-        <Text className="text-gray-500 mt-2 text-center mb-6">{error}</Text>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="bg-gray-100 px-6 py-3 rounded-xl active:bg-gray-200"
-        >
-          <Text className="text-gray-700 font-medium">{t('details_go_back')}</Text>
-        </TouchableOpacity>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
+          <View
+            style={{
+              width: 64, height: 64, borderRadius: 32, alignItems: "center", justifyContent: "center",
+              marginBottom: 16,
+              backgroundColor: isDark ? "rgba(239,68,68,0.12)" : "rgba(239,68,68,0.06)",
+            }}
+          >
+            <Ionicons name="alert-circle-outline" size={32} color="#dc2626" />
+          </View>
+          <Text
+            style={{
+              fontFamily: "serif", fontStyle: "italic", fontSize: 22, textAlign: "center",
+              color: isDark ? "#F8FAFC" : "#22451C",
+            }}
+          >
+            {t('details_error_title')}
+          </Text>
+          <Text
+            style={{
+              marginTop: 8, marginBottom: 24, textAlign: "center", lineHeight: 20,
+              fontFamily: "Quicksand_500Medium",
+              color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)",
+            }}
+          >
+            {error}
+          </Text>
+          <TouchableOpacity
+            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/library"))}
+            accessibilityRole="button"
+            style={{
+              paddingHorizontal: 24, paddingVertical: 14, borderRadius: 16,
+              backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.85)",
+            }}
+          >
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#FFFFFF" }}>
+              {t('details_go_back')}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
+
 
   // ─── Main Render ─────────────────────────────────────────────────────────
 
@@ -183,27 +229,24 @@ export default function PlantDetailsScreen() {
           zIndex: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center"
         }}
       >
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={{
-            width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center",
-            backgroundColor: "rgba(0,0,0,0.3)", borderWidth: require("react-native").StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.2)"
-          }}
-          accessibilityLabel="Go Back"
-        >
-          <Ionicons name="chevron-back" size={20} color="white" />
-        </TouchableOpacity>
+        <BackButton variant="onImage" />
+
 
         <TouchableOpacity
           onPress={handleToggleFavorite}
           style={{
-            width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center",
-            backgroundColor: "rgba(0,0,0,0.3)", borderWidth: require("react-native").StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.2)"
+            width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center",
+            // Matches BackButton: a 0.3 scrim vanished against pale plant photos.
+            backgroundColor: "rgba(11,18,11,0.72)", borderWidth: require("react-native").StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.35)"
           }}
+          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+          accessibilityRole="button"
+          accessibilityState={{ selected: isFavorite }}
           accessibilityLabel={
             isFavorite ? "Remove from favorites" : "Add to favorites"
           }
         >
+
           <Ionicons
             name={isFavorite ? "heart" : "heart-outline"}
             size={20}
