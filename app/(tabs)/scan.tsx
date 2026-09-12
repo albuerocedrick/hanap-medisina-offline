@@ -460,21 +460,54 @@ export default function ScanScreen() {
       setSaveStatus(null);
 
       // ── 2. Resize & decode for TFLite ──────────────────────────────────────
-      const manipulated = await ImageManipulator.manipulateAsync(
+      // Step 2a: Get original dimensions so we can scale proportionally.
+      const photoInfo = await ImageManipulator.manipulateAsync(localUri, []);
+      const origW = photoInfo.width;
+      const origH = photoInfo.height;
+
+      // Step 2b: Scale the longest edge to 224, keeping aspect ratio intact.
+      // This mirrors tf.image.resize_with_pad used in the training pipeline.
+      const scale    = 224 / Math.max(origW, origH);
+      const scaledW  = Math.round(origW * scale);
+      const scaledH  = Math.round(origH * scale);
+
+      // Step 2c: Resize to the scaled dimensions (no distortion).
+      const resized = await ImageManipulator.manipulateAsync(
         localUri,
-        [{ resize: { width: 224, height: 224 } }],
-        { format: ImageManipulator.SaveFormat.JPEG, base64: true },
+        [{ resize: { width: scaledW, height: scaledH } }],
+        { format: ImageManipulator.SaveFormat.JPEG, compress: 1.0, base64: true },
       );
-      if (!manipulated.base64) throw new Error("Image conversion failed");
+      if (!resized.base64) throw new Error("Image resize failed");
+
+      // Step 2d: Pad the shorter edge with black pixels to reach 224×224.
+      // padX / padY are the number of black pixels added on each side.
+      const padX = Math.floor((224 - scaledW) / 2);
+      const padY = Math.floor((224 - scaledH) / 2);
+
+      const manipulated = await ImageManipulator.manipulateAsync(
+        resized.uri,
+        [{
+          crop: {
+            originX: -padX,
+            originY: -padY,
+            width:   224,
+            height:  224,
+          }
+        }],
+        { format: ImageManipulator.SaveFormat.JPEG, compress: 1.0, base64: true },
+      );
+      if (!manipulated.base64) throw new Error("Image padding failed");
 
       const imgBuffer    = Buffer.from(manipulated.base64, "base64");
       const rawImageData = jpeg.decode(imgBuffer, { useTArray: true });
       const floatData    = new Float32Array(224 * 224 * 3);
       let idx = 0;
       for (let i = 0; i < rawImageData.data.length; i += 4) {
-        floatData[idx++] = rawImageData.data[i]     / 127.5 - 1.0;
-        floatData[idx++] = rawImageData.data[i + 1] / 127.5 - 1.0;
-        floatData[idx++] = rawImageData.data[i + 2] / 127.5 - 1.0;
+        // MobileNetV3-Large (include_preprocessing=True) normalizes internally.
+        // Feed raw [0, 255] pixel values — do NOT scale to [-1, 1].
+        floatData[idx++] = rawImageData.data[i];      // R
+        floatData[idx++] = rawImageData.data[i + 1];  // G
+        floatData[idx++] = rawImageData.data[i + 2];  // B
       }
 
       // ── 3. Run inference ───────────────────────────────────────────────────
