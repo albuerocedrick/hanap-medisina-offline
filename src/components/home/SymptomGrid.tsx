@@ -14,13 +14,22 @@ import { selectSymptoms, useFeedStore } from "../../store/useFeedStore";
 import { useLibraryStore } from "../../store/useLibraryStore";
 import { SkeletonChip } from "./HomeSkeletons";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { useTheme } from "@/src/theme/useTheme";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
+/**
+ * Every chip is locked to this height. Previously the icon circle, the label and
+ * the optional count badge each contributed their own height, so a chip whose
+ * label wrapped ended up taller than its neighbours and the rows read ragged.
+ */
+const CHIP_HEIGHT = 96;
+const ICON_CIRCLE = 44;
+
 function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index: number, onPress: (symptom: SymptomItem) => void }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
   const scale = useSharedValue(1);
+
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -44,29 +53,35 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
       onPress={() => onPress(symptom)}
       style={[{ width: "31%", marginBottom: 12 }, animatedStyle]}
     >
-      <View 
+      <View
         style={{
           borderRadius: 16,
           alignItems: "center",
+          justifyContent: "center",
           paddingHorizontal: 8,
           paddingVertical: 12,
-          height: 95,
-          backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "#FAFEEF",
+          height: CHIP_HEIGHT,
+          // In light mode this was #FAFEEF — the exact page background — so the
+          // chips read as flat cut-outs rather than raised surfaces.
+          backgroundColor: theme.surface,
           borderWidth: 1,
-          borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
+          borderColor: theme.borderSubtle,
         }}
       >
         <View
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 22,
+            width: ICON_CIRCLE,
+            height: ICON_CIRCLE,
+            borderRadius: ICON_CIRCLE / 2,
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: isDark ? "transparent" : "rgba(162,207,163,0.25)",
+            // Dark mode used "transparent" here while light mode had a tinted
+            // disc, so the icon lost its container after dark and the recessed
+            // card behind it showed through as a dark box.
+            backgroundColor: theme.accentSubtle,
           }}
         >
-          <Ionicons name={symptom.icon as any} size={24} color={isDark ? "rgba(162,207,163,0.9)" : "#4D8035"} />
+          <Ionicons name={symptom.icon as any} size={24} color={theme.accent} />
         </View>
         <Text
           numberOfLines={1}
@@ -76,13 +91,13 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
             textAlign: "center",
             lineHeight: 15,
             fontFamily: "Quicksand_600SemiBold",
-            color: isDark ? "#F8FAFC" : "#22451C",
+            color: theme.textPrimary,
           }}
         >
           {symptom.label}
         </Text>
         {symptom.plantCount > 1 && (
-          <View 
+          <View
             style={{
               position: "absolute",
               top: 6,
@@ -90,15 +105,16 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
               borderRadius: 10,
               paddingHorizontal: 5,
               paddingVertical: 1,
-              backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.3)",
+              backgroundColor: theme.accentSubtle,
             }}
           >
-            <Text style={{ fontSize: 9, fontWeight: "bold", color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>
+            <Text style={{ fontSize: 9, fontWeight: "bold", color: theme.accent }}>
               {symptom.plantCount}
             </Text>
           </View>
         )}
       </View>
+
     </AnimatedPressable>
   );
 }

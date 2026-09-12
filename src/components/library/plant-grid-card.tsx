@@ -102,13 +102,37 @@ export function PlantGridCardComponent({
             <Ionicons name="leaf-outline" size={24} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
           </View>
         )}
-        <Image
-          source={!imageError && plant.imageUrl ? { uri: plant.imageUrl } : PLACEHOLDER_IMAGE}
-          style={{ width: "100%", height: "100%" }}
-          resizeMode="cover"
-          onError={handleImageError}
-          onLoad={handleImageLoad}
-        />
+        {/* plant-placeholder.jpg is a dark photo (RGB 25,30,26) at 300x168. Used
+            as the fallback in a 1:1 tile it read as a black square — which is
+            exactly what it looked like in dark mode. A missing image now gets a
+            themed surface with a leaf glyph instead of a stretched dark photo. */}
+        {!imageError && plant.imageUrl ? (
+          <Image
+            source={{ uri: plant.imageUrl }}
+            style={{ width: "100%", height: "100%" }}
+            resizeMode="cover"
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+          />
+        ) : (
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDark ? "#162916" : "#F5FAED",
+              },
+            ]}
+          >
+            <Ionicons
+              name="leaf-outline"
+              size={28}
+              color={isDark ? "rgba(162,207,163,0.6)" : "rgba(34,69,28,0.55)"}
+            />
+          </View>
+        )}
+
         {isUnavailableOffline && (
           <View style={{ position: "absolute", top: 8, right: 8 }}>
             <Ionicons name="cloud-offline-outline" size={16} color="rgba(255,255,255,0.8)" />

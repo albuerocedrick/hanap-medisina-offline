@@ -22,88 +22,42 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { Ionicons } from "@expo/vector-icons";
-import { Stack, useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
+import { Stack } from "expo-router";
 import React from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
+import { Platform } from "react-native";
 
-// ─────────────────────────────────────────────
-// SHARED HEADER CONFIG
-// ─────────────────────────────────────────────
+import { useTheme } from "@/src/theme/useTheme";
 
-/** Tint applied to the back arrow and any header action icons. */
-const HEADER_TINT = "#ffffff";
-
-/** Consistent header background across all library screens. */
-const HEADER_BG = "#15803d"; // green-700
-
-// ─────────────────────────────────────────────
-// CUSTOM BACK BUTTON
-// Rendered on [id] and comparison screens so we have consistent styling
-// and a reliable fallback (router.back) that works with Expo Router.
-// ─────────────────────────────────────────────
-
-function BackButton() {
-  const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-
-  const handleBack = () => {
-    try {
-      if (router.canGoBack()) {
-        router.back();
-      } else {
-        router.replace("/library");
-      }
-    } catch (err) {
-      console.error("[LibraryLayout] BackButton navigation failed:", err);
-    }
-  };
-
-  return (
-    <TouchableOpacity
-      onPress={handleBack}
-      hitSlop={{ top: 10, bottom: 10, left: 10, right: 16 }}
-      accessibilityRole="button"
-      accessibilityLabel="Go back"
-      style={{ paddingLeft: Platform.OS === "ios" ? 4 : 0 }}
-    >
-      <Ionicons
-        name={Platform.OS === "ios" ? "chevron-back" : "arrow-back"}
-        size={24}
-        color={isDark ? "#A2CFA3" : HEADER_TINT}
-      />
-    </TouchableOpacity>
-  );
-}
-
-// ─────────────────────────────────────────────
-// LAYOUT
-// ─────────────────────────────────────────────
-
+/**
+ * app/(tabs)/library/_layout.tsx
+ *
+ * ── Why the native header is gone ────────────────────────────────────────────
+ * This stack used to paint a solid `#15803d` bar. That green exists nowhere else
+ * in the design tokens, so pushing from the Library into a plant made the app
+ * appear to change identity mid-navigation. It also duplicated the shared
+ * BackButton with a second, differently-styled implementation.
+ *
+ * Every screen in this stack now renders its own in-content header built from
+ * `ScreenHeader` / `BackButton`, which is themed and consistent with the rest of
+ * the app. `headerShown: false` is therefore the correct default here rather
+ * than a per-screen override.
+ */
 export default function LibraryLayout() {
+  const theme = useTheme();
+
   return (
     <Stack
       screenOptions={{
-        // ── Shared visual defaults ────────────────────────────────────────
-        headerStyle: { backgroundColor: HEADER_BG },
-        headerTintColor: HEADER_TINT,
-        headerTitleStyle: {
-          fontWeight: "600",
-          fontSize: 17,
-          color: HEADER_TINT,
-        },
-        headerShadowVisible: false,
-        // Remove the default back title on iOS (shows "Back" by default)
-        headerBackTitle: "",
-        // Consistent cross-platform animation
+        headerShown: false,
+        // Keeps the push transition from flashing white in dark mode.
+        contentStyle: { backgroundColor: theme.bg },
         animation: Platform.OS === "ios" ? "default" : "slide_from_right",
-        // Critical: this stack renders INSIDE the bottom tab bar, so the
-        // bottom tab bar is never affected by these screen transitions.
-        headerLeft: () => <BackButton />,
+        // Android has no edge-swipe by default; enabling it means the back
+        // gesture works even before the user finds the button.
+        gestureEnabled: true,
       }}
     >
+
       {/* ── Library Index ─────────────────────────────────────────────────── */}
       <Stack.Screen
         name="index"
@@ -114,39 +68,20 @@ export default function LibraryLayout() {
 
       {/* ── Plant Detail ([id]) ────────────────────────────────────────────── */}
       {/*
-       * Title is intentionally left empty here — [id].tsx sets it dynamically
-       * via `navigation.setOptions({ title: plant.name })` once the plant
-       * data loads. This prevents a flash of "undefined" or a static string.
+       * The screen draws its own floating back/favourite controls over the hero
+       * image, so there is deliberately no native header to fight with it.
        */}
-      <Stack.Screen
-        name="[id]"
-        options={{
-          title: "",
-          headerLeft: () => <BackButton />,
-          // Allow the header to overlap the hero image on iOS for a
-          // more immersive plant detail layout.
-          headerTransparent: Platform.OS === "ios",
-          headerBlurEffect: Platform.OS === "ios" ? "dark" : undefined,
-          // On Android, keep the solid header since blur isn't available
-          headerStyle:
-            Platform.OS === "android"
-              ? { backgroundColor: HEADER_BG }
-              : undefined,
-        }}
-      />
+      <Stack.Screen name="[id]" />
 
       {/* ── 1v1 Comparison ────────────────────────────────────────────────── */}
-      <Stack.Screen
-        name="comparison"
-        options={{
-          title: "Compare Plants",
-          headerLeft: () => <BackButton />,
-          // Slides up as a modal on iOS to signal a "focused task" UX
-          presentation: Platform.OS === "ios" ? "modal" : "card",
-          // headerStyle is intentionally omitted — comparison.tsx sets its own
-          // themed header background dynamically via Stack.Screen options.
-        }}
-      />
+      {/*
+       * Previously presented as a `modal` on iOS. A modal implies "dismiss to
+       * return to what you were doing", but the comparison is a normal forward
+       * step in the browse flow and it pushes further screens of its own — so a
+       * card push matches what the navigation actually does on both platforms.
+       */}
+      <Stack.Screen name="comparison" options={{ presentation: "card" }} />
+
     </Stack>
   );
 }

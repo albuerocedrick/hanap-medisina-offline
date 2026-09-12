@@ -24,6 +24,8 @@ import { useProfileStore } from "@/src/store/useProfileStore";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { useSettingsStore, AppLanguage } from "@/src/store/useSettingsStore";
+import { LanguageSheet } from "@/src/components/ui/LanguageSheet";
+
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -37,6 +39,8 @@ export default function ProfileScreen() {
   const isDark = colorScheme === "dark";
 
   const [editProfileVisible, setEditProfileVisible] = useState(false);
+  const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
+
 
   const totalScans = useHistoryStore((s) => s.scans.length); 
   const statsLoading = false;
@@ -96,10 +100,7 @@ export default function ProfileScreen() {
     ]);
   }, [resetProfile, t]);
 
-  const toggleLanguage = () => {
-    const newLang: AppLanguage = language === "en" ? "tl" : "en";
-    setLanguage(newLang);
-  };
+
 
   return (
     <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]" style={{ paddingTop: insets.top }}>
@@ -168,11 +169,14 @@ export default function ProfileScreen() {
             label={t("profile_edit")}
             onPress={() => setEditProfileVisible(true)}
           />
+          {/* Opens a picker instead of blind-toggling. The row now states the
+              current language rather than implying an action. */}
           <ProfileMenuItem
             icon="globe"
-            label={`${t("profile_language")}: ${language === 'en' ? 'English' : 'Tagalog'}`}
-            onPress={toggleLanguage}
+            label={`${t("profile_language")}: ${language === "en" ? t("lang_en_native") : t("lang_tl_native")}`}
+            onPress={() => setLanguageSheetVisible(true)}
           />
+
           <ExportImportSection />
         </View>
 
@@ -204,6 +208,14 @@ export default function ProfileScreen() {
         }}
         onClose={() => setEditProfileVisible(false)}
       />
+
+      <LanguageSheet
+        visible={languageSheetVisible}
+        current={language}
+        onSelect={setLanguage}
+        onClose={() => setLanguageSheetVisible(false)}
+      />
     </PageTransition>
+
   );
 }

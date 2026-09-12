@@ -98,11 +98,19 @@ function TabItem({
                 justifyContent: "center",
                 borderWidth: 2,
                 borderColor: isDark ? "rgba(255,255,255,0.18)" : "rgba(250, 254, 239, 0.8)",
-                shadowColor: isDark ? "#000" : tokens.greenDark,
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0.25 : 0.3,
-                shadowRadius: 8,
-                elevation: 4,
+                // Same reasoning as the bar itself: a black drop shadow on a
+                // dark surface reads as grime, not lift. The lighter fill and
+                // the rim border already separate this button in dark mode.
+                ...(isDark
+                  ? { elevation: 0 }
+                  : {
+                      shadowColor: tokens.greenDark,
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.3,
+                      shadowRadius: 8,
+                      elevation: 4,
+                    }),
+
               }}
             >
               {isProcessing ? (
@@ -175,12 +183,23 @@ function CustomTabBar({ state, navigation }: any) {
         right: tokens.horizontalPadding,
         height: tokens.pillHeight,
         borderRadius: tokens.pillHeight / 2,
-        shadowColor: isDark ? "#000" : tokens.greenDark,
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: isDark ? 0.4 : 0.1,
-        shadowRadius: 20,
-        elevation: 8,
+        // Dark mode used a 40%-opacity pure-black shadow at elevation 8. A dark
+        // shadow only reads as depth when it can darken something lighter than
+        // itself — over a #0B120B background it just smears a dirty grey halo
+        // under the bar. Real dark-mode UIs convey elevation with a *lighter*
+        // surface plus a light rim, not a drop shadow, so the shadow is dropped
+        // entirely here and the rim below does the work.
+        ...(isDark
+          ? { elevation: 0 }
+          : {
+              shadowColor: tokens.greenDark,
+              shadowOffset: { width: 0, height: 10 },
+              shadowOpacity: 0.1,
+              shadowRadius: 20,
+              elevation: 8,
+            }),
       }}
+
     >
       <View style={{ flex: 1, borderRadius: tokens.pillHeight / 2, overflow: "hidden" }}>
         <BlurView

@@ -10,7 +10,8 @@ import { Ionicons, Feather } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeInDown, FadeOut } from "react-native-reanimated";
+
 import {
   ActivityIndicator,
   Platform,
@@ -123,19 +124,42 @@ export function SearchBar({
 
   const hasValue = localValue.length > 0;
 
+  /** Exits focus mode: clears the field, drops the keyboard, restores chrome. */
+  const handleCancel = () => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    setLocalValue("");
+    setIsBusy(false);
+    try {
+      setSearchQuery("");
+      onSearch?.("");
+    } catch (err) {
+      console.error("[SearchBar] Failed to cancel search:", err);
+    }
+    inputRef.current?.blur();
+  };
+
   return (
-    <View className="mx-6 my-2 z-50">
+    // The row wrapper lets Cancel sit beside the field. Previously the field
+    // filled the width and the only way out of search was the Android back
+    // button or tapping the list — neither is discoverable.
+    <View className="mx-6 my-2 z-50" style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
       <View
         style={{
+          flex: 1,
           flexDirection: "row", alignItems: "center",
-          backgroundColor: "transparent",
+          // Was transparent, so the input read as a floating outline with no
+          // sense of being a field. A tinted fill makes it feel tappable.
+          backgroundColor: isFocused || hasValue
+            ? (isDark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.9)")
+            : (isDark ? "rgba(255,255,255,0.04)" : "rgba(162,207,163,0.12)"),
           borderRadius: 20, paddingHorizontal: 16, paddingVertical: 12,
           borderWidth: StyleSheet.hairlineWidth,
-          borderColor: hasValue 
+          borderColor: hasValue || isFocused
             ? (isDark ? "rgba(162,207,163,0.8)" : "#A2CFA3") 
             : (isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.5)")
         }}
       >
+
         <Ionicons
           name="search-outline"
           size={18}
@@ -181,7 +205,30 @@ export function SearchBar({
         ) : null}
       </View>
 
+      {/* Cancel — only while the search is active, so it costs no width at rest. */}
+      {(isFocused || hasValue) && (
+        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
+          <TouchableOpacity
+            onPress={handleCancel}
+            hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel={t("lib_cancel")}
+          >
+            <Text
+              style={{
+                fontFamily: "Quicksand_700Bold",
+                fontSize: 15,
+                color: isDark ? "#A2CFA3" : "#4D8035",
+              }}
+            >
+              {t("lib_cancel")}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
+
       {/* Suggestions dropdown */}
+
       {isFocused && hasValue && suggestions.length > 0 && (
         <Animated.View 
           entering={FadeInDown.duration(280).springify().damping(24)}

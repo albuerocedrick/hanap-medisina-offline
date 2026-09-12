@@ -6,11 +6,14 @@ import { useLibraryStore } from '../../store/useLibraryStore';
 import { useHistoryStore } from '../../store/useHistoryStore';
 import { getAllPlants } from '../../services/localLibrary';
 import { useTranslation } from '@/src/i18n/useTranslation';
+import { useTheme } from '@/src/theme/useTheme';
 
 export default function YourStats() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const theme = useTheme();
   const { t } = useTranslation();
+
 
   const favoritesCount = useLibraryStore((state) => state.favorites?.length || 0);
   const scansCount = useHistoryStore((state) => state.scans?.length || 0);
@@ -55,10 +58,13 @@ export default function YourStats() {
         style={{
           borderRadius: 20,
           borderWidth: 1,
-          borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(162,207,163,0.5)',
-          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FAFEEF',
+          borderColor: theme.borderSubtle,
+          // Light mode used #FAFEEF, identical to the page behind it, so the
+          // card had no presence of its own.
+          backgroundColor: theme.surface,
           flexDirection: 'row',
           shadowColor: '#22451C',
+
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.06,
           shadowRadius: 8,
@@ -77,23 +83,26 @@ export default function YourStats() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 8,
-                  backgroundColor: isDark
-                    ? 'rgba(162,207,163,0.12)'
-                    : 'rgba(162,207,163,0.25)',
+                  // At 0.12 alpha over the dark card this disc was nearly
+                  // indistinguishable from black, which is the dark box showing
+                  // behind each icon. accentSubtle is tuned per theme.
+                  backgroundColor: theme.accentSubtle,
                 }}
               >
                 <Ionicons
                   name={stat.icon}
                   size={20}
-                  color={isDark ? 'rgba(162,207,163,0.9)' : '#4D8035'}
+                  color={theme.accent}
                 />
+
               </View>
               <Text
                 style={{
                   fontFamily: 'Quicksand_700Bold',
                   fontSize: 20,
-                  color: isDark ? '#F8FAFC' : '#22451C',
+                  color: theme.textPrimary,
                   lineHeight: 24,
+
                 }}
               >
                 {stat.value}
@@ -103,8 +112,9 @@ export default function YourStats() {
                   fontFamily: 'Quicksand_500Medium',
                   fontSize: 12,
                   marginTop: 2,
-                  color: isDark ? 'rgba(162,207,163,0.8)' : '#4D8035',
+                  color: theme.textSecondary,
                 }}
+
               >
                 {stat.label}
               </Text>
@@ -116,10 +126,9 @@ export default function YourStats() {
                 style={{
                   width: 1,
                   marginVertical: 16,
-                  backgroundColor: isDark
-                    ? 'rgba(255,255,255,0.08)'
-                    : 'rgba(162,207,163,0.4)',
+                  backgroundColor: theme.borderSubtle,
                 }}
+
               />
             )}
           </React.Fragment>

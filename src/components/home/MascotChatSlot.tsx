@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Image, ImageResolvedAssetSource, Pressable, Text, View } from "react-native";
+import { AppState, Image, ImageResolvedAssetSource, Pressable, Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
+import { useIsFocused } from "@react-navigation/native";
 import Animated, {
   FadeIn,
   FadeOut,
   LinearTransition,
   useSharedValue,
   useAnimatedStyle,
+  useReducedMotion,
   withTiming,
   withRepeat,
   Easing,
@@ -49,6 +51,23 @@ const TARGET_HEIGHT = 120; // Herbi is always this tall, every animation
 const SLOT_WIDTH = 140; // fixed pressable width — wide enough for the widest frame
 type MascotMode = "idle" | "expression" | "goingSleep" | "sleeping" | "wakeup";
 
+/**
+ * `idle` and `sleeping` are resting states, so a `withRepeat(..., -1)` loop there
+ * runs for as long as Home is on screen — permanently animating the UI. That
+ * drains battery on low-end devices, ignores "reduce motion", and prevents the
+ * framework from ever reporting an idle frame (which stalls UIAutomator-based
+ * tooling, including Google Play's pre-launch report).
+ *
+ * Instead these cycles now play a few times and then rest on a static frame.
+ */
+const RESTING_CYCLES = 3;
+
+/** Ticks of the "zzz..." dots before settling on a static string. */
+const MAX_SLEEP_DOT_TICKS = 8;
+
+/** How long a non-looping pose stays up when animations are suppressed. */
+const STATIC_POSE_MS = 1200;
+
 export function MascotChatSlot() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -61,6 +80,22 @@ export function MascotChatSlot() {
 
   const frame = useSharedValue(0);
   const transitionOpacity = useSharedValue(1);
+
+  // Animate only when the mascot is actually on screen, the app is foregrounded,
+  // and the user has not asked for reduced motion.
+  const isFocused = useIsFocused();
+  const reduceMotion = useReducedMotion();
+  const [isAppActive, setIsAppActive] = useState(AppState.currentState === "active");
+
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (next) => {
+      setIsAppActive(next === "active");
+    });
+    return () => sub.remove();
+  }, []);
+
+  const animationsEnabled = isFocused && isAppActive && !reduceMotion;
+  const timersEnabled = isFocused && isAppActive;
 
   const activeConfig = useMemo(() => {
     if (mode === "expression") return MASCOT_CONFIG.expressions[exprIdx];
@@ -75,13 +110,24 @@ export function MascotChatSlot() {
     cancelAnimation(frame);
     frame.value = 0;
 
+    // Suppressed (off-screen, backgrounded, or reduce-motion): show a single
+    // static frame. The state machine still has to advance, or a pose such as
+    // "expression" would never hand back to "idle".
+    if (!animationsEnabled) {
+      if (mode === "idle" || mode === "sleeping") return;
+
+      const next: MascotMode = mode === "goingSleep" ? "sleeping" : "idle";
+      const timeout = setTimeout(() => setMode(next), STATIC_POSE_MS);
+      return () => clearTimeout(timeout);
+    }
+
     const durationMs = (activeConfig.frames / 16) * 1000;
 
     if (mode === "idle" || mode === "sleeping") {
-      // Loop endlessly
+      // Play a few cycles, then rest on a static frame rather than looping forever.
       frame.value = withRepeat(
         withTiming(activeConfig.frames, { duration: durationMs, easing: Easing.linear }),
-        -1, // infinite
+        RESTING_CYCLES,
         false
       );
     } else {
@@ -100,36 +146,53 @@ export function MascotChatSlot() {
         }
       );
     }
-  }, [mode, activeConfig]);
+  }, [mode, activeConfig, animationsEnabled]);
 
-  // Idle message rotation
+  // Never leave a loop running behind us.
   useEffect(() => {
+    return () => cancelAnimation(frame);
+  }, [frame]);
+
+  // Idle message rotation.
+  // These three timers previously ran in *every* mode and whether or not Home was
+  // on screen, re-rendering forever in the background. Each now starts only in the
+  // mode that needs it, and only while the tab is focused and the app foregrounded.
+  useEffect(() => {
+    if (!timersEnabled || mode !== "idle") return;
+
     const idleInterval = setInterval(() => {
-      if (mode === "idle") {
-        setIdleMsgIdx((v) => (v + 1) % IDLE_MESSAGES.length);
-      }
+      setIdleMsgIdx((v) => (v + 1) % IDLE_MESSAGES.length);
     }, 5000);
     return () => clearInterval(idleInterval);
-  }, [mode]);
+  }, [mode, timersEnabled]);
 
-  // Sleeping dots animation
+  // Sleeping dots — bounded, then settles on a static "zzzzz..." string.
   useEffect(() => {
+    if (!animationsEnabled || mode !== "sleeping") return;
+
+    setSleepDots(0);
+    let ticks = 0;
     const sleepDotsInterval = setInterval(() => {
-      if (mode === "sleeping") setSleepDots((v) => (v + 1) % 4);
+      ticks += 1;
+      setSleepDots((v) => (v + 1) % 4);
+      if (ticks >= MAX_SLEEP_DOT_TICKS) clearInterval(sleepDotsInterval);
     }, 900);
     return () => clearInterval(sleepDotsInterval);
-  }, [mode]);
+  }, [mode, animationsEnabled]);
 
   // Inactivity timeout to go to sleep
   useEffect(() => {
+    if (!timersEnabled) return;
+    if (mode !== "idle" && mode !== "expression") return;
+
     const inactivity = setInterval(() => {
       const inactiveFor = Date.now() - lastInteractionRef.current;
-      if ((mode === "idle" || mode === "expression") && inactiveFor >= 30000) {
+      if (inactiveFor >= 30000) {
         setMode("goingSleep");
       }
     }, 1000);
     return () => clearInterval(inactivity);
-  }, [mode]);
+  }, [mode, timersEnabled]);
 
   const message = useMemo(() => {
     if (mode === "expression") return EXPRESSION_MESSAGES[exprIdx];
@@ -190,9 +253,10 @@ export function MascotChatSlot() {
           marginBottom: 8,
           color: isDark ? "rgba(248,250,252,0.84)" : "#22451C",
           fontSize: 18,
-          fontFamily: "serif",
+          // Was fontFamily: "serif" — a different platform default on Android vs
+          // iOS, clashing with Quicksand.
+          fontFamily: "Quicksand_600SemiBold",
           fontStyle: "italic",
-          fontWeight: "500",
           letterSpacing: 0.3,
         }}
       >
