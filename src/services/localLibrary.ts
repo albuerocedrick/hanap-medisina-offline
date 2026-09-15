@@ -18,6 +18,12 @@ const imageMap: Record<string, any> = {
   'guyabano.jpg': require('../../assets/images/plants/guyabano.jpg'),
   'pansit-pansitan.jpg': require('../../assets/images/plants/pansit-pansitan.jpg'),
   'malunggay.jpg': require('../../assets/images/plants/malunggay.jpg'),
+  'bayabas.jpg': require('../../assets/images/plants/bayabas.jpg'),
+  'kamaria.jpg': require('../../assets/images/plants/kamaria.jpg'),
+  'lagundi.jpg': require('../../assets/images/plants/lagundi.jpg'),
+  'madre-cacao.jpg': require('../../assets/images/plants/madre-cacao.jpg'),
+  'sambong.jpg': require('../../assets/images/plants/sambong.jpg'),
+  'serpentina.jpg': require('../../assets/images/plants/serpentina.jpg'),
 };
 
 const processPlants = (data: any[]): MedicinalPlant[] => {

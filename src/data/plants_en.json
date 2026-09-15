@@ -688,5 +688,329 @@
       "stem": "Slender, fast-growing trunk with soft, light gray bark; young stems are green and flexible",
       "smell": "Mild, slightly horseradish-like scent when leaves or roots are crushed (milder than true horseradish)"
     }
+  },
+  {
+    "id": "bayabas",
+    "name": "Bayabas (Guava)",
+    "scientificName": "Psidium guajava L.",
+    "shortDescription": "A widely cultivated tropical fruit tree. Its leaves are famous in the Philippines for their strong antiseptic, antibacterial, and wound-healing properties.",
+    "imageSource": "bayabas.jpg",
+    "categories": [
+      "antibacterial",
+      "wound-healing",
+      "digestive",
+      "skin-care"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Bayabas, Guava",
+      "preparation": [
+        {
+          "method": "Decoction",
+          "description": "Boil fresh leaves in water. Let it cool until warm. Use as a wash for wounds or as a mouthwash.",
+          "uses": [
+            "Wound cleaning",
+            "Toothache",
+            "Gum infection"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical America",
+        "family": "Myrtaceae",
+        "habitat": "Thrives in tropical and subtropical climates."
+      },
+      "warnings": [
+        "Do not drink excessive amounts of the decoction as it may cause constipation."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Adaptable to various soil types",
+      "sunlight": "Full sun",
+      "watering": "Moderate",
+      "propagation": "Seeds, grafting",
+      "growthTime": "2-4 years to fruit",
+      "tips": [
+        "Prune regularly to maintain shape and encourage fruiting."
+      ]
+    },
+    "research": [],
+    "comparisonTraits": {
+      "leaf": "Opposite, oval to oblong, with prominent veins on the underside.",
+      "flower": "White with many stamens.",
+      "stem": "Smooth bark that flakes off in patches.",
+      "smell": "Crushed leaves have a distinct, slightly resinous guava scent."
+    }
+  },
+  {
+    "id": "kamaria",
+    "name": "Damong Maria (Mugwort)",
+    "scientificName": "Artemisia vulgaris L.",
+    "shortDescription": "Also known as Kamaria, this aromatic herb is traditionally used to alleviate digestive issues and menstrual cramps.",
+    "imageSource": "kamaria.jpg",
+    "categories": [
+      "digestive",
+      "pain-relief",
+      "womens-health"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Damong Maria, Kamaria, Mugwort",
+      "preparation": [
+        {
+          "method": "Tea / Decoction",
+          "description": "Steep fresh or dried leaves in hot water for 10 minutes.",
+          "uses": [
+            "Menstrual cramps",
+            "Stomach ache",
+            "Gas"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Eurasia",
+        "family": "Asteraceae",
+        "habitat": "Disturbed areas, roadsides, and gardens."
+      },
+      "warnings": [
+        "Pregnant women should avoid large doses as it may stimulate the uterus."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Temperate to Tropical",
+      "soil": "Well-drained soil",
+      "sunlight": "Full sun to partial shade",
+      "watering": "Moderate",
+      "propagation": "Root division, cuttings",
+      "growthTime": "Fast-growing",
+      "tips": [
+        "Can become invasive; best grown in pots."
+      ]
+    },
+    "research": [],
+    "comparisonTraits": {
+      "leaf": "Deeply lobed, dark green on top, silvery-white underneath.",
+      "flower": "Small, reddish-brown or yellow in clusters.",
+      "stem": "Upright, purplish, and slightly hairy.",
+      "smell": "Strongly aromatic, sage-like scent."
+    }
+  },
+  {
+    "id": "lagundi",
+    "name": "Lagundi",
+    "scientificName": "Vitex negundo L.",
+    "shortDescription": "One of the 10 herbal medicines endorsed by the Philippine DOH. Extensively researched and clinically proven effective for treating cough, asthma, and respiratory ailments.",
+    "imageSource": "lagundi.jpg",
+    "categories": [
+      "respiratory",
+      "anti-inflammatory",
+      "fever",
+      "pain-relief"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Lagundi, Five-leaved chaste tree",
+      "preparation": [
+        {
+          "method": "Decoction",
+          "description": "Boil half a cup of chopped fresh leaves in 2 cups of water for 15 minutes. Divide into 3 parts and drink 3 times a day.",
+          "uses": [
+            "Cough",
+            "Asthma",
+            "Fever"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical Eastern Africa and Asia",
+        "family": "Lamiaceae",
+        "habitat": "Moist places, along watercourses, and in secondary forests."
+      },
+      "warnings": [
+        "Generally safe, but consult a doctor for severe asthma attacks."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Well-drained soil",
+      "sunlight": "Full sun",
+      "watering": "Moderate",
+      "propagation": "Stem cuttings",
+      "growthTime": "Fast-growing shrub",
+      "tips": [
+        "Pruning promotes bushy growth and more leaves for harvesting."
+      ]
+    },
+    "research": [],
+    "comparisonTraits": {
+      "leaf": "Palmate, usually with 5 leaflets (sometimes 3), grayish-green underneath.",
+      "flower": "Small, bluish-purple in terminal panicles.",
+      "stem": "Woody shrub, reaching 2-5 meters.",
+      "smell": "Leaves are distinctly aromatic when crushed."
+    }
+  },
+  {
+    "id": "madre-cacao",
+    "name": "Madre Cacao (Kakawate)",
+    "scientificName": "Gliricidia sepium (Jacq.) Steud.",
+    "shortDescription": "A medium-sized tree famous for its pesticidal properties. Leaves are used traditionally to treat skin diseases, scabies, and as a natural insect repellent.",
+    "imageSource": "madre-cacao.jpg",
+    "categories": [
+      "skin-care",
+      "antibacterial",
+      "anti-inflammatory"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Kakawate, Madre Cacao",
+      "preparation": [
+        {
+          "method": "Poultice / Wash",
+          "description": "Crush leaves and extract the juice, or boil leaves to make a wash. Apply to affected skin.",
+          "uses": [
+            "Scabies",
+            "Itchy skin",
+            "Mange in pets"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Central America",
+        "family": "Fabaceae",
+        "habitat": "Widespread in tropical areas, often used as living fences."
+      },
+      "warnings": [
+        "For external use only. Do not ingest the leaves or bark, as they contain toxic compounds (coumarin)."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Adaptable, can grow in poor soils",
+      "sunlight": "Full sun",
+      "watering": "Drought resistant",
+      "propagation": "Large stem cuttings, seeds",
+      "growthTime": "Very fast growing",
+      "tips": [
+        "Excellent nitrogen fixer; improves surrounding soil."
+      ]
+    },
+    "research": [],
+    "comparisonTraits": {
+      "leaf": "Pinnate compound leaves, light green above and paler beneath.",
+      "flower": "Pink to pale purple, pea-like flowers blooming in clusters on bare branches.",
+      "stem": "Smooth bark, highly branching.",
+      "smell": "Crushed leaves have a strong, slightly unpleasant rat-like odor."
+    }
+  },
+  {
+    "id": "sambong",
+    "name": "Sambong",
+    "scientificName": "Blumea balsamifera (L.) DC.",
+    "shortDescription": "A highly aromatic shrub approved by the Philippine DOH as a diuretic. It is clinically proven to help dissolve kidney stones and reduce edema.",
+    "imageSource": "sambong.jpg",
+    "categories": [
+      "urinary",
+      "anti-inflammatory",
+      "respiratory"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Sambong, Blumea camphor",
+      "preparation": [
+        {
+          "method": "Decoction",
+          "description": "Boil chopped leaves in water. Drink as tea throughout the day.",
+          "uses": [
+            "Kidney stones",
+            "Edema (fluid retention)",
+            "Hypertension"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical and subtropical Asia",
+        "family": "Asteraceae",
+        "habitat": "Open fields, grasslands, and disturbed areas."
+      },
+      "warnings": [
+        "Ensure proper hydration when using as a diuretic.",
+        "Consult a doctor if you have severe kidney problems."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Well-drained loamy soil",
+      "sunlight": "Full sun to partial shade",
+      "watering": "Moderate",
+      "propagation": "Stem cuttings, seeds",
+      "growthTime": "Fast-growing",
+      "tips": [
+        "Pinch off flower buds to encourage more leaf production."
+      ]
+    },
+    "research": [],
+    "comparisonTraits": {
+      "leaf": "Large, oblong, heavily covered in soft hairs, making it feel like felt.",
+      "flower": "Yellow, clustered in large panicles.",
+      "stem": "Woody at the base, herbaceous and hairy on upper branches.",
+      "smell": "Intensely aromatic, smells strongly of camphor."
+    }
+  },
+  {
+    "id": "serpentina",
+    "name": "Serpentina (King of Bitters)",
+    "scientificName": "Andrographis paniculata (Burm.f.) Nees",
+    "shortDescription": "Extremely bitter herb widely used in Southeast Asia for managing blood sugar levels and fighting infections. Known as the 'King of Bitters'.",
+    "imageSource": "serpentina.jpg",
+    "categories": [
+      "immune-boost",
+      "antibacterial",
+      "anti-inflammatory",
+      "digestive"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Serpentina, Sinta, King of Bitters",
+      "preparation": [
+        {
+          "method": "Tea / Decoction",
+          "description": "Boil 1-2 small leaves in water. Note: It is incredibly bitter.",
+          "uses": [
+            "High blood sugar",
+            "Hypertension",
+            "Fever"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "India and Sri Lanka",
+        "family": "Acanthaceae",
+        "habitat": "Tropical flatlands, often cultivated in gardens."
+      },
+      "warnings": [
+        "Extremely bitter. May cause nausea or gastric discomfort on an empty stomach.",
+        "Avoid during pregnancy (can cause miscarriage).",
+        "Do not replace prescribed diabetes medications without medical supervision."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Moist, well-drained soil",
+      "sunlight": "Partial shade to full sun",
+      "watering": "Regular watering",
+      "propagation": "Seeds, cuttings",
+      "growthTime": "Annual; harvest before full flowering",
+      "tips": [
+        "Grows easily in pots but requires consistent moisture."
+      ]
+    },
+    "research": [],
+    "comparisonTraits": {
+      "leaf": "Simple, opposite, lanceolate (lance-shaped), dark green, and smooth.",
+      "flower": "Small, white with purple streaks, sparsely branched.",
+      "stem": "Erect, distinctly square in cross-section.",
+      "smell": "Very faint, but the taste is unmistakably and intensely bitter."
+    }
   }
 ]

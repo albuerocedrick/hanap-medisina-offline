@@ -1,8 +1,13 @@
-malunggay
-guyabano
-mango
-oregano
-pansit-pansitan
-tawa-tawa
-tsaang-gubat
-unknown
+Bayabas
+Guyabano
+Kamaria
+Lagundi
+Madre cacao
+Mango
+Oregano
+Pansit-Pansitan
+Sambong
+Serpentina
+Tawa-tawa
+Tsaang gubat
+Unknown

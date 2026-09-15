@@ -13,6 +13,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { Camera, useCameraDevice, useCameraPermission } from "react-native-vision-camera";
@@ -29,7 +30,10 @@ import { useHistoryStore } from "../../src/store/useHistoryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+// Portrait reticle: 82% of screen width, 1.35x taller — guides user for long leaves
+const RETICLE_W = Math.round(SCREEN_WIDTH * 0.82);
+const RETICLE_H = Math.round(RETICLE_W * 1.35);
 
 // Sheet snaps: between 50% and 66% of screen height
 const SHEET_HEIGHT = Math.round(SCREEN_HEIGHT * 0.62);
@@ -59,7 +63,7 @@ type SheetState = "hidden" | "loading" | "success" | "error";
 
 // ─── Corner bracket reticle ───────────────────────────────────────────────────
 const CornerMark = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
-  const W = 24, T = StyleSheet.hairlineWidth * 3 || 1.5, C = "rgba(255,255,255,0.6)";
+  const W = 32, T = StyleSheet.hairlineWidth * 3 || 1.5, C = "rgba(255,255,255,0.75)";
   const isTop  = pos === "tl" || pos === "tr";
   const isLeft = pos === "tl" || pos === "bl";
   return (
@@ -391,6 +395,25 @@ export default function ScanScreen() {
   // Guard against double-fires
   const isCapturing = useRef(false);
 
+  // Focus state
+  const [focusPoint, setFocusPoint] = useState<{ x: number; y: number } | null>(null);
+  const focusTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleFocus = async (event: any) => {
+    if (!camera.current || !device?.supportsFocus) return;
+    const { locationX, locationY } = event.nativeEvent;
+    
+    setFocusPoint({ x: locationX, y: locationY });
+    if (focusTimeout.current) clearTimeout(focusTimeout.current);
+    focusTimeout.current = setTimeout(() => setFocusPoint(null), 2000);
+    
+    try {
+      await camera.current.focus({ x: locationX, y: locationY });
+    } catch (e) {
+      console.log("Focus error:", e);
+    }
+  };
+
   // ── Listen for Tab Bar capture trigger ─────────────────────────────────────
   useEffect(() => {
     if (captureTrigger > 0) handleCapture();
@@ -459,69 +482,105 @@ export default function ScanScreen() {
       setResult(null);
       setSaveStatus(null);
 
-      // ── 2. Resize & decode for TFLite ──────────────────────────────────────
-      // Step 2a: Get original dimensions so we can scale proportionally.
-      const photoInfo = await ImageManipulator.manipulateAsync(localUri, []);
-      const origW = photoInfo.width;
-      const origH = photoInfo.height;
+      // ── 2. Crop to screen field-of-view, then resize & pad for TFLite ────────
+      // Step 2a: Apply EXIF rotation so dimensions are correct for portrait.
+      const uprightPhoto = await ImageManipulator.manipulateAsync(localUri, [], { format: ImageManipulator.SaveFormat.JPEG });
+      const sensorW = uprightPhoto.width;
+      const sensorH = uprightPhoto.height;
 
-      // Step 2b: Scale the longest edge to 224, keeping aspect ratio intact.
-      // This mirrors tf.image.resize_with_pad used in the training pipeline.
-      const scale    = 224 / Math.max(origW, origH);
-      const scaledW  = Math.round(origW * scale);
-      const scaledH  = Math.round(origH * scale);
+      // Step 2b: Calculate which portion of the sensor is visible on screen.
+      // The camera preview uses "cover" mode — scales sensor to fill the screen
+      // and hides the left/right edges. We crop exactly that visible area so the
+      // AI sees the same field of view the user sees.
+      const visibleSensorW = Math.round(SCREEN_WIDTH * sensorH / SCREEN_HEIGHT);
+      const cropOriginX = Math.max(0, Math.floor((sensorW - visibleSensorW) / 2));
+      const safeCropW = Math.min(visibleSensorW, sensorW - cropOriginX);
 
-      // Step 2c: Resize to the scaled dimensions (no distortion).
+      const cropped = await ImageManipulator.manipulateAsync(
+        uprightPhoto.uri,
+        [{ crop: { originX: cropOriginX, originY: 0, width: safeCropW, height: sensorH } }],
+        { format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+      // Step 2c: Scale longest edge to 224 (mirrors tf.image.resize_with_pad).
+      const scale   = 224 / Math.max(cropped.width, cropped.height);
+      const scaledW = Math.round(cropped.width * scale);
+      const scaledH = Math.round(cropped.height * scale);
+
       const resized = await ImageManipulator.manipulateAsync(
-        localUri,
+        cropped.uri,
         [{ resize: { width: scaledW, height: scaledH } }],
-        { format: ImageManipulator.SaveFormat.JPEG, compress: 1.0, base64: true },
+        { format: ImageManipulator.SaveFormat.JPEG, compress: 1.0, base64: true }
       );
       if (!resized.base64) throw new Error("Image resize failed");
 
-      // Step 2d: Pad the shorter edge with black pixels to reach 224×224.
-      // padX / padY are the number of black pixels added on each side.
-      const padX = Math.floor((224 - scaledW) / 2);
-      const padY = Math.floor((224 - scaledH) / 2);
-
-      const manipulated = await ImageManipulator.manipulateAsync(
-        resized.uri,
-        [{
-          crop: {
-            originX: -padX,
-            originY: -padY,
-            width:   224,
-            height:  224,
-          }
-        }],
-        { format: ImageManipulator.SaveFormat.JPEG, compress: 1.0, base64: true },
-      );
-      if (!manipulated.base64) throw new Error("Image padding failed");
-
-      const imgBuffer    = Buffer.from(manipulated.base64, "base64");
+      // Step 2d: Decode and centre-pad to exactly 224×224 (black fill = 0).
+      const imgBuffer    = Buffer.from(resized.base64, "base64");
       const rawImageData = jpeg.decode(imgBuffer, { useTArray: true });
-      const floatData    = new Float32Array(224 * 224 * 3);
-      let idx = 0;
-      for (let i = 0; i < rawImageData.data.length; i += 4) {
-        // MobileNetV3-Large (include_preprocessing=True) normalizes internally.
-        // Feed raw [0, 255] pixel values — do NOT scale to [-1, 1].
-        floatData[idx++] = rawImageData.data[i];      // R
-        floatData[idx++] = rawImageData.data[i + 1];  // G
-        floatData[idx++] = rawImageData.data[i + 2];  // B
+
+      const inputDataType = model.inputs[0].dataType;
+      let inputBuffer: Float32Array | Uint8Array | Int8Array;
+      if (inputDataType === 'uint8') {
+        inputBuffer = new Uint8Array(224 * 224 * 3);
+      } else if (inputDataType === 'int8') {
+        inputBuffer = new Int8Array(224 * 224 * 3);
+      } else {
+        inputBuffer = new Float32Array(224 * 224 * 3);
+      }
+
+      const actualW = rawImageData.width;
+      const actualH = rawImageData.height;
+      const padX = Math.floor((224 - actualW) / 2);
+      const padY = Math.floor((224 - actualH) / 2);
+
+      for (let y = 0; y < actualH; y++) {
+        for (let x = 0; x < actualW; x++) {
+          const srcIdx  = (y * actualW + x) * 4;
+          const destIdx = ((y + padY) * 224 + (x + padX)) * 3;
+
+          let r = rawImageData.data[srcIdx];
+          let g = rawImageData.data[srcIdx + 1];
+          let b = rawImageData.data[srcIdx + 2];
+
+          if (inputDataType === 'int8') {
+            r -= 128; g -= 128; b -= 128;
+          }
+
+          inputBuffer[destIdx]     = r;
+          inputBuffer[destIdx + 1] = g;
+          inputBuffer[destIdx + 2] = b;
+        }
       }
 
       // ── 3. Run inference ───────────────────────────────────────────────────
-      const output        = model.runSync([floatData]);
-      const probabilities = output[0] as Float32Array;
-      let maxConf = 0, maxIdx = 0;
-      for (let i = 0; i < probabilities.length; i++) {
-        if (probabilities[i] > maxConf) { maxConf = probabilities[i]; maxIdx = i; }
+      const output = model.runSync([inputBuffer]);
+      const rawOutput = output[0]; // TypedArray
+      const outputDataType = model.outputs[0].dataType;
+      
+      let maxConf = -Infinity;
+      let maxIdx = 0;
+      
+      for (let i = 0; i < rawOutput.length; i++) {
+        let val = Number(rawOutput[i]);
+        // Dequantize integer probabilities back to 0.0 - 1.0 floats
+        if (outputDataType === 'uint8') {
+          val = val / 255.0;
+        } else if (outputDataType === 'int8') {
+          val = (val + 128) / 255.0;
+        }
+        
+        if (val > maxConf) { 
+          maxConf = val; 
+          maxIdx = i; 
+        }
       }
 
-      const identifiedId   = labels[maxIdx] || "unknown";
+      // Format label to match JSON ids (e.g., "Madre cacao" -> "madre-cacao")
+      const rawLabel = labels[maxIdx] || "unknown";
+      const identifiedId = rawLabel.toLowerCase().replace(/ /g, '-');
       
       const localPlant = getAllPlants().find(p => p.id === identifiedId);
-      const identifiedLabel = localPlant ? localPlant.name : (identifiedId === "unknown" ? "Unknown" : identifiedId);
+      const identifiedLabel = localPlant ? localPlant.name : (rawLabel === "Unknown" ? "Unknown" : rawLabel);
 
       // ── 4. Validation gate ─────────────────────────────────────────────────
       // Case-insensitive unknown check + confidence floor.
@@ -587,14 +646,34 @@ export default function ScanScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
-      {/* Camera feed */}
-      <Camera
-        ref={camera}
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={sheetState === "hidden"}
-        photo={true}
-      />
+      {/* Tap-to-focus Wrapper */}
+      <TouchableWithoutFeedback onPress={handleFocus}>
+        <View style={StyleSheet.absoluteFill}>
+          {/* Camera feed */}
+          <Camera
+            ref={camera}
+            style={StyleSheet.absoluteFill}
+            device={device}
+            isActive={sheetState === "hidden"}
+            photo={true}
+          />
+          
+          {/* Focus Indicator */}
+          {focusPoint && (
+            <Animated.View style={{
+              position: "absolute",
+              left: focusPoint.x - 30,
+              top: focusPoint.y - 30,
+              width: 60,
+              height: 60,
+              borderWidth: 1.5,
+              borderColor: "#FBBF24", // Yellow/Gold color
+              borderRadius: 8,
+              backgroundColor: "transparent",
+            }} />
+          )}
+        </View>
+      </TouchableWithoutFeedback>
 
       {/* Flash toggle */}
       {device.hasFlash && (
@@ -678,9 +757,9 @@ const styles = StyleSheet.create({
   // ── Reticle
   reticleContainer: {
     ...StyleSheet.absoluteFillObject,
-    alignItems: "center", justifyContent: "center", top: -80,
+    alignItems: "center", justifyContent: "center",
   },
-  reticle: { width: 220, height: 220, position: "relative" },
+  reticle: { width: RETICLE_W, height: RETICLE_H, position: "relative" },
 
   // ── Backdrop
   backdrop: {

@@ -458,7 +458,6 @@ export const useLibraryStore = create<LibraryStore>()(
 
       partialize: (state) => ({
         favorites: state.favorites,
-        plants: state.plants, // Phase 6: enables full offline search
         viewMode: state.viewMode,
       }),
 
