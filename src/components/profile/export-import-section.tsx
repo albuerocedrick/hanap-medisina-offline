@@ -23,12 +23,19 @@ export function ExportImportSection() {
     
     setIsExporting(true);
     try {
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (!isAvailable) {
+        Alert.alert("Export Unavailable", "Sharing is not available on this device.");
+        return;
+      }
       const filePath = await exportData();
       await Sharing.shareAsync(filePath, {
         mimeType: 'application/json',
         dialogTitle: 'Export Backup',
+        UTI: 'public.json',
       });
     } catch (error: any) {
+      console.error("[ExportImportSection] Export failed:", error);
       Alert.alert("Export Failed", error.message || "An unknown error occurred.");
     } finally {
       setIsExporting(false);

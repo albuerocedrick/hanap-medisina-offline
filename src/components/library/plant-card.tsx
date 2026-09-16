@@ -41,6 +41,7 @@ interface PlantCardProps {
   shortDescription?: string;
   onPress?: (plant: MedicinalPlant) => void;
   hideFavoriteIndicator?: boolean;
+  hideCategoryChips?: boolean;
 }
 
 const CategoryChip = memo(function CategoryChip({ label }: { label: string }) {
@@ -76,6 +77,7 @@ export function PlantCardComponent({
   shortDescription,
   onPress,
   hideFavoriteIndicator = false,
+  hideCategoryChips = false,
 }: PlantCardProps) {
   const router = useRouter();
   const t = useTheme();
@@ -272,7 +274,7 @@ export function PlantCardComponent({
               )}
             </View>
 
-            {safeCategories.length > 0 && (
+            {!hideCategoryChips && safeCategories.length > 0 && (
               <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: spacing.xs, alignItems: "center" }}>
                 {visibleCategories.map((cat: string) => (
                   <CategoryChip key={cat} label={cat} />

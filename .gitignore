@@ -29,7 +29,10 @@ expo-env.d.ts
 bundle_test.js
 emulator_screen.png
 rebuild-home.png
+screen_*.png
 verify_shots/
 *.apk
+training/
+training.zip
 
 

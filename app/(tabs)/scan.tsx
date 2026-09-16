@@ -1,11 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useColorScheme } from "nativewind";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Animated,
+  AppState,
+  AppStateStatus,
   Dimensions,
   Image,
   Modal,
@@ -227,9 +230,26 @@ function SuccessState({
         }]} />
       </View>
 
-      <TouchableOpacity onPress={onViewDetails} activeOpacity={0.85} style={[styles.ctaButton, { backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.85)", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "transparent", shadowOpacity: 0 }]}>
-        <Text style={[styles.ctaText, { color: isDark ? "#A2CFA3" : "#ffffff", fontFamily: "Quicksand_700Bold" }]}>{t('scan_view_details')}</Text>
-        <Ionicons name="arrow-forward" size={16} color={isDark ? "#A2CFA3" : "#ffffff"} />
+      <TouchableOpacity
+        onPress={onViewDetails}
+        activeOpacity={0.85}
+        style={[
+          styles.ctaButton,
+          {
+            backgroundColor: isDark ? "#4D8035" : "#22451C",
+            borderWidth: 0,
+            elevation: 0,
+            shadowColor: isDark ? "transparent" : "#22451C",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: isDark ? 0 : 0.2,
+            shadowRadius: 8,
+          },
+        ]}
+      >
+        <Text style={[styles.ctaText, { color: "#FFFFFF", fontFamily: "Quicksand_700Bold", fontSize: 15 }]}>
+          {t('scan_view_details')}
+        </Text>
+        <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
       </TouchableOpacity>
     </View>
   );
@@ -385,6 +405,17 @@ export default function ScanScreen() {
   const { captureTrigger, setIsProcessing } = useCameraStore();
   const addScan = useHistoryStore((s) => s.addScan);
 
+  // Lifecycle & focus handling (Vision Camera needs active session sync)
+  const isFocused = useIsFocused();
+  const [isAppForeground, setIsAppForeground] = useState(AppState.currentState === "active");
+
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (status: AppStateStatus) => {
+      setIsAppForeground(status === "active");
+    });
+    return () => sub.remove();
+  }, []);
+
   // Sheet state
   const [sheetState, setSheetState] = useState<SheetState>("hidden");
   const [photoUri,   setPhotoUri]   = useState<string | null>(null);
@@ -394,6 +425,16 @@ export default function ScanScreen() {
 
   // Guard against double-fires
   const isCapturing = useRef(false);
+
+  // Reset capturing state when screen loses focus
+  useEffect(() => {
+    if (!isFocused) {
+      isCapturing.current = false;
+      setIsProcessing(false);
+    }
+  }, [isFocused, setIsProcessing]);
+
+  const isCameraActive = isFocused && isAppForeground && sheetState === "hidden";
 
   // Focus state
   const [focusPoint, setFocusPoint] = useState<{ x: number; y: number } | null>(null);
@@ -654,7 +695,7 @@ export default function ScanScreen() {
             ref={camera}
             style={StyleSheet.absoluteFill}
             device={device}
-            isActive={sheetState === "hidden"}
+            isActive={isCameraActive}
             photo={true}
           />
           
@@ -866,10 +907,10 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", justifyContent: "center",
     gap: 8, backgroundColor: tokens.green,
     paddingVertical: 15, borderRadius: 16,
-    shadowColor: tokens.green,
+    shadowColor: tokens.greenDark,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.22, shadowRadius: 10,
-    elevation: 6,
+    shadowOpacity: 0.15, shadowRadius: 10,
+    elevation: 0,
   },
   ctaText: { color: "#fff", fontWeight: "700", fontSize: 15, letterSpacing: 0.2 },
 

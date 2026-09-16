@@ -117,13 +117,15 @@ export function validateImportData(data: unknown): data is ExportData {
 
 /** Read a local file as base64. Returns undefined if the file doesn't exist or can't be read. */
 async function readFileAsBase64(uri: string): Promise<string | undefined> {
+  if (!uri || typeof uri !== "string") return undefined;
   try {
-    const info = await FileSystem.getInfoAsync(uri);
+    const fileUri = uri.startsWith("file://") || uri.startsWith("/") ? uri : `file://${uri}`;
+    const info = await FileSystem.getInfoAsync(fileUri);
     if (!info.exists) {
       console.warn("[dataTransfer] File not found, skipping:", uri);
       return undefined;
     }
-    return await FileSystem.readAsStringAsync(uri, {
+    return await FileSystem.readAsStringAsync(fileUri, {
       encoding: FileSystem.EncodingType.Base64,
     });
   } catch (err) {
@@ -134,9 +136,14 @@ async function readFileAsBase64(uri: string): Promise<string | undefined> {
 
 /** Ensure a directory exists, creating it (with intermediates) if needed. */
 async function ensureDir(dirPath: string): Promise<void> {
-  const info = await FileSystem.getInfoAsync(dirPath);
-  if (!info.exists) {
-    await FileSystem.makeDirectoryAsync(dirPath, { intermediates: true });
+  if (!dirPath) return;
+  try {
+    const info = await FileSystem.getInfoAsync(dirPath);
+    if (!info.exists) {
+      await FileSystem.makeDirectoryAsync(dirPath, { intermediates: true });
+    }
+  } catch (e) {
+    console.warn("[dataTransfer] ensureDir warning:", dirPath, e);
   }
 }
 
@@ -154,29 +161,53 @@ export async function exportData(): Promise<string> {
   const libraryState = useLibraryStore.getState();
 
   // 1. Convert profile avatar to base64
-  const avatarBase64 = profileState.avatarUri
-    ? await readFileAsBase64(profileState.avatarUri)
-    : undefined;
+  let avatarBase64: string | undefined = undefined;
+  if (profileState?.avatarUri) {
+    try {
+      avatarBase64 = await readFileAsBase64(profileState.avatarUri);
+    } catch (e) {
+      console.warn("[dataTransfer] Avatar read failed:", e);
+    }
+  }
 
   // 2. Convert each scan image to base64
+  const scansList = Array.isArray(historyState?.scans) ? historyState.scans : [];
   const exportedScans: ExportedScan[] = await Promise.all(
-    historyState.scans.map(async (scan: LocalScanRecord) => {
+    scansList.map(async (scan: LocalScanRecord) => {
       const { imageUri, ...rest } = scan;
-      const imageBase64 = imageUri ? await readFileAsBase64(imageUri) : undefined;
-      return { ...rest, imageBase64 };
+      let imageBase64: string | undefined = undefined;
+      if (imageUri) {
+        try {
+          imageBase64 = await readFileAsBase64(imageUri);
+        } catch (e) {
+          console.warn("[dataTransfer] Scan image read failed:", scan.id, e);
+        }
+      }
+      return {
+        id: scan.id || `scan_${Date.now()}`,
+        plantName: scan.plantName || "Unknown",
+        plantId: scan.plantId || "",
+        confidence: typeof scan.confidence === "number" ? scan.confidence : 0,
+        scannedAt: scan.scannedAt || new Date().toISOString(),
+        isFavorite: Boolean(scan.isFavorite),
+        imageBase64,
+      };
     })
   );
 
   // 3. Gather favorite plant IDs
-  const favoriteIds = libraryState.favorites.map((plant) => plant.id);
+  const rawFavorites = Array.isArray(libraryState?.favorites) ? libraryState.favorites : [];
+  const favoriteIds: string[] = rawFavorites
+    .map((item: any) => (typeof item === "string" ? item : item?.id))
+    .filter((id): id is string => typeof id === "string" && id.length > 0);
 
   // 4. Build the export payload
   const payload: ExportData = {
     version: 1,
     exportedAt: new Date().toISOString(),
     profile: {
-      firstName: profileState.firstName,
-      lastName: profileState.lastName,
+      firstName: profileState?.firstName || "Plant",
+      lastName: profileState?.lastName || "Explorer",
       avatarBase64,
     },
     scans: exportedScans,
@@ -184,8 +215,10 @@ export async function exportData(): Promise<string> {
   };
 
   // 5. Write to cache directory
+  const cacheDir = FileSystem.cacheDirectory || FileSystem.documentDirectory || "";
+  await ensureDir(cacheDir);
   const timestamp = Date.now();
-  const filePath = `${FileSystem.cacheDirectory}hanapmedisina-backup-${timestamp}.json`;
+  const filePath = `${cacheDir}hanapmedisina-backup-${timestamp}.json`;
   await FileSystem.writeAsStringAsync(filePath, JSON.stringify(payload, null, 2));
 
   console.log("[dataTransfer] Export written to:", filePath);

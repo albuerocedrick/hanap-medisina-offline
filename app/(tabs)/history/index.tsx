@@ -10,6 +10,7 @@ import { HistoryHeader } from "@/src/components/history/history-header";
 import { HistoryCard } from "@/src/components/history/history-card";
 import { HistoryGridCard } from "@/src/components/history/history-grid-card";
 import { ScanDetailSheet } from "@/src/components/history/scan-detail-sheet";
+import { DeleteConfirmationModal } from "@/src/components/ui/DeleteConfirmationModal";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { LocalScanRecord } from "@/src/types";
 
@@ -41,6 +42,9 @@ export default function HistoryScreen() {
   // Multi-select state
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleteTarget, setDeleteTarget] = useState<
+    { type: "single"; id: string } | { type: "batch"; count: number } | null
+  >(null);
 
   useEffect(() => {
     if (incomingScanId) {
@@ -82,29 +86,24 @@ export default function HistoryScreen() {
   };
 
   const handleDeleteScan = (id: string) => {
-    Alert.alert("Delete Scan", "Are you sure you want to delete this scan?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => deleteScan(id) }
-    ]);
+    setDeleteTarget({ type: "single", id });
   };
 
   const handleDeleteSelected = () => {
-    Alert.alert(
-      "Delete Scans",
-      `Are you sure you want to delete ${selectedIds.size} selected scans?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive", 
-          onPress: async () => {
-            await deleteMultipleScans(Array.from(selectedIds));
-            setIsSelecting(false);
-            setSelectedIds(new Set());
-          } 
-        }
-      ]
-    );
+    if (selectedIds.size === 0) return;
+    setDeleteTarget({ type: "batch", count: selectedIds.size });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "single") {
+      await deleteScan(deleteTarget.id);
+    } else if (deleteTarget.type === "batch") {
+      await deleteMultipleScans(Array.from(selectedIds));
+      setIsSelecting(false);
+      setSelectedIds(new Set());
+    }
+    setDeleteTarget(null);
   };
 
   const cancelSelection = () => {
@@ -199,6 +198,13 @@ export default function HistoryScreen() {
         onClose={() => {
           setSelectedScanId(null);
         }}
+      />
+
+      <DeleteConfirmationModal
+        visible={!!deleteTarget}
+        itemCount={deleteTarget?.type === "batch" ? deleteTarget.count : 1}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
       />
     </View>
   );

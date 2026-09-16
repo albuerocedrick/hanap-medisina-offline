@@ -36,12 +36,14 @@ interface SearchBarProps {
   debounceMs?: number;
   onSearch?: (query: string) => void;
   onFocusChange?: (focused: boolean) => void;
+  showSuggestions?: boolean;
 }
 
 export function SearchBar({
   debounceMs = DEBOUNCE_MS,
   onSearch,
   onFocusChange,
+  showSuggestions = true,
 }: SearchBarProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -229,7 +231,7 @@ export function SearchBar({
 
       {/* Suggestions dropdown */}
 
-      {isFocused && hasValue && suggestions.length > 0 && (
+      {showSuggestions && isFocused && hasValue && suggestions.length > 0 && (
         <Animated.View 
           entering={FadeInDown.duration(280).springify().damping(24)}
           exiting={FadeOut.duration(160)}

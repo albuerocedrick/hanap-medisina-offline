@@ -27,6 +27,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getAllPlants, MedicinalPlant } from "@/src/services/localLibrary";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { LocalScanRecord } from "@/src/types";
+import { DeleteConfirmationModal } from "@/src/components/ui/DeleteConfirmationModal";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SHEET_HEIGHT = SCREEN_HEIGHT * 0.85;
@@ -55,6 +56,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Animated values — run entirely on UI thread, no JS freeze
   const progress = useSharedValue(0); // 0 = hidden, 1 = visible
@@ -141,21 +143,14 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
 
   const handleDelete = () => {
     if (!scan) return;
-    Alert.alert(
-      "Delete Scan",
-      "Are you sure you want to delete this scan? This cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            await deleteScan(scan.id);
-            onClose();
-          },
-        },
-      ]
-    );
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!scan) return;
+    setShowDeleteModal(false);
+    await deleteScan(scan.id);
+    onClose();
   };
 
   const formatDate = (isoString?: string) => {
@@ -420,6 +415,16 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
           </ScrollView>
         )}
       </Animated.View>
+
+      <DeleteConfirmationModal
+        visible={showDeleteModal}
+        title="Delete Scan"
+        message="Are you sure you want to delete this scan? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </View>
   );
 }

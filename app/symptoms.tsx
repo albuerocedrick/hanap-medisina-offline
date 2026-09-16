@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Pressable,
   Text,
@@ -232,7 +232,14 @@ export default function AllSymptomsScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   const symptoms = useFeedStore(selectSymptoms);
+  const fetchHomeFeed = useFeedStore((s) => s.fetchHomeFeed);
   const setActiveSymptom = useLibraryStore((s) => s.setActiveSymptom);
+
+  useEffect(() => {
+    if (symptoms.length === 0) {
+      fetchHomeFeed();
+    }
+  }, [symptoms.length, fetchHomeFeed]);
 
   const handleSymptomPress = useCallback((symptom: SymptomItem) => {
     setActiveSymptom(symptom.label);

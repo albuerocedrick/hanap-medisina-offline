@@ -145,7 +145,7 @@ export default function PlantComparisonScreen() {
             </TouchableOpacity>
           </View>
 
-          <SearchBar placeholder="Search library to compare..." />
+          <SearchBar placeholder="Search library to compare..." showSuggestions={false} />
 
           <FlatList
             data={pickerData}
@@ -155,6 +155,7 @@ export default function PlantComparisonScreen() {
               <PlantCard
                 plant={item}
                 hideFavoriteIndicator
+                hideCategoryChips
                 onPress={(selected) => {
                   setSelectedPlantBId(selected.id);
                   setIsPickerOpen(false);
