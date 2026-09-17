@@ -418,8 +418,8 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
 
       <DeleteConfirmationModal
         visible={showDeleteModal}
+        itemName={scan?.plantName}
         title="Delete Scan"
-        message="Are you sure you want to delete this scan? This action cannot be undone."
         confirmLabel="Delete"
         cancelLabel="Cancel"
         onConfirm={handleConfirmDelete}

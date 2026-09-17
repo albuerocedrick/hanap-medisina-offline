@@ -1,9 +1,9 @@
 [
   {
     "id": "tsaang-gubat",
-    "name": "Tsaang Gubat (TL)",
+    "name": "Tsaang Gubat",
     "scientificName": "Ehretia microphylla Lam.",
-    "shortDescription": "Isang halamang palaging luntian na katutubo sa Pilipinas at iba pang bahagi ng Asya. Ang mga dahon nito ay napatunayang may bisa laban sa pagtatae, pananakit, at mikrobyo. Isa ito sa 10 halamang gamot na ineendorso ng DOH at ginawa nang aprubadong tableta para sa pananakit ng tiyan.",
+    "shortDescription": "An evergreen shrub native to the Philippines and other parts of Asia. Its leaves have been scientifically validated for anti-diarrheal, analgesic, and antimicrobial properties. It is one of the 10 medicinal plants endorsed by the Philippine Department of Health and has been formulated into a Philippine FDA-approved tablet for biliary and gastrointestinal colic.",
     "imageSource": "tsaang-gubat.jpg",
     "categories": [
       "digestive",
@@ -99,9 +99,9 @@
   },
   {
     "id": "tawa-tawa",
-    "name": "Tawa-tawa (TL)",
+    "name": "Tawa-tawa",
     "scientificName": "Euphorbia hirta L.",
-    "shortDescription": "Isang taunang damo na malawak na nakakalat sa mga tropikal na rehiyon kabilang ang Pilipinas. Kilala sa tradisyonal na paggamit sa pamamahala ng dengue fever. Ipinakita ng mga klinikal na pag-aaral na nakakatulong itong mapataas ang bilang ng platelet.",
+    "shortDescription": "An annual herb widely distributed in tropical regions including the Philippines. Known for its traditional use in managing dengue fever and thrombocytopenia. Clinical studies have shown it can help increase platelet counts. It also has antimicrobial, anti-inflammatory, antioxidant, and antimalarial properties.",
     "imageSource": "tawa-tawa.jpg",
     "categories": [
       "immune-boost",
@@ -196,9 +196,9 @@
   },
   {
     "id": "oregano",
-    "name": "Oregano (TL)",
+    "name": "Oregano (Cuban Oregano)",
     "scientificName": "Plectranthus amboinicus (Lour.) Spreng.",
-    "shortDescription": "Isang halamang may makapal at mabangong mga dahon, malawakang ginagamit sa tradisyonal na panggagamot. Napatunayang may matapang na katangiang laban sa mikrobyo, pamamaga, at nakatutulong sa paghilom ng sugat.",
+    "shortDescription": "A succulent perennial herb with aromatic leaves, widely used in traditional medicine. Scientifically confirmed to have strong antibacterial, anti-inflammatory, antioxidant, and wound healing properties. The essential oil contains carvacrol and thymol, which are potent antimicrobial compounds.",
     "imageSource": "oregano.jpg",
     "categories": [
       "respiratory",
@@ -298,9 +298,9 @@
   },
   {
     "id": "mango",
-    "name": "Mangga (TL)",
+    "name": "Mango",
     "scientificName": "Mangifera indica L.",
-    "shortDescription": "Isang malawakang itinatanim na tropikal na puno na ang mga dahon, balat ng kahoy, at prutas ay nagtataglay ng mangiferin at iba pang mga sangkap na may napatunayang katangiang laban sa diabetes, pamamaga, at nakakabuti sa puso.",
+    "shortDescription": "A widely cultivated tropical fruit tree whose leaves, bark, and fruit contain mangiferin and other bioactive compounds with scientifically documented antidiabetic, antioxidant, anti-inflammatory, antiviral, and cardioprotective properties. Mango leaf extracts have been studied extensively for their health-promoting effects.",
     "imageSource": "mango.jpg",
     "categories": [
       "anti-inflammatory",
@@ -396,9 +396,9 @@
   },
   {
     "id": "guyabano",
-    "name": "Guyabano (TL)",
+    "name": "Guyabano",
     "scientificName": "Annona muricata L.",
-    "shortDescription": "Isang tropikal na puno ng prutas kung saan ang mga dahon at buto ay nagtataglay ng malalakas na sangkap na may napatunayang katangiang laban sa kanser, pamamaga, at mikrobyo.",
+    "shortDescription": "A tropical fruit tree whose leaves, seeds, and fruit contain annonaceous acetogenins — powerful compounds with scientifically documented anticancer properties. Extensive research has confirmed cytotoxic activity against various cancer cell lines, along with anti-inflammatory, antimicrobial, and antidiabetic effects.",
     "imageSource": "guyabano.jpg",
     "categories": [
       "anti-inflammatory",
@@ -495,9 +495,9 @@
   },
   {
     "id": "pansit-pansitan",
-    "name": "Pansit-pansitan (TL)",
+    "name": "Pansit-pansitan",
     "scientificName": "Peperomia pellucida (L.) Kunth",
-    "shortDescription": "Isang damong karaniwang matatagpuan sa mga hardin at malilim na lugar sa Pilipinas. Napatunayang mabisang lunas laban sa rayuma (anti-gout), pamamaga, at pananakit ng katawan.",
+    "shortDescription": "A succulent annual weed commonly found in gardens and shady areas in the Philippines. Scientifically validated for anti-hyperuricemic (anti-gout), anti-inflammatory, and analgesic properties. University of the Philippines researchers have developed an anti-gout tablet from this plant, which is pending FDA certification.",
     "imageSource": "pansit-pansitan.jpg",
     "categories": [
       "anti-inflammatory",
@@ -592,9 +592,9 @@
   },
   {
     "id": "malunggay",
-    "name": "Malunggay (TL)",
+    "name": "Malunggay",
     "scientificName": "Moringa oleifera Lam.",
-    "shortDescription": "Isang punong siksik sa nutrisyon na ang mga dahon ay mayaman sa bitamina at protina. Napatunayang may katangiang laban sa pamamaga at diabetes. Madalas itong tawaging 'miracle tree'.",
+    "shortDescription": "A highly nutritious tree whose leaves are rich in vitamins, minerals, protein, and powerful antioxidants. Scientifically documented to have antioxidant, anti-inflammatory, antidiabetic, antimicrobial, hepatoprotective, and cardioprotective properties. Often called the 'miracle tree' for its exceptional nutritional and medicinal profile.",
     "imageSource": "malunggay.jpg",
     "categories": [
       "immune-boost",
@@ -691,326 +691,1698 @@
   },
   {
     "id": "bayabas",
-    "name": "Bayabas (Guava)",
+    "name": "Bayabas",
     "scientificName": "Psidium guajava L.",
-    "shortDescription": "Isang kilalang puno na namumunga. Ang mga dahon nito ay sikat sa Pilipinas dahil sa kakayahang pumatay ng mikrobyo at magpagaling ng sugat.",
+    "shortDescription": "A tropical fruit tree whose leaves are widely used in Philippine folk medicine as a wash, rinse, or decoction. Laboratory and review evidence supports antimicrobial and gastrointestinal-related activity, but leaf preparations should not replace diagnosis or treatment for persistent diarrhea or infection.",
     "imageSource": "bayabas.jpg",
     "categories": [
-      "antibacterial",
-      "wound-healing",
       "digestive",
-      "skin-care"
+      "antibacterial",
+      "wound-care",
+      "oral-care",
+      "anti-inflammatory"
     ],
-    "lookAlikeIds": [],
+    "lookAlikeIds": [
+      "kamias"
+    ],
     "details": {
-      "localName": "Bayabas, Guava",
+      "localName": "Bayabas / Guava",
       "preparation": [
         {
-          "method": "Decoction",
-          "description": "Pakuluan ang mga sariwang dahon sa tubig. Gamitin itong panghugas ng sugat o pangmumog.",
+          "method": "Leaf decoction / wash",
+          "description": "Wash several mature leaves, simmer in water, cool, and use externally as a wash. Traditional use includes wound cleansing; use clean water and seek care for deep or infected wounds.",
           "uses": [
-            "Wound cleaning",
-            "Toothache",
-            "Gum infection"
+            "Traditional wound care and skin cleansing"
+          ]
+        },
+        {
+          "method": "Leaf tea / decoction",
+          "description": "A mild tea is traditionally prepared from washed leaves. Exact dose and duration should be confirmed with a healthcare professional, especially for children, pregnancy, or concurrent medicines.",
+          "uses": [
+            "Traditional use for diarrhea and stomach discomfort"
+          ]
+        },
+        {
+          "method": "Mouth rinse",
+          "description": "Cool the strained decoction and use as a rinse; do not swallow large amounts. Dental pain, swelling, fever, or bleeding requires dental or medical evaluation.",
+          "uses": [
+            "Traditional oral and gum care"
           ]
         }
       ],
       "facts": {
-        "origin": "Tropical America",
+        "origin": "Tropical America; now widely cultivated in the Philippines and other tropical regions",
         "family": "Myrtaceae",
-        "habitat": "Thrives in tropical and subtropical climates."
+        "habitat": "Warm tropical areas, gardens, farms, roadsides, and well-drained soils"
       },
       "warnings": [
-        "Do not drink excessive amounts of the decoction as it may cause constipation."
+        "Evidence differs by preparation and is often laboratory or traditional-use evidence.",
+        "Do not use as a substitute for oral rehydration or medical evaluation for severe/persistent diarrhea.",
+        "Stop if rash, swelling, breathing difficulty, or other allergic symptoms occur.",
+        "Pregnant or breastfeeding people, young children, and people taking medicines should consult a clinician before internal use."
       ]
     },
     "cultivationGuide": {
-      "climate": "Tropical",
-      "soil": "Adaptable to various soil types",
-      "sunlight": "Full sun",
-      "watering": "Moderate",
-      "propagation": "Seeds, grafting",
-      "growthTime": "2-4 years to fruit",
+      "climate": "Tropical to subtropical",
+      "soil": "Well-drained loam or sandy loam; tolerates a range of soils",
+      "sunlight": "Full sun, approximately 6–8 hours daily",
+      "watering": "Regular watering while establishing; avoid prolonged waterlogging",
+      "propagation": "Seeds, cuttings, air-layering, or grafting",
+      "growthTime": "Often fruits in about 2–4 years depending on cultivar and propagation",
       "tips": [
-        "Prune regularly to maintain shape and encourage fruiting."
+        "Prune for airflow and harvest healthy mature leaves away from roads, pesticides, and animal waste."
       ]
     },
-    "research": [],
+    "research": [
+      {
+        "title": "Psidium guajava: A Single Plant for Multiple Health Problems of Rural Indian Population",
+        "summary": "This peer-reviewed review summarizes ethnomedical, laboratory, and clinical literature. It reports evidence for guava, especially leaves, in gastrointestinal and infectious conditions, while also reviewing safety data.",
+        "reference": "Daswani PG, Gholkar MS, Birdi TJ. Pharmacognosy Reviews. 2017;11(22):167–174. DOI: 10.4103/phrev.phrev_17_17; PMID 28989253. https://pmc.ncbi.nlm.nih.gov/articles/PMC5628524/",
+        "year": 2017
+      },
+      {
+        "title": "Psidium guajava L.: From byproduct and use in traditional medicine to health-promoting applications",
+        "summary": "A review of traditional uses and modern research, including leaf infusions and extracts used for gastrointestinal complaints, wounds, and antimicrobial investigation.",
+        "reference": "Gutierrez-Montiel D et al. Frontiers in Nutrition. 2023;10:1108306. https://pmc.ncbi.nlm.nih.gov/articles/PMC9902774/",
+        "year": 2023
+      }
+    ],
     "comparisonTraits": {
-      "leaf": "Opposite, oval to oblong, with prominent veins on the underside.",
-      "flower": "White with many stamens.",
-      "stem": "Smooth bark that flakes off in patches.",
-      "smell": "Crushed leaves have a distinct, slightly resinous guava scent."
+      "leaf": "Opposite, oval to elliptical, leathery leaves with prominent veins and a rough upper surface",
+      "flower": "White flowers with many conspicuous stamens",
+      "stem": "Small tree with smooth bark that may peel in patches",
+      "smell": "Aromatic, green, slightly resinous when crushed"
     }
   },
   {
     "id": "kamaria",
-    "name": "Damong Maria (Mugwort)",
+    "name": "Kamaria",
     "scientificName": "Artemisia vulgaris L.",
-    "shortDescription": "Kilala rin bilang Damong Maria, ang mabangong halamang ito ay tradisyonal na ginagamit para sa pananakit ng tiyan at menstrual cramps.",
+    "shortDescription": "An aromatic perennial herb known in the Philippines as kamaria or damong maria. Its leaves are used traditionally in washes, poultices, and decoctions; evidence includes phytochemical and preclinical research, while clinical evidence for many traditional claims remains limited.",
     "imageSource": "kamaria.jpg",
     "categories": [
-      "digestive",
       "pain-relief",
+      "skin-care",
+      "digestive",
+      "anti-inflammatory",
       "womens-health"
     ],
     "lookAlikeIds": [],
     "details": {
-      "localName": "Damong Maria, Kamaria, Mugwort",
+      "localName": "Kamaria / Damong Maria / Maria / Santa Maria",
       "preparation": [
         {
-          "method": "Tea / Decoction",
-          "description": "Ibababad ang dahon sa mainit na tubig ng 10 minuto.",
+          "method": "External leaf wash or poultice",
+          "description": "Crush clean leaves or prepare a cooled decoction for external use on minor skin irritation. Do not apply to deep, infected, or heavily bleeding wounds.",
           "uses": [
-            "Menstrual cramps",
-            "Stomach ache",
-            "Gas"
+            "Traditional wound and skin care"
+          ]
+        },
+        {
+          "method": "Leaf decoction",
+          "description": "Traditional sources describe decoctions, but internal dosing is not standardized. Do not self-dose concentrated preparations.",
+          "uses": [
+            "Traditional use for cough, abdominal discomfort, and dyspepsia"
+          ]
+        },
+        {
+          "method": "Aromatic dried leaves",
+          "description": "Dried leaves may be used as an aromatic herb; avoid smoke inhalation and do not use moxibustion or concentrated products without trained professional guidance.",
+          "uses": [
+            "Traditional aromatic and topical applications"
           ]
         }
       ],
       "facts": {
-        "origin": "Eurasia",
-        "family": "Asteraceae",
-        "habitat": "Disturbed areas, roadsides, and gardens."
+        "origin": "Europe, North Africa, and Asia; widely cultivated or naturalized in the Philippines",
+        "family": "Asteraceae (Compositae)",
+        "habitat": "Open areas, gardens, roadsides, and disturbed ground in temperate to tropical uplands"
       },
       "warnings": [
-        "Pregnant women should avoid large doses as it may stimulate the uterus."
+        "Do not use during pregnancy; traditional sources specifically caution against it because of possible uterine effects.",
+        "People allergic to ragweed-family plants may react.",
+        "Avoid concentrated essential oil or internal use without professional advice.",
+        "Evidence for traditional uses is not equivalent to proof of clinical effectiveness."
       ]
     },
     "cultivationGuide": {
-      "climate": "Temperate to Tropical",
-      "soil": "Well-drained soil",
+      "climate": "Tropical highland to temperate; prefers moderate conditions",
+      "soil": "Moderately fertile, well-drained soil",
       "sunlight": "Full sun to partial shade",
-      "watering": "Moderate",
-      "propagation": "Root division, cuttings",
-      "growthTime": "Fast-growing",
+      "watering": "Moderate; allow the surface to dry slightly between watering",
+      "propagation": "Stem cuttings, division, or layering",
+      "growthTime": "Perennial herb; usable leaves develop within one growing season",
       "tips": [
-        "Can become invasive; best grown in pots."
+        "Harvest healthy leaves before flowering, avoid contaminated sites, and prune to prevent excessive spread."
       ]
     },
-    "research": [],
+    "research": [
+      {
+        "title": "A new sesquiterpene from Artemisia vulgaris",
+        "summary": "The study isolated and characterized a sesquiterpene from A. vulgaris, contributing to the phytochemical evidence base for the plant.",
+        "reference": "Ragasa CY et al. Journal of Natural Medicines. 2008;62:434–436. DOI: 10.1007/s11418-008-0253-0",
+        "year": 2008
+      },
+      {
+        "title": "Estrogenic Flavonoids from Artemisia vulgaris L.",
+        "summary": "Researchers isolated flavonoids and evaluated estrogen-receptor transcription activity in a laboratory model. This is mechanistic evidence, not proof that leaf preparations safely treat human conditions.",
+        "reference": "Lee SJ et al. Journal of Agricultural and Food Chemistry. 1998;46(8):3325–3329. DOI: 10.1021/jf9801264",
+        "year": 1998
+      }
+    ],
     "comparisonTraits": {
-      "leaf": "Deeply lobed, dark green on top, silvery-white underneath.",
-      "flower": "Small, reddish-brown or yellow in clusters.",
-      "stem": "Upright, purplish, and slightly hairy.",
-      "smell": "Strongly aromatic, sage-like scent."
+      "leaf": "Pinnately lobed, aromatic leaves; upper surface greener and underside often grayish and hairy",
+      "flower": "Small pale flower heads in branched clusters",
+      "stem": "Erect, branched, hairy, sometimes semi-woody stem",
+      "smell": "Strong aromatic, bitter-herbal scent when crushed"
     }
   },
   {
     "id": "lagundi",
     "name": "Lagundi",
     "scientificName": "Vitex negundo L.",
-    "shortDescription": "Isa sa 10 halamang gamot na aprubado ng DOH. Napatunayang epektibo para sa ubo, hika, at iba pang sakit sa baga.",
+    "shortDescription": "A Philippine medicinal shrub whose leaves are used in standardized herbal cough products and traditional preparations. Philippine research and DOST-PCHRD documentation describe development and clinical testing of lagundi formulations for cough and respiratory symptoms.",
     "imageSource": "lagundi.jpg",
     "categories": [
       "respiratory",
-      "anti-inflammatory",
+      "cough-relief",
       "fever",
+      "anti-inflammatory",
       "pain-relief"
     ],
     "lookAlikeIds": [],
     "details": {
-      "localName": "Lagundi, Five-leaved chaste tree",
+      "localName": "Lagundi / Five-leaved chaste tree",
       "preparation": [
         {
-          "method": "Decoction",
-          "description": "Pakuluan ang kalahating tasa ng tinadtad na dahon sa 2 tasa ng tubig. Inumin 3 beses sa isang araw.",
+          "method": "Leaf decoction",
+          "description": "Traditional preparation uses washed leaves simmered in water. Use only appropriately identified plant material, and do not rely on home decoctions for breathing difficulty or persistent fever.",
           "uses": [
-            "Cough",
-            "Asthma",
-            "Fever"
+            "Traditional cough and fever support"
+          ]
+        },
+        {
+          "method": "Standardized syrup or tablet",
+          "description": "Use only products registered or authorized by the Philippine FDA and follow the product label. Standardized formulations differ from an improvised home decoction.",
+          "uses": [
+            "Cough and selected respiratory symptoms"
+          ]
+        },
+        {
+          "method": "External poultice / wash",
+          "description": "Crushed leaves or cooled decoction have traditional topical uses; avoid open or infected wounds.",
+          "uses": [
+            "Traditional skin, pain, and inflammation care"
           ]
         }
       ],
       "facts": {
-        "origin": "Tropical Eastern Africa and Asia",
-        "family": "Lamiaceae",
-        "habitat": "Moist places, along watercourses, and in secondary forests."
+        "origin": "South and Southeast Asia, including the Philippines",
+        "family": "Lamiaceae (older references may list Verbenaceae)",
+        "habitat": "Tropical and subtropical scrub, riverbanks, roadsides, and home gardens"
       },
       "warnings": [
-        "Generally safe, but consult a doctor for severe asthma attacks."
+        "Seek urgent care for shortness of breath, blue lips, chest pain, severe wheezing, or high/persistent fever.",
+        "Use standardized products only as directed; do not assume a home decoction has the same dose or evidence.",
+        "Consult a clinician if pregnant, breastfeeding, treating a child, or taking multiple medicines.",
+        "Stop if allergic symptoms or worsening respiratory symptoms occur."
       ]
     },
     "cultivationGuide": {
-      "climate": "Tropical",
-      "soil": "Well-drained soil",
-      "sunlight": "Full sun",
-      "watering": "Moderate",
-      "propagation": "Stem cuttings",
-      "growthTime": "Fast-growing shrub",
+      "climate": "Tropical and subtropical",
+      "soil": "Well-drained loam or sandy soil",
+      "sunlight": "Full sun to partial shade",
+      "watering": "Moderate watering; drought-tolerant after establishment",
+      "propagation": "Seeds, stem cuttings, or air-layering",
+      "growthTime": "Shrub establishes within one to two years; flowering depends on climate",
       "tips": [
-        "Pruning promotes bushy growth and more leaves for harvesting."
+        "Prune after flowering, maintain airflow, and harvest mature leaves from pesticide-free plants."
       ]
     },
-    "research": [],
+    "research": [
+      {
+        "title": "Lagundi: Anti-cough and anti-asthma medicine",
+        "summary": "The Philippine Council for Health Research and Development reports that UP/NIRPROMP researchers developed lagundi formulations and conducted scientific studies and clinical trials for cough and asthma-related symptoms.",
+        "reference": "Philippine Council for Health Research and Development, DOST. HeaRTNovation technology profile. https://www.pchrd.dost.gov.ph/heartnovation/lagundi-anti-cough-and-anti-asthma-medicine/",
+        "year": 2026
+      },
+      {
+        "title": "A systematic review on Vitex negundo (NIRPROMP formulations) for acute cough of mild to moderate severity in pediatric patients",
+        "summary": "The systematic-review literature evaluates NIRPROMP lagundi formulations in pediatric acute cough. Findings should be interpreted according to formulation, dose, study quality, and clinician guidance.",
+        "reference": "Systematic review record and evidence synthesis; verify the final published citation before academic submission. https://www.herdin.ph/index.php?option=com_herdin&view=publiclistowp&layout=list&type=researches&searchstr=lagundi+for+cough",
+        "year": 2020
+      }
+    ],
     "comparisonTraits": {
-      "leaf": "Palmate, usually with 5 leaflets (sometimes 3), grayish-green underneath.",
-      "flower": "Small, bluish-purple in terminal panicles.",
-      "stem": "Woody shrub, reaching 2-5 meters.",
-      "smell": "Leaves are distinctly aromatic when crushed."
+      "leaf": "Usually palmately compound, commonly with five lance-shaped leaflets and a gray-green underside",
+      "flower": "Small bluish-purple flowers in terminal clusters",
+      "stem": "Woody, branched shrub with gray-brown bark",
+      "smell": "Aromatic, slightly camphoraceous when crushed"
     }
   },
   {
     "id": "madre-cacao",
-    "name": "Madre Cacao (Kakawate)",
-    "scientificName": "Gliricidia sepium (Jacq.) Steud.",
-    "shortDescription": "Isang puno na kilala sa kakayahang pumatay ng peste. Ang dahon ay ginagamit para sa galis, pangangati, at bilang natural na insect repellent.",
+    "name": "Madre Cacao",
+    "scientificName": "Gliricidia sepium (Jacq.) Kunth ex Walp.",
+    "shortDescription": "A fast-growing leguminous tree used in Philippine traditional medicine, particularly as a leaf juice, decoction, or topical preparation for skin conditions such as scabies. Recent Philippine evidence synthesis found that G. sepium was probably comparable to 5% sulfur in complete lesion clearance, but herbal treatment must not replace proper scabies diagnosis and contact treatment.",
     "imageSource": "madre-cacao.jpg",
     "categories": [
       "skin-care",
       "antibacterial",
-      "anti-inflammatory"
+      "anti-inflammatory",
+      "insect-repellent",
+      "wound-care"
     ],
     "lookAlikeIds": [],
     "details": {
-      "localName": "Kakawate, Madre Cacao",
+      "localName": "Madre cacao / Kakawate / Kakawati",
       "preparation": [
         {
-          "method": "Poultice / Wash",
-          "description": "Dikdikin ang dahon at ipahid ang katas sa apektadong balat. Para lamang sa labas ng katawan.",
+          "method": "Leaf juice / topical application",
+          "description": "Traditional use applies expressed leaf juice externally. Do not apply to eyes, mucous membranes, extensive broken skin, or infants without professional guidance.",
           "uses": [
-            "Scabies",
-            "Itchy skin",
-            "Mange in pets"
+            "Traditional scabies and skin care"
+          ]
+        },
+        {
+          "method": "Leaf decoction wash",
+          "description": "Prepare a cooled wash from clean leaves for external use only. Wash clothing and bedding and seek medical care for suspected scabies because household contacts may need treatment.",
+          "uses": [
+            "Traditional management of itchy skin conditions"
+          ]
+        },
+        {
+          "method": "Leaf poultice",
+          "description": "Pounded leaves may be used as a short-term topical poultice in traditional practice; discontinue if burning, rash, or swelling occurs.",
+          "uses": [
+            "Traditional topical antimicrobial and anti-inflammatory use"
           ]
         }
       ],
       "facts": {
-        "origin": "Central America",
+        "origin": "Tropical America; widely planted and naturalized in the Philippines",
         "family": "Fabaceae",
-        "habitat": "Widespread in tropical areas, often used as living fences."
+        "habitat": "Tropical lowlands, farms, hedgerows, roadsides, and agroforestry systems"
       },
       "warnings": [
-        "For external use only. Do not ingest the leaves or bark, as they contain toxic compounds (coumarin)."
+        "Do not ingest leaves or concentrated preparations; use is primarily topical in Philippine traditional practice.",
+        "Scabies requires correct diagnosis, treatment of close contacts, and laundering of clothes/bedding.",
+        "Patch-test topical preparations and stop if irritation occurs.",
+        "Do not use on children, pregnancy, or extensive skin disease without clinician advice."
       ]
     },
     "cultivationGuide": {
-      "climate": "Tropical",
-      "soil": "Adaptable, can grow in poor soils",
+      "climate": "Warm tropical climate",
+      "soil": "Well-drained soil; tolerates relatively poor soils",
       "sunlight": "Full sun",
-      "watering": "Drought resistant",
-      "propagation": "Large stem cuttings, seeds",
-      "growthTime": "Very fast growing",
+      "watering": "Moderate while establishing; drought-tolerant afterward",
+      "propagation": "Seeds or stem cuttings",
+      "growthTime": "Fast-growing tree; may reach usable size within one to two years",
       "tips": [
-        "Excellent nitrogen fixer; improves surrounding soil."
+        "Plant away from utility lines, prune regularly, and avoid harvesting from chemically treated trees."
       ]
     },
-    "research": [],
+    "research": [
+      {
+        "title": "Efficacy and Safety of Gliricidia sepium, Senna alata, and Tinospora rumphii in the Treatment of Filipino Patients with Scabies: A Systematic Review and Meta-analysis",
+        "summary": "This 2025 systematic review included Filipino randomized trials. For G. sepium, pooled data suggested probably no difference in complete clearance compared with 5% sulfur, with no serious adverse events reported across included studies.",
+        "reference": "Pasion GCS, Montilla LP, Genuino RF. Acta Medica Philippina. 2025;59(18):16–37. DOI: 10.47895/amp.vi0.11461; PMID 41502969. https://pmc.ncbi.nlm.nih.gov/articles/PMC12772372/",
+        "year": 2025
+      },
+      {
+        "title": "Phytochemical analysis of three common medicinal plants including Gliricidia sepium",
+        "summary": "The study analyzed phytochemicals in selected Philippine medicinal plants, including G. sepium, contributing preliminary chemical evidence but not clinical proof of effectiveness.",
+        "reference": "Raju R et al. Scholars Academic Journal of Biosciences. 2021;9(3):84–88. https://academia.edu/download/81025842/SAJB_93_84-88.pdf",
+        "year": 2021
+      }
+    ],
     "comparisonTraits": {
-      "leaf": "Pinnate compound leaves, light green above and paler beneath.",
-      "flower": "Pink to pale purple, pea-like flowers blooming in clusters on bare branches.",
-      "stem": "Smooth bark, highly branching.",
-      "smell": "Crushed leaves have a strong, slightly unpleasant rat-like odor."
+      "leaf": "Alternate pinnate leaves with many small oval leaflets",
+      "flower": "Pink to lilac pea-like flowers, often appearing before new leaves",
+      "stem": "Woody tree with gray-brown bark and branching crown",
+      "smell": "Green, faintly pungent odor when crushed"
     }
   },
   {
     "id": "sambong",
     "name": "Sambong",
     "scientificName": "Blumea balsamifera (L.) DC.",
-    "shortDescription": "Isang mabangong halaman na aprubado ng DOH bilang pampaihi (diuretic). Tumutulong itong tunawin ang bato sa bato (kidney stones).",
+    "shortDescription": "An aromatic Philippine shrub whose leaves are traditionally prepared as a decoction and used in cough, fever, urinary, and kidney-stone-related remedies. DOST-PCHRD and peer-reviewed studies describe diuretic and anti-lithogenic research, but suspected kidney stones require medical evaluation.",
     "imageSource": "sambong.jpg",
     "categories": [
-      "urinary",
+      "respiratory",
+      "fever",
+      "digestive",
+      "diuretic",
+      "anti-inflammatory"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Sambong / Sembung",
+      "preparation": [
+        {
+          "method": "Leaf decoction",
+          "description": "Wash leaves and prepare a mild decoction; use only as directed by a qualified professional or authorized product label.",
+          "uses": [
+            "Traditional cough, fever, and urinary support"
+          ]
+        },
+        {
+          "method": "Standardized tablet or tea product",
+          "description": "Use only a properly labeled and authorized preparation, following dosage instructions. Do not combine with diuretics without medical advice.",
+          "uses": [
+            "Traditional diuretic and kidney-stone prevention support"
+          ]
+        },
+        {
+          "method": "Steam / aromatic preparation",
+          "description": "Aromatic leaves may be used traditionally for congestion, but avoid smoke or steam burns and do not delay care for breathing difficulty.",
+          "uses": [
+            "Traditional cold and congestion support"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "South and Southeast Asia, including the Philippines",
+        "family": "Asteraceae",
+        "habitat": "Open sunny areas, grasslands, roadsides, and disturbed tropical ground"
+      },
+      "warnings": [
+        "Seek medical care for severe flank pain, fever, vomiting, blood in urine, or difficulty urinating.",
+        "Diuretic use can affect hydration and interact with medicines; ask a clinician before use.",
+        "Avoid in pregnancy, breastfeeding, kidney disease, or heart failure without professional guidance.",
+        "Evidence for dissolving stones is largely preclinical or formulation-specific; do not claim it cures stones."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Well-drained sandy or loamy soil",
+      "sunlight": "Full sun",
+      "watering": "Moderate; avoid waterlogging",
+      "propagation": "Seeds or stem cuttings",
+      "growthTime": "Fast-growing perennial shrub; harvestable leaves develop within months",
+      "tips": [
+        "Harvest mature leaves from clean plants before heavy flowering; dry in shade with good airflow."
+      ]
+    },
+    "research": [
+      {
+        "title": "Blumea balsamifera—A Phytochemical and Pharmacological Review",
+        "summary": "This peer-reviewed review summarizes traditional uses, phytochemicals, pharmacology, and safety questions for B. balsamifera, including use in the Philippines as sambong.",
+        "reference": "Pang Y et al. Evidence-Based Complementary and Alternative Medicine. 2014;2014:789843. https://pmc.ncbi.nlm.nih.gov/articles/PMC6272021/",
+        "year": 2014
+      },
+      {
+        "title": "Effect of Blumea balsamifera extract on the phase and morphology of calcium oxalate crystals in vitro",
+        "summary": "An in vitro study examined effects of B. balsamifera extract on calcium oxalate crystals, providing laboratory evidence relevant to anti-lithogenic claims but not proof of clinical stone treatment.",
+        "reference": "Montealegre CM, De Leon RL. Asian Journal of Urology. 2017;4(4):201–207. DOI: 10.1016/j.ajur.2016.08.009; PMID 29387552. https://pmc.ncbi.nlm.nih.gov/articles/PMC5772838/",
+        "year": 2016
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Large, aromatic, gray-green leaves with a soft hairy texture and serrated margins",
+      "flower": "Small yellowish flower heads in branched clusters",
+      "stem": "Erect, branched, woody near the base",
+      "smell": "Strong camphor-like aromatic scent when crushed"
+    }
+  },
+  {
+    "id": "serpentina",
+    "name": "Serpentina",
+    "scientificName": "Andrographis paniculata (Burm.f.) Nees",
+    "shortDescription": "In Philippine herbal-medicine sources, serpentina commonly refers to the intensely bitter herb Andrographis paniculata, especially its leaves and aerial parts. The common name is ambiguous and can also refer to Rauvolfia serpentina, so the scientific name must be checked before use.",
+    "imageSource": "serpentina.jpg",
+    "categories": [
+      "fever",
+      "immune-support",
+      "digestive",
       "anti-inflammatory",
       "respiratory"
     ],
     "lookAlikeIds": [],
     "details": {
-      "localName": "Sambong, Blumea camphor",
+      "localName": "Serpentina / Sinta / King of Bitters",
       "preparation": [
         {
-          "method": "Decoction",
-          "description": "Pakuluan ang mga dahon at inumin bilang tsaa.",
+          "method": "Leaf or aerial-part decoction",
+          "description": "Traditional preparations use bitter leaves or aerial parts, but dosing is not standardized for home use. Do not self-treat prolonged fever or suspected infection.",
           "uses": [
-            "Kidney stones",
-            "Edema (fluid retention)",
-            "Hypertension"
+            "Traditional fever, cold, digestive, and liver-related uses"
+          ]
+        },
+        {
+          "method": "Standardized capsule or tablet",
+          "description": "Use only a properly labeled, authorized product and follow its directions. Confirm that the label identifies Andrographis paniculata, not Rauvolfia serpentina.",
+          "uses": [
+            "Investigational or traditional immune and respiratory support"
+          ]
+        },
+        {
+          "method": "External leaf preparation",
+          "description": "Topical uses are less established than oral traditional uses; avoid application to broken skin unless advised by a healthcare professional.",
+          "uses": [
+            "Traditional skin and inflammation care"
           ]
         }
       ],
       "facts": {
-        "origin": "Tropical and subtropical Asia",
-        "family": "Asteraceae",
-        "habitat": "Open fields, grasslands, and disturbed areas."
+        "origin": "South and Southeast Asia, including the Philippines",
+        "family": "Acanthaceae",
+        "habitat": "Tropical gardens, cultivated plots, open grassland, and disturbed ground"
       },
       "warnings": [
-        "Ensure proper hydration when using as a diuretic.",
-        "Consult a doctor if you have severe kidney problems."
+        "The name serpentina is ambiguous; misidentification can be dangerous.",
+        "Andrographis may cause gastrointestinal upset or allergic reactions and may interact with medicines.",
+        "Avoid during pregnancy unless specifically approved by a clinician; use caution with blood-pressure, anticoagulant, immune, or diabetes medicines.",
+        "Seek care for high fever, breathing problems, dehydration, jaundice, or worsening symptoms."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Warm tropical and subtropical",
+      "soil": "Well-drained fertile soil",
+      "sunlight": "Full sun to partial shade",
+      "watering": "Regular but moderate; avoid waterlogged soil",
+      "propagation": "Seeds, usually started in nursery beds and transplanted",
+      "growthTime": "Annual or short-lived herb; leaves harvestable after several months",
+      "tips": [
+        "Harvest before or during early flowering, label the plant by scientific name, and avoid roadside or pesticide-contaminated plants."
+      ]
+    },
+    "research": [
+      {
+        "title": "Harnessing the medicinal properties of Andrographis paniculata for diseases and beyond: a review of its phytochemistry and pharmacology",
+        "summary": "This review covers traditional use, andrographolide and other constituents, pharmacological studies, and safety considerations. Much evidence is preclinical or formulation-specific.",
+        "reference": "Okhuarobo A et al. Asian Pacific Journal of Tropical Disease. 2014;4(3):213–222. https://pmc.ncbi.nlm.nih.gov/articles/PMC4032030/",
+        "year": 2014
+      },
+      {
+        "title": "Andrographis paniculata (Burm. f.) Wall. ex Nees: A Review of Ethnobotany, Phytochemistry, and Pharmacology",
+        "summary": "A peer-reviewed review summarizes use for common cold, fever, diarrhea, and other conditions and discusses phytochemicals, pharmacology, and toxicity. It does not establish that raw leaves cure disease.",
+        "reference": "Hossain MS et al. The Scientific World Journal. 2014;2014:274905. https://pmc.ncbi.nlm.nih.gov/articles/PMC4408759/",
+        "year": 2014
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Opposite, narrow lance-shaped leaves with smooth margins and a notably bitter taste",
+      "flower": "Small white flowers with purple markings on the lower lip",
+      "stem": "Slender, green, highly branched, quadrangular stem",
+      "smell": "Little odor; intensely bitter taste when chewed"
+    }
+  },
+  {
+    "id": "calamansi",
+    "name": "Calamansi",
+    "scientificName": "Citrus microcarpa",
+    "shortDescription": "A small citrus fruit tree widely cultivated in the Philippines, contains vitamin C, but evidence that calamansi preparations prevent or treat infection is limited and preparation-specific.",
+    "imageSource": "calamansi.jpg",
+    "categories": [
+      "immune-boost",
+      "respiratory"
+    ],
+    "lookAlikeIds": [
+      "suha"
+    ],
+    "details": {
+      "localName": "Calamansi, Kalamansi",
+      "preparation": [
+        {
+          "method": "Juice",
+          "description": "Extract juice from fresh fruits and mix with warm water and honey.",
+          "uses": [
+            "Cough",
+            "Colds",
+            "Sore throat"
+          ]
+        },
+        {
+          "method": "Topical",
+          "description": "Apply fresh juice directly to the skin.",
+          "uses": [
+            "Insect bites",
+            "Minor skin irritations"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Philippines and Southeast Asia",
+        "family": "Rutaceae",
+        "habitat": "Tropical lowlands and agricultural areas"
+      },
+      "warnings": [
+        "Highly acidic; may cause gastric irritation if consumed in large amounts on an empty stomach."
       ]
     },
     "cultivationGuide": {
       "climate": "Tropical",
-      "soil": "Well-drained loamy soil",
-      "sunlight": "Full sun to partial shade",
+      "soil": "Well-drained, loamy soil",
+      "sunlight": "Full sun",
       "watering": "Moderate",
-      "propagation": "Stem cuttings, seeds",
-      "growthTime": "Fast-growing",
+      "propagation": "Seeds, grafting",
+      "growthTime": "2–3 years to bear fruit",
       "tips": [
-        "Pinch off flower buds to encourage more leaf production."
+        "Prune regularly to maintain shape and encourage fruit production."
       ]
     },
-    "research": [],
+    "research": [
+      {
+        "title": "Phytochemicals, Bioactive Properties and Commercial Utilization of Calamondin",
+        "summary": "Calamansi (Citrus microcarpa) has been investigated mainly through phytochemical, antioxidant, antimicrobial, and essential-oil studies. A recent review describes bioactive compounds in calamondin but does not establish that juice or leaf preparations prevent respiratory infection. A Philippine herbal reference records traditional uses, while clinical dosing and efficacy remain insufficiently established. Evidence therefore supports cautious traditional use, not claims of an immune cure.",
+        "reference": "Venkatachalam K et al. Plants. 2023;12:1751. https://pmc.ncbi.nlm.nih.gov/articles/PMC10146261/",
+        "year": 2023
+      }
+    ],
     "comparisonTraits": {
-      "leaf": "Large, oblong, heavily covered in soft hairs, making it feel like felt.",
-      "flower": "Yellow, clustered in large panicles.",
-      "stem": "Woody at the base, herbaceous and hairy on upper branches.",
-      "smell": "Intensely aromatic, smells strongly of camphor."
+      "leaf": "Small, glossy, dark green, oval-shaped",
+      "flower": "Small, fragrant, white, star-shaped",
+      "stem": "Woody with small thorns",
+      "smell": "Strong, tart citrus aroma"
     }
   },
   {
-    "id": "serpentina",
-    "name": "Serpentina (King of Bitters)",
-    "scientificName": "Andrographis paniculata (Burm.f.) Nees",
-    "shortDescription": "Napakapait na halaman na ginagamit pampababa ng asukal sa dugo at panlaban sa impeksyon. Tinatawag na 'Hari ng Pait'.",
-    "imageSource": "serpentina.jpg",
+    "id": "pandan",
+    "name": "Pandan",
+    "scientificName": "Pandanus amaryllifolius",
+    "shortDescription": "A tropical plant with fragrant, blade-like leaves used extensively in Southeast Asian cooking and traditional medicine for relaxation and pain relief.",
+    "imageSource": "pandan.jpg",
     "categories": [
-      "immune-boost",
-      "antibacterial",
-      "anti-inflammatory",
+      "pain-relief",
+      "digestive",
+      "relaxing"
+    ],
+    "lookAlikeIds": [
+      "tanglad"
+    ],
+    "details": {
+      "localName": "Pandan",
+      "preparation": [
+        {
+          "method": "Decoction / Tea",
+          "description": "Boil 3-4 tied leaves in 2 cups of water for 10 minutes. Drink warm.",
+          "uses": [
+            "Stomach cramps",
+            "Headache",
+            "Mild anxiety"
+          ]
+        },
+        {
+          "method": "Infused Oil",
+          "description": "Steep crushed leaves in warm coconut oil.",
+          "uses": [
+            "Joint pain",
+            "Arthritis relief"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Southeast Asia",
+        "family": "Pandanaceae",
+        "habitat": "Tropical gardens, near water sources"
+      },
+      "warnings": [
+        "Culinary use is common, but medicinal doses and long-term safety are not well established; avoid concentrated preparations during pregnancy or with medicines without professional advice."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Moist, rich soil",
+      "sunlight": "Partial shade to full sun",
+      "watering": "High; requires consistently moist soil",
+      "propagation": "Suckers/side shoots",
+      "growthTime": "Fast-growing, usable leaves in a few months",
+      "tips": [
+        "Thrives in humid environments; protect from severe drought."
+      ]
+    },
+    "research": [
+      {
+        "title": "Antimicrobial potentials of Pandanus amaryllifolius Roxb.",
+        "summary": "Research on Pandanus amaryllifolius is predominantly phytochemical and preclinical. A 2024 review reports antimicrobial activity in extracts and identifies phenolic and other compounds, but the findings do not prove that pandan tea treats anxiety, arthritis, or headaches in people. Culinary use is distinct from standardized medicinal dosing.",
+        "reference": "Wahyuni DK et al. Journal of Applied Pharmaceutical Science. 2024. https://pmc.ncbi.nlm.nih.gov/articles/PMC11324095/",
+        "year": 2024
+      },
+      {
+        "title": "Botany, phytochemistry, pharmacology, and applications of Pandanus amaryllifolius",
+        "summary": "Wang W et al. Industrial Crops and Products. 2024.",
+        "reference": "Wang W et al. Industrial Crops and Products. 2024. https://doi.org/10.1016/j.indcrop.2024.119196",
+        "year": 2024
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Long, narrow, blade-like, green leaves arranged in a rosette",
+      "flower": "Rarely flowers in cultivation",
+      "stem": "Short, sturdy stem developing aerial roots",
+      "smell": "Sweet, nutty, vanilla-like aroma when crushed or boiled"
+    }
+  },
+  {
+    "id": "aloe-vera",
+    "name": "Aloe Vera",
+    "scientificName": "Aloe vera (L.) Burm.f. [synonym: Aloe barbadensis Mill.]",
+    "shortDescription": "A succulent plant well-known for its clear gel, whose inner gel has been studied for topical skin applications; effectiveness varies by condition and product.",
+    "imageSource": "aloe-vera.jpg",
+    "categories": [
+      "skin-care",
+      "wound-healing",
       "digestive"
     ],
     "lookAlikeIds": [],
     "details": {
-      "localName": "Serpentina, Sinta, King of Bitters",
+      "localName": "Sabila",
       "preparation": [
         {
-          "method": "Tea / Decoction",
-          "description": "Pakuluan ang 1-2 dahon. Babala: Ito ay napakapait.",
+          "method": "Topical Gel",
+          "description": "Slice a leaf open and apply the clear inner gel directly to the skin.",
           "uses": [
-            "High blood sugar",
-            "Hypertension",
-            "Fever"
+            "Burns",
+            "Sunburn",
+            "Cuts",
+            "Eczema"
+          ]
+        },
+        {
+          "method": "Juice",
+          "description": "Blend the clear inner gel (avoiding the yellow latex) with water.",
+          "uses": [
+            "Constipation",
+            "Digestive aid"
           ]
         }
       ],
       "facts": {
-        "origin": "India and Sri Lanka",
-        "family": "Acanthaceae",
-        "habitat": "Tropical flatlands, often cultivated in gardens."
+        "origin": "Arabian Peninsula",
+        "family": "Asphodelaceae",
+        "habitat": "Arid and semi-arid regions"
       },
       "warnings": [
-        "Extremely bitter. May cause nausea or gastric discomfort on an empty stomach.",
-        "Avoid during pregnancy (can cause miscarriage).",
-        "Do not replace prescribed diabetes medications without medical supervision."
+        "Avoid consuming the yellow latex (aloin) just under the skin, as it is a strong laxative and can cause severe cramping."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Arid, tropical, subtropical",
+      "soil": "Sandy, well-draining cactus mix",
+      "sunlight": "Bright, indirect sunlight",
+      "watering": "Low; allow soil to dry completely between watering",
+      "propagation": "Pups (offsets)",
+      "growthTime": "Matures in 3-4 years",
+      "tips": [
+        "Highly susceptible to root rot if overwatered."
+      ]
+    },
+    "research": [
+      {
+        "title": "Aloe Vera: Usefulness and Safety",
+        "summary": "Topical aloe gel is generally well tolerated, but clinical results differ by condition and product. The U.S. NCCIH states that oral aloe latex can cause abdominal pain, cramps, and diarrhea; oral leaf extracts have also been linked to cases of acute hepatitis. The yellow latex should not be confused with purified inner-leaf gel, and aloe should not be taken orally during pregnancy without medical advice.",
+        "reference": "National Center for Complementary and Integrative Health. NIH. https://www.nccih.nih.gov/health/aloe-vera",
+        "year": 2020
+      },
+      {
+        "title": "Aloe vera: A review of toxicity and adverse clinical effects",
+        "summary": "Guo X et al. Journal of Environmental Science and Health, Part C. 2016;34(2):77–96.",
+        "reference": "Guo X et al. Journal of Environmental Science and Health, Part C. 2016;34(2):77–96. https://pmc.ncbi.nlm.nih.gov/articles/PMC6349368/",
+        "year": 2016
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Thick, fleshy, lance-shaped, green/grey-green with serrated edges",
+      "flower": "Tubular yellow or orange flowers on a tall spike",
+      "stem": "Short or stemless",
+      "smell": "Mild, slightly bitter green scent"
+    }
+  },
+  {
+    "id": "tamarind",
+    "name": "Tamarind",
+    "scientificName": "Tamarindus indica",
+    "shortDescription": "A large tropical tree whose leaves are traditionally used in decoctions to treat fevers, malaria, and wound infections.",
+    "imageSource": "tamarind.jpg",
+    "categories": [
+      "fever",
+      "antibacterial",
+      "wound-healing"
+    ],
+    "lookAlikeIds": [
+      "madre-cacao"
+    ],
+    "details": {
+      "localName": "Sampaloc",
+      "preparation": [
+        {
+          "method": "Decoction",
+          "description": "Boil a handful of fresh leaves in water for 15 minutes. Use the liquid as a wash or drink in small amounts.",
+          "uses": [
+            "Fever",
+            "Malaria symptoms"
+          ]
+        },
+        {
+          "method": "Poultice",
+          "description": "Pound fresh leaves and apply to wounds or swollen joints.",
+          "uses": [
+            "Ulcers",
+            "Sprains",
+            "Inflammation"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical Africa",
+        "family": "Fabaceae",
+        "habitat": "Tropical savannas and monsoon forests"
+      },
+      "warnings": [
+        "Consult a doctor if fever persists; highly acidic leaves may irritate sensitive skin."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical, drought-resistant",
+      "soil": "Deep, well-draining soil",
+      "sunlight": "Full sun",
+      "watering": "Low to moderate",
+      "propagation": "Seeds, grafting",
+      "growthTime": "Slow-growing; 5-7 years to mature",
+      "tips": [
+        "Requires a distinct dry season for best growth and pod production."
+      ]
+    },
+    "research": [
+      {
+        "title": "Anti-inflammatory and analgesic potential of Tamarindus indica Linn. (Fabaceae): a narrative review",
+        "summary": "Reviews describe antioxidant, anti-inflammatory, and analgesic findings for different Tamarindus indica parts, including leaves, but much of the evidence is laboratory or animal research. Tamarind leaf decoction should not be presented as a treatment for malaria; suspected malaria requires testing and appropriate antimalarial therapy. Topical use on broken or infected wounds also requires caution.",
+        "reference": "Komakech R et al. Integrative Medicine Research. 2019;8:100273. https://pmc.ncbi.nlm.nih.gov/articles/PMC6704379/",
+        "year": 2019
+      },
+      {
+        "title": "Botanical aspects, phytochemicals, and toxicity of Tamarindus indica",
+        "summary": "Sookying S et al. Frontiers in Nutrition. 2022;9:977015.",
+        "reference": "Sookying S et al. Frontiers in Nutrition. 2022;9:977015. https://doi.org/10.3389/fnut.2022.977015",
+        "year": 2022
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Pinnately compound, small pale-green leaflets",
+      "flower": "Small yellow flowers with red or orange streaks",
+      "stem": "Massive, rough-barked trunk",
+      "smell": "Leaves have a faintly sour, acidic aroma"
+    }
+  },
+  {
+    "id": "kamias",
+    "name": "Kamias",
+    "scientificName": "Averrhoa bilimbi",
+    "shortDescription": "A fruit-bearing tree closely related to starfruit, used medicinally for its leaves and highly acidic fruits to manage inflammation and skin conditions.",
+    "imageSource": "kamias.jpg",
+    "categories": [
+      "anti-inflammatory",
+      "skin-care",
+      "antibacterial"
+    ],
+    "lookAlikeIds": [
+      "bayabas"
+    ],
+    "details": {
+      "localName": "Kamias, Bilimbi, Iba",
+      "preparation": [
+        {
+          "method": "Poultice (Leaves)",
+          "description": "Crush fresh leaves into a paste and apply topically.",
+          "uses": [
+            "Itchiness",
+            "Swelling",
+            "Mumps",
+            "Rheumatism"
+          ]
+        },
+        {
+          "method": "Fruit Decoction",
+          "description": "Boil fruits and use the liquid for a warm bath or drink in very small quantities.",
+          "uses": [
+            "Fever",
+            "Scurvy"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Southeast Asia (Maluku Islands)",
+        "family": "Oxalidaceae",
+        "habitat": "Tropical lowlands"
+      },
+      "warnings": [
+        "Fruits are extremely high in oxalates; consuming large amounts can cause acute kidney injury."
       ]
     },
     "cultivationGuide": {
       "climate": "Tropical",
-      "soil": "Moist, well-drained soil",
-      "sunlight": "Partial shade to full sun",
-      "watering": "Regular watering",
-      "propagation": "Seeds, cuttings",
-      "growthTime": "Annual; harvest before full flowering",
+      "soil": "Rich, well-drained loamy soil",
+      "sunlight": "Full sun",
+      "watering": "Moderate",
+      "propagation": "Seeds, grafting",
+      "growthTime": "3-5 years to bear fruit",
       "tips": [
-        "Grows easily in pots but requires consistent moisture."
+        "Protect young trees from strong winds."
       ]
     },
-    "research": [],
+    "research": [
+      {
+        "title": "Acute oxalate nephropathy due to Averrhoa bilimbi fruit juice",
+        "summary": "Averrhoa bilimbi fruit is highly acidic and concentrated juice has been associated with acute oxalate nephropathy and kidney injury in case reports. These reports concern ingestion, not proof that the leaves are medicinally effective. The document should therefore avoid recommending bilimbi juice as a drink, especially for people with kidney disease, dehydration, or medicines affecting renal function.",
+        "reference": "Bakul G et al. Indian Journal of Nephrology. 2013;23(4):302–304. https://pmc.ncbi.nlm.nih.gov/articles/PMC3741977/",
+        "year": 2013
+      },
+      {
+        "title": "Case of acute kidney injury due to bilimbi fruit ingestion",
+        "summary": "Wong KW et al. BMJ Case Reports. 2021;14:e242325.",
+        "reference": "Wong KW et al. BMJ Case Reports. 2021;14:e242325. https://casereports.bmj.com/content/14/7/e242325",
+        "year": 2021
+      }
+    ],
     "comparisonTraits": {
-      "leaf": "Simple, opposite, lanceolate (lance-shaped), dark green, and smooth.",
-      "flower": "Small, white with purple streaks, sparsely branched.",
-      "stem": "Erect, distinctly square in cross-section.",
-      "smell": "Very faint, but the taste is unmistakably and intensely bitter."
+      "leaf": "Pinnate, slightly hairy, light green leaflets",
+      "flower": "Small, fragrant, dark red/purple flowers blooming directly on the trunk",
+      "stem": "Rough, branching trunk",
+      "smell": "Fruits have a sharp, sour scent"
+    }
+  },
+  {
+    "id": "niyog-niyogan",
+    "name": "Niyog-niyogan",
+    "scientificName": "Combretum indicum",
+    "shortDescription": "A climbing vine famous in the Philippines as an effective traditional anthelmintic (deworming) agent.",
+    "imageSource": "niyog-niyogan.jpg",
+    "categories": [
+      "antiparasitic",
+      "digestive"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Niyog-niyogan, Rangoon Creeper",
+      "preparation": [
+        {
+          "method": "Direct Consumption (Seeds)",
+          "description": "Eat mature, dried seeds two hours after a meal (Adults: 8-10 seeds, Children: 4-5 seeds).",
+          "uses": [
+            "Intestinal worms (Ascaris)"
+          ]
+        },
+        {
+          "method": "Leaf Decoction",
+          "description": "Boil leaves and use as a wash.",
+          "uses": [
+            "Skin ulcers",
+            "Boils"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical Asia",
+        "family": "Combretaceae",
+        "habitat": "Thickets, secondary forests"
+      },
+      "warnings": [
+        "Do not exceed the recommended dose of seeds, as overdose causes severe hiccups, dizziness, and abdominal pain."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Adaptable, well-drained",
+      "sunlight": "Full sun to partial shade",
+      "watering": "Moderate",
+      "propagation": "Stem cuttings, root suckers",
+      "growthTime": "Fast-growing vine",
+      "tips": [
+        "Requires a strong trellis or support structure."
+      ]
+    },
+    "research": [
+      {
+        "title": "Niyogniyogan (Quisqualis indica L.) as an Anthelminthic",
+        "summary": "Niyog-niyogan seeds have a long history of traditional use against intestinal worms, and reviews describe anthelmintic activity in laboratory and animal models. However, older traditional dose instructions are not equivalent to current clinical guidance, and seed toxicity and misidentification are concerns. Persistent abdominal symptoms or suspected parasitic infection should be assessed and treated using approved medicines.",
+        "reference": "Guerrero LE. Philippine Journal of Science. 1924. https://www.cabidigitallibrary.org/doi/full/10.5555/19242901104",
+        "year": 1924
+      },
+      {
+        "title": "A comprehensive review on Chinese honeysuckle (Quisqualis indica/Combretum indicum)",
+        "summary": "Sharma AK et al. 2024.",
+        "reference": "Sharma AK et al. 2024. https://pmc.ncbi.nlm.nih.gov/articles/PMC11565029/",
+        "year": 2024
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Oblong, pointed, opposite leaves",
+      "flower": "Tubular flowers that change from white to pink to deep red",
+      "stem": "Woody climbing vine",
+      "smell": "Flowers are highly fragrant, especially at night"
+    }
+  },
+  {
+    "id": "banaba",
+    "name": "Banaba",
+    "scientificName": "Lagerstroemia speciosa",
+    "shortDescription": "A tropical tree whose leaves contain corosolic acid and have been studied for glucose-related effects; this is not proof that homemade tea treats diabetes.",
+    "imageSource": "banaba.jpg",
+    "categories": [
+      "antidiabetic",
+      "diuretic",
+      "weight-management"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Banaba, Pride of India",
+      "preparation": [
+        {
+          "method": "Decoction / Tea",
+          "description": "Boil dried leaves in water for 15 minutes. Drink as a tea up to 3 times a day.",
+          "uses": [
+            "Diabetes management",
+            "Kidney health",
+            "Urinary tract infections"
+          ]
+        },
+        {
+          "method": "Bark Decoction",
+          "description": "Boil the bark and use the liquid for digestive issues.",
+          "uses": [
+            "Diarrhea",
+            "Stomach ache"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Southeast Asia, India, Philippines",
+        "family": "Lythraceae",
+        "habitat": "Riverbanks, secondary forests"
+      },
+      "warnings": [
+        "Monitor blood sugar closely if taking alongside prescribed diabetes medication to prevent hypoglycemia."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Tolerates poor soils, prefers well-drained loam",
+      "sunlight": "Full sun",
+      "watering": "Moderate to high",
+      "propagation": "Seeds, cuttings",
+      "growthTime": "3-5 years for significant growth",
+      "tips": [
+        "Makes an excellent ornamental shade tree due to its large floral displays."
+      ]
+    },
+    "research": [
+      {
+        "title": "A Review of the Efficacy and Safety of Banaba (Lagerstroemia speciosa L.) and Corosolic Acid",
+        "summary": "Banaba leaf extracts and corosolic acid have been studied for glucose-related effects. A review of clinical and preclinical evidence concluded that results are promising but limited by small studies, varying preparations, and uncertain dosing. Banaba tea must not replace prescribed diabetes therapy; people using glucose-lowering medicines should consult a clinician and monitor for hypoglycemia.",
+        "reference": "Stohs SJ, Miller H, Kaats GR. Phytotherapy Research. 2012;26(3):317–324. https://pubmed.ncbi.nlm.nih.gov/22095937/",
+        "year": 2012
+      },
+      {
+        "title": "Management of Diabetes and Its Complications with Banaba (Lagerstroemia speciosa L.) and Corosolic Acid",
+        "summary": "Miura T et al. Evidence-Based Complementary and Alternative Medicine. 2012;2012:871495.",
+        "reference": "Miura T et al. Evidence-Based Complementary and Alternative Medicine. 2012;2012:871495. https://pmc.ncbi.nlm.nih.gov/articles/PMC3468018/",
+        "year": 2012
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Large, smooth, oblong, turning reddish before falling",
+      "flower": "Striking purplish-pink, crinkled petals in large panicles",
+      "stem": "Flaking, smooth bark",
+      "smell": "Mild, woody scent"
+    }
+  },
+  {
+    "id": "tanglad",
+    "name": "Tanglad",
+    "scientificName": "Cymbopogon citratus",
+    "shortDescription": "A fragrant tropical grass used as a culinary herb and traditional medicine for digestive issues, fever, and high blood pressure.",
+    "imageSource": "tanglad.jpg",
+    "categories": [
+      "digestive",
+      "fever",
+      "anti-inflammatory"
+    ],
+    "lookAlikeIds": [
+      "pandan"
+    ],
+    "details": {
+      "localName": "Tanglad, Lemongrass",
+      "preparation": [
+        {
+          "method": "Decoction",
+          "description": "Boil chopped fresh stalks and leaves in water for 10-15 minutes. Strain and drink.",
+          "uses": [
+            "Bloating",
+            "Indigestion",
+            "Fever",
+            "Hypertension"
+          ]
+        },
+        {
+          "method": "Poultice",
+          "description": "Pound the stalks and leaves, apply to painful areas.",
+          "uses": [
+            "Arthritis",
+            "Muscle pain",
+            "Sprains"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Southeast Asia",
+        "family": "Poaceae",
+        "habitat": "Tropical savannas and cultivated gardens"
+      },
+      "warnings": [
+        "Generally safe; however, essential oil must be diluted before applying to the skin."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical, warm subtropical",
+      "soil": "Rich, well-draining soil",
+      "sunlight": "Full sun",
+      "watering": "Regular, keeping soil consistently moist",
+      "propagation": "Division of root clumps",
+      "growthTime": "3-4 months to harvestable size",
+      "tips": [
+        "Cut stalks at the base rather than pulling the whole root system."
+      ]
+    },
+    "research": [
+      {
+        "title": "Ethnopharmacology, phytochemistry, and biological activities of Cymbopogon citratus",
+        "summary": "Lemongrass contains citral and has been investigated for antimicrobial, antioxidant, anti-inflammatory, and blood-pressure-related effects. A comprehensive review notes that evidence ranges from in vitro and animal work to limited clinical observations, and that safety requires further characterization. Lemongrass tea should not be used to replace antihypertensive treatment; essential oil is much more concentrated than tea and should not be swallowed.",
+        "reference": "Ekpenyong CE et al. Chinese Journal of Natural Medicines. 2015;13(5):321–337. https://doi.org/10.1016/S1875-5364(15)30023-6",
+        "year": 2015
+      },
+      {
+        "title": "Exploring the Anti-Hypertensive Potential of Lemongrass—A Comprehensive Review",
+        "summary": "Silva H, Bárbara R. Biology. 2022;11(10):1382.",
+        "reference": "Silva H, Bárbara R. Biology. 2022;11(10):1382. https://pmc.ncbi.nlm.nih.gov/articles/PMC9598547/",
+        "year": 2022
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Long, slender, sharp-edged, pale green blades",
+      "flower": "Rarely flowers",
+      "stem": "Thick, bulbous, tightly packed basal stalks",
+      "smell": "Strong, clean lemon-citrus aroma"
+    }
+  },
+  {
+    "id": "makabuhay",
+    "name": "Makabuhay",
+    "scientificName": "Tinospora crispa",
+    "shortDescription": "A climbing vine recognized by its notably warty stems, known for its bitter taste and traditional use in several conditions; evidence and safety are limited, and it should not be used to treat malaria without antimalarial care.",
+    "imageSource": "makabuhay.jpg",
+    "categories": [
+      "skin-care",
+      "wound-healing",
+      "antiparasitic"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Makabuhay",
+      "preparation": [
+        {
+          "method": "Decoction (Stem)",
+          "description": "Boil a small piece of the stem in water. Drink in very small quantities due to intense bitterness.",
+          "uses": [
+            "Malaria",
+            "Stomach ulcers",
+            "Fever"
+          ]
+        },
+        {
+          "method": "Poultice / Wash",
+          "description": "Crush the stem and extract the juice, or boil to make a wash. Apply to the skin.",
+          "uses": [
+            "Scabies",
+            "Skin ulcers",
+            "Athlete’s foot"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Southeast Asia",
+        "family": "Menispermaceae",
+        "habitat": "Primary and secondary tropical forests"
+      },
+      "warnings": [
+        "Extremely bitter. Do not consume in large doses; toxic to the liver in excess. Pregnant women should avoid it entirely."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Adaptable, prefers well-drained soils",
+      "sunlight": "Partial shade to full sun",
+      "watering": "Low to moderate",
+      "propagation": "Stem cuttings",
+      "growthTime": "Fast-growing vine",
+      "tips": [
+        "Plant near trees or fences for the vine to climb."
+      ]
+    },
+    "research": [
+      {
+        "title": "Tinospora crispa (L.) Hook. f. & Thomson: A Review of Its Ethnobotany, Phytochemistry, and Pharmacology",
+        "summary": "Tinospora crispa has traditional and preclinical pharmacological literature, but liver injury is a major safety concern. A review of reported cases concluded that incorrect identification and use of Tinospora species may cause severe hepatic injury or death. Makabuhay should not be self-administered internally for malaria, ulcers, or fever, and jaundice, dark urine, or severe abdominal pain requires urgent medical care.",
+        "reference": "Ahmad W et al. Frontiers in Pharmacology. 2016;7:59. https://pmc.ncbi.nlm.nih.gov/articles/PMC4800188/",
+        "year": 2016
+      },
+      {
+        "title": "Literature review of liver injury induced by Tinospora crispa",
+        "summary": "Huang WT et al. Phytomedicine. 2019;59:152909.",
+        "reference": "Huang WT et al. Phytomedicine. 2019;59:152909. https://pubmed.ncbi.nlm.nih.gov/30670256/",
+        "year": 2019
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Heart-shaped, light green, smooth leaves",
+      "flower": "Small, yellowish-green clusters",
+      "stem": "Fleshy, heavily covered in prominent blunt warts/tubercles",
+      "smell": "Extremely bitter, herbaceous scent"
+    }
+  },
+  {
+    "id": "gumamela",
+    "name": "Gumamela",
+    "scientificName": "Hibiscus rosa-sinensis",
+    "shortDescription": "A widely cultivated ornamental plant in the Philippines, used traditionally for treating boils, mumps, and respiratory issues.",
+    "imageSource": "gumamela.jpg",
+    "categories": [
+      "wound-healing",
+      "respiratory",
+      "anti-inflammatory"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Gumamela, Hibiscus",
+      "preparation": [
+        {
+          "method": "Poultice (Flower/Leaves)",
+          "description": "Crush fresh flower petals and leaves into a sticky paste and apply locally.",
+          "uses": [
+            "Boils",
+            "Swelling",
+            "Mumps"
+          ]
+        },
+        {
+          "method": "Decoction",
+          "description": "Boil flowers and leaves in water for 10 minutes.",
+          "uses": [
+            "Cough",
+            "Bronchitis",
+            "Expectorant"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical Asia",
+        "family": "Malvaceae",
+        "habitat": "Cultivated gardens, tropical environments"
+      },
+      "warnings": [
+        "Use only clean, correctly identified, pesticide-free material externally; evidence for internal use is limited and allergic or irritant reactions are possible."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Rich, well-draining soil",
+      "sunlight": "Full sun",
+      "watering": "Regular; requires consistent moisture",
+      "propagation": "Stem cuttings",
+      "growthTime": "6-12 months from cuttings",
+      "tips": [
+        "Prune heavily in early spring to encourage bushy growth and massive blooming."
+      ]
+    },
+    "research": [
+      {
+        "title": "Evaluation of the wound-healing activity of Hibiscus rosa-sinensis L. in rats",
+        "summary": "A rat wound-healing study found that a Hibiscus rosa-sinensis extract improved wound contraction and epithelialization compared with controls. This is preclinical evidence and does not establish that a homemade poultice treats boils, mumps, bronchitis, or infected wounds. Use clean material only, avoid deep or infected wounds, and seek medical care when systemic symptoms are present.",
+        "reference": "Bhaskar A et al. Indian Journal of Pharmacology. 2012;44(6):694–698. https://pmc.ncbi.nlm.nih.gov/articles/PMC3523494/",
+        "year": 2012
+      },
+      {
+        "title": "Hibiscus rosa-sinensis Linn.: A phytochemical and pharmacological review",
+        "summary": "Bala R et al. 2022.",
+        "reference": "Bala R et al. 2022. https://doi.org/10.1007/s11418-022-01614-5",
+        "year": 2022
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Ovate, glossy green, serrated edges",
+      "flower": "Large, showy, trumpet-shaped with a prominent stamen tube",
+      "stem": "Woody shrub",
+      "smell": "Mild, fresh green scent; mostly odorless flowers"
+    }
+  },
+  {
+    "id": "suha",
+    "name": "Suha",
+    "scientificName": "Citrus maxima",
+    "shortDescription": "A large citrus fruit whose fruit, peel, and leaves are used traditionally; evidence for medicinal effects varies, and pomelo may interact with some medicines.",
+    "imageSource": "suha.jpg",
+    "categories": [
+      "immune-boost",
+      "respiratory",
+      "relaxing"
+    ],
+    "lookAlikeIds": [
+      "calamansi"
+    ],
+    "details": {
+      "localName": "Suha, Pomelo",
+      "preparation": [
+        {
+          "method": "Decoction (Leaves/Peel)",
+          "description": "Boil leaves or dried rind in water. Drink warm.",
+          "uses": [
+            "Coughs",
+            "Colds",
+            "Indigestion"
+          ]
+        },
+        {
+          "method": "Bath / Wash",
+          "description": "Boil fresh leaves and add the aromatic water to a bath.",
+          "uses": [
+            "Fatigue",
+            "Nerve relaxation",
+            "Mild skin rashes"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Southeast Asia",
+        "family": "Rutaceae",
+        "habitat": "Lowland tropical forests, river valleys"
+      },
+      "warnings": [
+        "Like grapefruit, pomelo juice can interact with certain medications (e.g., statins, blood pressure drugs)."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and warm subtropical",
+      "soil": "Deep, well-drained, slightly acidic soil",
+      "sunlight": "Full sun",
+      "watering": "Moderate to high",
+      "propagation": "Grafting, air-layering, seeds",
+      "growthTime": "4-8 years to bear fruit",
+      "tips": [
+        "Requires heavy fertilization and consistent watering during fruit development."
+      ]
+    },
+    "research": [
+      {
+        "title": "Citrus maxima (Burm.) Merr. (Rutaceae): Bioactive Chemical Constituents and Pharmacological Activities",
+        "summary": "A review of Citrus maxima summarizes phytochemicals and pharmacological studies involving fruit, peel, seed, and other parts. Pomelo and grapefruit-related citrus can affect drug metabolism through furanocoumarins; the interaction risk depends on the product and medicine. Do not assume that pomelo leaf or peel decoction is a safe substitute for treatment, and ask a pharmacist about interactions.",
+        "reference": "Sapkota B et al. Evidence-Based Complementary and Alternative Medicine. 2022;2022:8741669. https://pmc.ncbi.nlm.nih.gov/articles/PMC9170406/",
+        "year": 2022
+      },
+      {
+        "title": "Grapefruit Juice and Some Drugs Don’t Mix",
+        "summary": "U.S. Food and Drug Administration.",
+        "reference": "U.S. Food and Drug Administration. https://www.fda.gov/consumers/consumer-updates/grapefruit-juice-and-some-drugs-dont-mix",
+        "year": 2021
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Large, dark green, ovate with a winged petiole",
+      "flower": "Large, fragrant, white, four-petaled",
+      "stem": "Woody tree with low, spreading branches and thorns",
+      "smell": "Rind and leaves have a strong, sweet-tart citrus aroma"
+    }
+  },
+  {
+    "id": "alugbati",
+    "name": "Alugbati",
+    "scientificName": "Basella alba",
+    "shortDescription": "A leafy green vegetable with a mucilaginous texture, rich in vitamins, and used traditionally for mild digestive issues and burns.",
+    "imageSource": "alugbati.jpg",
+    "categories": [
+      "nutritional",
+      "wound-healing",
+      "digestive"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Alugbati, Malabar Spinach",
+      "preparation": [
+        {
+          "method": "Direct Consumption (Cooked)",
+          "description": "Add leaves to stews and soups as a vegetable.",
+          "uses": [
+            "Nutritional deficiency",
+            "Anemia",
+            "Mild constipation"
+          ]
+        },
+        {
+          "method": "Poultice",
+          "description": "Mash fresh leaves to extract the mucilage (slime) and apply topically.",
+          "uses": [
+            "Minor burns",
+            "Scalds",
+            "Acne"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Indian Subcontinent, Southeast Asia",
+        "family": "Basellaceae",
+        "habitat": "Tropical lowlands"
+      },
+      "warnings": [
+        "Safe as a food source; no known significant toxicity."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical, highly heat-tolerant",
+      "soil": "Moist, rich, well-drained",
+      "sunlight": "Full sun to partial shade",
+      "watering": "High; keep soil consistently moist",
+      "propagation": "Stem cuttings, seeds",
+      "growthTime": "1-2 months for continuous harvesting",
+      "tips": [
+        "Provide a trellis; the plant thrives in extreme heat where true spinach bolts."
+      ]
+    },
+    "research": [
+      {
+        "title": "Pharmacognostical Standardization of Upodika—Basella alba L.",
+        "summary": "Basella alba is primarily a food plant. Pharmacognostic research has characterized its leaves and stem, and reviews describe nutrient, mucilage, antioxidant, and other preliminary pharmacological findings. These data do not prove that leaf poultices heal burns or that the plant treats anemia. Cooked leaves may be included as food, but burns and persistent constipation require appropriate care.",
+        "reference": "Shantha TR et al. Pharmacognosy Journal. 2016;8(1):1–7. https://pmc.ncbi.nlm.nih.gov/articles/PMC5255969/",
+        "year": 2016
+      },
+      {
+        "title": "A review of the taxonomy, ethnobotany, phytochemistry and pharmacology of Basella alba",
+        "summary": "Madhuri S et al. Journal of Applied Pharmaceutical Science. 2013.",
+        "reference": "Madhuri S et al. Journal of Applied Pharmaceutical Science. 2013. https://japsonline.com/abstract.php?article_id=1174",
+        "year": 2013
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Heart-shaped, fleshy, glossy green (or purple/red in B. rubra)",
+      "flower": "Small white or pinkish clusters",
+      "stem": "Succulent, twining vine (green or purplish-red)",
+      "smell": "Mild, earthy, spinach-like odor"
+    }
+  },
+  {
+    "id": "tuba-tuba",
+    "name": "Tuba-tuba",
+    "scientificName": "Jatropha curcas",
+    "shortDescription": "A hardy shrub used in folk medicine primarily for external wound healing, though its seeds are highly toxic.",
+    "imageSource": "tuba-tuba.jpg",
+    "categories": [
+      "wound-healing",
+      "anti-inflammatory"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Tuba-tuba, Physic Nut",
+      "preparation": [
+        {
+          "method": "Poultice (Leaves)",
+          "description": "Warm the leaves over a fire until wilted, rub with a little coconut oil, and apply externally.",
+          "uses": [
+            "Sprains",
+            "Rheumatism",
+            "Muscle cramps"
+          ]
+        },
+        {
+          "method": "Sap Application",
+          "description": "Apply the clear/yellowish sap directly to a wound.",
+          "uses": [
+            "Bleeding cuts",
+            "Minor wounds"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Central America, Mexico",
+        "family": "Euphorbiaceae",
+        "habitat": "Wastelands, dry tropical regions"
+      },
+      "warnings": [
+        "EXTREMELY TOXIC SEEDS: Eating even a few seeds can cause severe vomiting, diarrhea, and death. Sap may irritate sensitive skin. Never take internally without expert supervision."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical, highly drought-resistant",
+      "soil": "Sandy, gravelly, poor soils",
+      "sunlight": "Full sun",
+      "watering": "Low",
+      "propagation": "Stem cuttings, seeds",
+      "growthTime": "1-3 years to mature",
+      "tips": [
+        "Often planted as a living fence; requires virtually no maintenance."
+      ]
+    },
+    "research": [
+      {
+        "title": "Ethnobotany, ethnopharmacology and toxicity of Jatropha curcas L. (Euphorbiaceae)",
+        "summary": "Jatropha curcas has a documented toxicity literature. Seeds and seed products can cause severe gastrointestinal poisoning, and latex or oil may irritate skin and eyes. Although laboratory studies have examined leaves and topical traditional uses, evidence is not sufficient to recommend sap on open wounds. This plant should be clearly labeled and kept away from children and animals.",
+        "reference": "Abdelgadir HA, Van Staden J. South African Journal of Botany. 2013;88:204–218. https://doi.org/10.1016/j.sajb.2013.07.021",
+        "year": 2013
+      },
+      {
+        "title": "Jatropha curcas toxicity—a review",
+        "summary": "Makkar HPS et al. Applied Biochemistry and Biotechnology. 2010;160:1544–1577.",
+        "reference": "Makkar HPS et al. Applied Biochemistry and Biotechnology. 2010;160:1544–1577. https://doi.org/10.1007/s11746-009-9328-5",
+        "year": 2010
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Large, palmate, 3-5 lobed, smooth green leaves",
+      "flower": "Small, yellowish-green flowers",
+      "stem": "Smooth, fleshy, exuding translucent sap when cut",
+      "smell": "Sap has a slightly acrid odor"
+    }
+  },
+  {
+    "id": "katakataka",
+    "name": "Katakataka",
+    "scientificName": "Kalanchoe pinnata",
+    "shortDescription": "A unique succulent famous for producing tiny plantlets along its leaf margins, used widely as an anti-inflammatory poultice.",
+    "imageSource": "katakataka.jpg",
+    "categories": [
+      "wound-healing",
+      "anti-inflammatory",
+      "antibacterial"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Katakataka, Miracle Leaf",
+      "preparation": [
+        {
+          "method": "Poultice",
+          "description": "Pound fresh leaves and apply directly to the affected area.",
+          "uses": [
+            "Boils",
+            "Bruises",
+            "Insect bites",
+            "Swelling"
+          ]
+        },
+        {
+          "method": "Leaf Juice",
+          "description": "Squeeze juice from lightly roasted leaves and drop onto affected skin.",
+          "uses": [
+            "Eczema",
+            "Minor burns",
+            "Wound healing"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Madagascar",
+        "family": "Crassulaceae",
+        "habitat": "Tropical and subtropical gardens, rocky areas"
+      },
+      "warnings": [
+        "Generally safe for external use. Internal consumption should be supervised, as excessive intake may cause gastric distress."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical, subtropical",
+      "soil": "Well-draining, sandy soil",
+      "sunlight": "Bright, indirect light to full sun",
+      "watering": "Low; allow soil to dry completely",
+      "propagation": "Leaf cuttings, plantlets falling from leaves",
+      "growthTime": "Fast-growing from plantlets",
+      "tips": [
+        "Highly invasive in favorable climates; best kept in pots."
+      ]
+    },
+    "research": [
+      {
+        "title": "A Genus of Plants Known as ‘Miracle Leaf’: Kalanchoe",
+        "summary": "Kalanchoe pinnata is also known as Bryophyllum pinnatum. Reviews report traditional anti-inflammatory and wound-related uses, but the evidence base is largely preclinical, and some Kalanchoe species contain bufadienolides that raise toxicity concerns. A topical preparation should be used only on minor intact skin and stopped if irritation occurs; internal use requires professional advice.",
+        "reference": "de Andrade EA et al. Plants. 2023;12:2518. https://pmc.ncbi.nlm.nih.gov/articles/PMC10383218/",
+        "year": 2023
+      },
+      {
+        "title": "Kalanchoe laciniata and Bryophyllum pinnatum: an updated review about ethnopharmacology, phytochemistry, pharmacology and toxicology",
+        "summary": "Fernandes JM et al. Revista Brasileira de Farmacognosia. 2019;29:529–540.",
+        "reference": "Fernandes JM et al. Revista Brasileira de Farmacognosia. 2019;29:529–540. https://www.scielo.br/j/rbfar/a/4shGX79py5nNdmRYzBpDz9k/?lang=en",
+        "year": 2019
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Thick, fleshy, scalloped margins often lined with tiny plantlets",
+      "flower": "Dangling, reddish-purple bell-like flowers",
+      "stem": "Fleshy, hollow, green speckled with purple",
+      "smell": "Mild, slightly sour herbaceous scent"
+    }
+  },
+  {
+    "id": "dila-dila",
+    "name": "Dila-dila",
+    "scientificName": "Elephantopus scaber",
+    "shortDescription": "A small ground herb characterized by a rosette of leaves flat against the earth, traditionally used as a diuretic and fever reducer.",
+    "imageSource": "dila-dila.jpg",
+    "categories": [
+      "diuretic",
+      "fever",
+      "anti-inflammatory"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Dila-dila, Prickly-leaved elephant's foot",
+      "preparation": [
+        {
+          "method": "Decoction (Roots/Leaves)",
+          "description": "Boil the entire cleaned plant (or just roots) in water for 15 minutes. Strain and drink.",
+          "uses": [
+            "Fever",
+            "Urinary tract infections",
+            "Edema (water retention)"
+          ]
+        },
+        {
+          "method": "Poultice",
+          "description": "Pound fresh leaves and apply topically.",
+          "uses": [
+            "Ulcers",
+            "Wound infections",
+            "Eczema"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Tropical Asia, Africa, Australia",
+        "family": "Asteraceae",
+        "habitat": "Open grasslands, pastures, disturbed grounds"
+      },
+      "warnings": [
+        "Consult a doctor if symptoms of urinary tract infections persist; ensure correct identification, as it grows among common weeds."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Sandy or loamy, tolerates poor soils",
+      "sunlight": "Full sun",
+      "watering": "Moderate to low",
+      "propagation": "Seeds, root division",
+      "growthTime": "Fast-growing weed",
+      "tips": [
+        "Forages easily in lawns and fields; rarely deliberately cultivated."
+      ]
+    },
+    "research": [
+      {
+        "title": "Anti-neuroinflammatory Activity of Elephantopus scaber L. via Inhibition of NF-κB and MAPK Signaling",
+        "summary": "Elephantopus scaber research includes anti-inflammatory, neuroinflammatory, antioxidant, and other preclinical studies. An animal toxicology section in one study reported no abnormal clinical signs at tested doses, but that does not establish human safety or efficacy. Dila-dila should not be used to self-treat urinary infection, fever, edema, or ulcers without diagnosis.",
+        "reference": "Chan CK et al. 2017. https://pmc.ncbi.nlm.nih.gov/articles/PMC5478732/",
+        "year": 2017
+      },
+      {
+        "title": "A review on pharmacology and toxicology of Elephantopus scaber Linn.",
+        "summary": "Mohamed GA et al. Natural Product Research. 2014.",
+        "reference": "Mohamed GA et al. Natural Product Research. 2014. https://doi.org/10.1080/14786419.2014.883394",
+        "year": 2014
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Rough, hairy, spatulate leaves forming a flat basal rosette",
+      "flower": "Small, purplish-pink flower heads clustered in a tight bundle",
+      "stem": "Stiff, branching, leafless flower stalk growing from the center",
+      "smell": "Mild, grassy, weed-like scent when crushed"
+    }
+  },
+  {
+    "id": "insulin-plant",
+    "name": "Insulin Plant",
+    "scientificName": "Chamaecostus cuspidatus",
+    "shortDescription": "A tropical leafy plant used in folk medicine for glucose-related purposes; available evidence is mainly preliminary and it must not replace prescribed diabetes treatment.",
+    "imageSource": "insulin-plant.jpg",
+    "categories": [
+      "antidiabetic",
+      "antioxidant",
+      "digestive"
+    ],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Insulin plant",
+      "preparation": [
+        {
+          "method": "Direct Consumption (Chewing)",
+          "description": "Wash 1 fresh leaf thoroughly and chew it well before swallowing. Typically done in the morning and evening for a set period.",
+          "uses": [
+            "Blood sugar management",
+            "Diabetes support"
+          ]
+        },
+        {
+          "method": "Decoction / Tea",
+          "description": "Dry the leaves in the shade, grind them into a powder, and boil 1/2 to 1 teaspoon of the powder in a cup of water. Strain and drink.",
+          "uses": [
+            "Metabolic health",
+            "Lowering blood glucose levels"
+          ]
+        }
+      ],
+      "facts": {
+        "origin": "Eastern Brazil (widely cultivated in India and Southeast Asia)",
+        "family": "Costaceae",
+        "habitat": "Tropical gardens, shaded and humid environments"
+      },
+      "warnings": [
+        "NOT a replacement for medical insulin. Do not stop taking prescribed diabetes medications.",
+        "Monitor blood sugar levels very closely if consuming this plant while taking antidiabetic drugs, as the combination can cause dangerous hypoglycemia (dangerously low blood sugar). Pregnant or breastfeeding women should avoid use without consulting a doctor."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical and subtropical",
+      "soil": "Rich, moist, well-draining soil with high organic matter",
+      "sunlight": "Partial shade to bright indirect light (avoid harsh afternoon sun)",
+      "watering": "High; keep soil consistently moist but never waterlogged",
+      "propagation": "Stem cuttings, division of rhizomes",
+      "growthTime": "Fast-growing; leaves can be harvested within 2-3 months of planting",
+      "tips": [
+        "Spreads via underground rhizomes. Grow in a shaded area of the garden or in large pots to control its spread."
+      ]
+    },
+    "research": [
+      {
+        "title": "Effect of the insulin plant (Costus igneus) leaves on dexamethasone-induced hyperglycemia",
+        "summary": "The “insulin plant” name refers to Costus igneus in older literature; current taxonomy commonly uses Chamaecostus cuspidatus. A small human study and animal studies reported glucose-lowering effects, but the evidence is not sufficient to replace insulin or prescribed diabetes medicines. Any use alongside diabetes treatment requires glucose monitoring and clinician supervision to reduce hypoglycemia risk.",
+        "reference": "Shetty AJ et al. Journal of Clinical and Diagnostic Research. 2010. https://pmc.ncbi.nlm.nih.gov/articles/PMC2924971/",
+        "year": 2010
+      },
+      {
+        "title": "A review on Insulin plant (Costus igneus Nak)",
+        "summary": "Hegde PK et al. Pharmacognosy Reviews. 2014;8(15):67–70.",
+        "reference": "Hegde PK et al. Pharmacognosy Reviews. 2014;8(15):67–70. https://pmc.ncbi.nlm.nih.gov/articles/PMC3931203/",
+        "year": 2014
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Large, fleshy, smooth, dark green leaves arranged in a distinct spiral pattern around the stem",
+      "flower": "Bright orange, delicate, cone-like flowers appearing at the top of the plant",
+      "stem": "Upright, thick, green, and fleshy stems growing from creeping rhizomes",
+      "smell": "Leaves have a mild, earthy, and slightly acidic or sour scent when crushed or chewed"
     }
   }
 ]

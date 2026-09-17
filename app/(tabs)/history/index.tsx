@@ -43,7 +43,7 @@ export default function HistoryScreen() {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<
-    { type: "single"; id: string } | { type: "batch"; count: number } | null
+    { type: "single"; id: string; plantName?: string } | { type: "batch"; count: number } | null
   >(null);
 
   useEffect(() => {
@@ -86,7 +86,8 @@ export default function HistoryScreen() {
   };
 
   const handleDeleteScan = (id: string) => {
-    setDeleteTarget({ type: "single", id });
+    const scanItem = scans.find((s) => s.id === id);
+    setDeleteTarget({ type: "single", id, plantName: scanItem?.plantName });
   };
 
   const handleDeleteSelected = () => {
@@ -202,7 +203,8 @@ export default function HistoryScreen() {
 
       <DeleteConfirmationModal
         visible={!!deleteTarget}
-        itemCount={deleteTarget?.type === "batch" ? deleteTarget.count : 1}
+        itemName={deleteTarget?.type === "single" ? deleteTarget.plantName : undefined}
+        itemCount={deleteTarget?.type === "batch" ? deleteTarget.count : undefined}
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteTarget(null)}
       />

@@ -24,6 +24,22 @@ const imageMap: Record<string, any> = {
   'madre-cacao.jpg': require('../../assets/images/plants/madre-cacao.jpg'),
   'sambong.jpg': require('../../assets/images/plants/sambong.jpg'),
   'serpentina.jpg': require('../../assets/images/plants/serpentina.jpg'),
+  'calamansi.jpg': require('../../assets/images/plants/calamansi.jpg'),
+  'pandan.jpg': require('../../assets/images/plants/pandan.jpg'),
+  'aloe-vera.jpg': require('../../assets/images/plants/aloe-vera.jpg'),
+  'tamarind.jpg': require('../../assets/images/plants/tamarind.jpg'),
+  'kamias.jpg': require('../../assets/images/plants/kamias.jpg'),
+  'niyog-niyogan.jpg': require('../../assets/images/plants/niyog-niyogan.jpg'),
+  'banaba.jpg': require('../../assets/images/plants/banaba.jpg'),
+  'tanglad.jpg': require('../../assets/images/plants/tanglad.jpg'),
+  'makabuhay.jpg': require('../../assets/images/plants/makabuhay.jpg'),
+  'gumamela.jpg': require('../../assets/images/plants/gumamela.jpg'),
+  'suha.jpg': require('../../assets/images/plants/suha.jpg'),
+  'alugbati.jpg': require('../../assets/images/plants/alugbati.jpg'),
+  'tuba-tuba.jpg': require('../../assets/images/plants/tuba-tuba.jpg'),
+  'katakataka.jpg': require('../../assets/images/plants/katakataka.jpg'),
+  'dila-dila.jpg': require('../../assets/images/plants/dila-dila.jpg'),
+  'insulin-plant.jpg': require('../../assets/images/plants/insulin-plant.jpg'),
 };
 
 const processPlants = (data: any[]): MedicinalPlant[] => {
@@ -113,20 +129,20 @@ const SYMPTOM_ICON_RULES: Array<{ keywords: string[]; icon: string }> = [
   // Digestive
   { keywords: ["diarrhea", "loose bowel", "dysentery", "pagtatae", "tae"], icon: "water-outline" },
   { keywords: ["constipation", "laxative", "tibi", "paninigas ng dumi"], icon: "swap-vertical-outline" },
-  { keywords: ["stomach", "abdominal", "gastric", "ulcer", "sikmura", "tiyan"], icon: "body-outline" },
+  { keywords: ["stomach", "abdominal", "gastric", "ulcer", "sikmura", "tiyan", "dyspepsia", "cramp", "colic"], icon: "body-outline" },
   { keywords: ["nausea", "vomit", "suka", "alibadbad"], icon: "sad-outline" },
-  { keywords: ["digestion", "digestive", "appetite", "bloat", "panunaw", "gana"], icon: "nutrition-outline" },
+  { keywords: ["digestion", "digestive", "appetite", "bloat", "panunaw", "gana", "indigestion", "metabolic"], icon: "nutrition-outline" },
 
   // Respiratory
-  { keywords: ["cough", "phlegm", "expectorant", "ubo", "plema"], icon: "cloud-outline" },
+  { keywords: ["cough", "phlegm", "expectorant", "ubo", "plema", "bronchitis"], icon: "cloud-outline" },
   { keywords: ["asthma", "breath", "respiratory", "bronch", "hika", "hininga"], icon: "fitness-outline" },
   { keywords: ["throat", "tonsil", "lalamunan"], icon: "thermometer-outline" },
-  { keywords: ["cold", "flu", "influenza", "sipon", "trangkaso"], icon: "snow-outline" },
-  { keywords: ["fever", "febrile", "lagnat"], icon: "thermometer-outline" },
+  { keywords: ["cold", "flu", "influenza", "sipon", "trangkaso", "congestion"], icon: "snow-outline" },
+  { keywords: ["fever", "febrile", "lagnat", "scurvy"], icon: "thermometer-outline" },
 
   // Skin & wounds
-  { keywords: ["wound", "cut", "burn", "scar", "sugat", "paso", "hiwa"], icon: "bandage-outline" },
-  { keywords: ["skin", "rash", "eczema", "itch", "boil", "acne", "balat", "kati", "pigsa", "tagihawat"], icon: "color-palette-outline" },
+  { keywords: ["wound", "cut", "burn", "scar", "sugat", "paso", "hiwa", "scald"], icon: "bandage-outline" },
+  { keywords: ["skin", "rash", "eczema", "itch", "boil", "acne", "balat", "kati", "pigsa", "tagihawat", "mumps", "sunburn", "scabies", "athlete"], icon: "color-palette-outline" },
   { keywords: ["insect", "bite", "sting", "kagat", "insekto"], icon: "bug-outline" },
 
   // Oral
@@ -137,23 +153,23 @@ const SYMPTOM_ICON_RULES: Array<{ keywords: string[]; icon: string }> = [
   { keywords: ["headache", "migraine", "sakit ng ulo"], icon: "flash-outline" },
   { keywords: ["arthritis", "joint", "rheumat", "rayuma", "kasukasuan"], icon: "accessibility-outline" },
   { keywords: ["muscle", "sprain", "cramp", "kalamnan", "pilay", "pulikat"], icon: "barbell-outline" },
-  { keywords: ["inflammation", "anti-inflammatory", "swelling", "pamamaga"], icon: "medkit-outline" },
+  { keywords: ["inflammation", "anti-inflammatory", "swelling", "pamamaga", "edema"], icon: "medkit-outline" },
   { keywords: ["pain", "ache", "analgesic", "sakit", "kirot"], icon: "pulse-outline" },
 
   // Systemic
   { keywords: ["diabetes", "blood sugar", "glucose", "diyabetis", "asukal sa dugo"], icon: "analytics-outline" },
   { keywords: ["blood pressure", "hypertension", "cardio", "heart", "presyon", "puso"], icon: "heart-outline" },
-  { keywords: ["kidney", "urinary", "diuretic", "bladder", "bato", "ihi"], icon: "flask-outline" },
+  { keywords: ["kidney", "urinary", "diuretic", "bladder", "bato", "ihi", "stone"], icon: "flask-outline" },
   { keywords: ["liver", "hepat", "detox", "atay"], icon: "leaf-outline" },
-  { keywords: ["anemia", "blood", "dugo", "anemya"], icon: "water-outline" },
+  { keywords: ["anemia", "blood", "dugo", "anemya", "nutritional"], icon: "water-outline" },
 
   // Anti-microbial
   { keywords: ["antibacterial", "antiseptic", "antimicrobial", "bakterya"], icon: "shield-checkmark-outline" },
   { keywords: ["antifungal", "fungal", "an-an", "buni"], icon: "shield-half-outline" },
-  { keywords: ["parasit", "worm", "deworm", "bulate"], icon: "bug-outline" },
+  { keywords: ["parasit", "worm", "deworm", "bulate", "ascaris", "malaria"], icon: "bug-outline" },
 
   // Wellbeing
-  { keywords: ["sleep", "insomnia", "relax", "calm", "anxiety", "stress", "tulog", "puyat"], icon: "moon-outline" },
+  { keywords: ["sleep", "insomnia", "relax", "calm", "anxiety", "stress", "tulog", "puyat", "fatigue"], icon: "moon-outline" },
   { keywords: ["energy", "fatigue", "tonic", "stamina", "pagod", "lakas"], icon: "flash-outline" },
   { keywords: ["immune", "immunity", "resistensya"], icon: "shield-outline" },
 ];
