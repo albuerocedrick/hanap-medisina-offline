@@ -229,8 +229,7 @@ export default function PlantDetailsScreen() {
           zIndex: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center"
         }}
       >
-        <BackButton variant="onImage" />
-
+        <BackButton variant="onImage" fallbackHref="/(tabs)/library" />
 
         <TouchableOpacity
           onPress={handleToggleFavorite}

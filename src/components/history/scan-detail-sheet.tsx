@@ -8,6 +8,7 @@ import {
     BackHandler,
     Dimensions,
     Image,
+    Modal,
     ScrollView,
     StyleSheet,
     Text,
@@ -21,13 +22,14 @@ import Animated, {
     useSharedValue,
     withTiming,
     Easing,
+    FadeIn,
+    FadeOut,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getAllPlants, MedicinalPlant } from "@/src/services/localLibrary";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { LocalScanRecord } from "@/src/types";
-import { DeleteConfirmationModal } from "@/src/components/ui/DeleteConfirmationModal";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SHEET_HEIGHT = SCREEN_HEIGHT * 0.85;
@@ -37,9 +39,10 @@ interface Props {
   visible: boolean;
   scanId: string | null;
   onClose: () => void;
+  onDeleteRequest?: (id: string) => void;
 }
 
-export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
+export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: Props) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -48,7 +51,6 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
 
   const getScanById = useHistoryStore((s) => s.getScanById);
   const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
-  const deleteScan = useHistoryStore((s) => s.deleteScan);
   const scans = useHistoryStore((s) => s.scans);
 
   const [scan, setScan] = useState<LocalScanRecord | null>(null);
@@ -56,7 +58,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [viewerImage, setViewerImage] = useState<string | null>(null);
 
   // Animated values — run entirely on UI thread, no JS freeze
   const progress = useSharedValue(0); // 0 = hidden, 1 = visible
@@ -143,14 +145,10 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
 
   const handleDelete = () => {
     if (!scan) return;
-    setShowDeleteModal(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!scan) return;
-    setShowDeleteModal(false);
-    await deleteScan(scan.id);
     onClose();
+    setTimeout(() => {
+      onDeleteRequest?.(scan.id);
+    }, 150);
   };
 
   const formatDate = (isoString?: string) => {
@@ -164,9 +162,10 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
   const displayConf = scan ? Number((scan.confidence * 100).toFixed(2)) : 0;
 
   const getConfColor = (val: number) => {
+    // High confidence: Solid green
     if (val >= 70) return { bg: "#22c55e", text: isDark ? "#4ade80" : "#15803d", bar: isDark ? "rgba(34, 197, 94, 0.2)" : "#f0fdf4" };
-    if (val >= 35) return { bg: "#f59e0b", text: isDark ? "#fbbf24" : "#b45309", bar: isDark ? "rgba(245, 158, 11, 0.2)" : "#fffbeb" };
-    return { bg: "#ef4444", text: isDark ? "#f87171" : "#b91c1c", bar: isDark ? "rgba(239, 68, 68, 0.2)" : "#fef2f2" };
+    // Lower confidence: Light green/Lime instead of Orange/Red
+    return { bg: "#84cc16", text: isDark ? "#a3e635" : "#4d7c0f", bar: isDark ? "rgba(132, 204, 22, 0.2)" : "#f7fee7" };
   };
   const confStyles = getConfColor(displayConf);
 
@@ -245,7 +244,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
             <Text style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_500Medium" }} className="text-center mt-2">{error}</Text>
           </View>
         ) : (
-          <ScrollView contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
 
             {/* Title & Favorite Badge */}
             <View className="px-6 pt-2 pb-6 flex-row items-start justify-between gap-4">
@@ -290,12 +289,14 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
                 >
                   Your Scan
                 </Text>
-                <View
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => setViewerImage(scan.imageUri)}
                   style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)", borderWidth: 1 }}
                   className="aspect-square bg-slate-200 rounded-2xl overflow-hidden"
                 >
                   <Image source={{ uri: scan.imageUri }} className="w-full h-full" resizeMode="cover" />
-                </View>
+                </TouchableOpacity>
               </View>
 
               <View className="flex-1">
@@ -305,7 +306,9 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
                 >
                   Reference
                 </Text>
-                <View
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => libraryMatch?.imageUrl && setViewerImage(libraryMatch.imageUrl)}
                   style={{
                     borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
                     borderWidth: 1,
@@ -318,7 +321,7 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
                   ) : (
                     <Ionicons name="leaf-outline" size={28} color={isDark ? "rgba(248,250,252,0.3)" : "#A2CFA3"} />
                   )}
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -416,15 +419,25 @@ export function ScanDetailSheet({ visible, scanId, onClose }: Props) {
         )}
       </Animated.View>
 
-      <DeleteConfirmationModal
-        visible={showDeleteModal}
-        itemName={scan?.plantName}
-        title="Delete Scan"
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setShowDeleteModal(false)}
-      />
+      {!!viewerImage && (
+        <Animated.View 
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(200)}
+          style={[StyleSheet.absoluteFill, { zIndex: 9999, elevation: 9999, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' }]}
+        >
+          <TouchableOpacity
+            style={{ position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 10 }}
+            onPress={() => setViewerImage(null)}
+          >
+            <Feather name="x" size={32} color="#fff" />
+          </TouchableOpacity>
+          <Image
+            source={{ uri: viewerImage }}
+            style={{ width: '100%', height: '100%' }}
+            resizeMode="contain"
+          />
+        </Animated.View>
+      )}
     </View>
   );
 }

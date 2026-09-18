@@ -199,6 +199,7 @@ export default function HistoryScreen() {
         onClose={() => {
           setSelectedScanId(null);
         }}
+        onDeleteRequest={handleDeleteScan}
       />
 
       <DeleteConfirmationModal
