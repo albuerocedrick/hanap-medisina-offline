@@ -297,7 +297,7 @@ export function MascotChatSlot() {
             borderRadius: 18,
             paddingVertical: 12,
             paddingHorizontal: 14,
-            backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "#FAFEEF",
+            backgroundColor: isDark ? "#141d14" : "#FAFEEF",
             borderWidth: 1,
             borderColor: isDark ? "rgba(255,255,255,0.10)" : "rgba(162,207,163,0.55)",
           }}
@@ -324,7 +324,7 @@ export function MascotChatSlot() {
               bottom: 12,
               width: 12,
               height: 12,
-              backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "#FAFEEF",
+              backgroundColor: isDark ? "#141d14" : "#FAFEEF",
               borderLeftWidth: 1,
               borderBottomWidth: 1,
               borderColor: isDark ? "rgba(255,255,255,0.10)" : "rgba(162,207,163,0.55)",

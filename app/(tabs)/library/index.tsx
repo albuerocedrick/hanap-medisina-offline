@@ -60,6 +60,8 @@ export default function LibraryFeed() {
   const setActivePreparationMethod = useLibraryStore((s) => s.setActivePreparationMethod);
   const viewMode = useLibraryStore((s) => s.viewMode);
   const setViewMode = useLibraryStore((s) => s.setViewMode);
+  const showFavoritesOnly = useLibraryStore((s) => s.showFavoritesOnly);
+  const setShowFavoritesOnly = useLibraryStore((s) => s.setShowFavoritesOnly);
 
   const isLoadingPlants = useLibraryStore((s) => s.isLoadingPlants);
   const plantsError = useLibraryStore((s) => s.plantsError);
@@ -258,17 +260,25 @@ export default function LibraryFeed() {
         </View>
       )}
 
-      {displayedPlants.length > 0 && (
+      {(displayedPlants.length > 0 || showFavoritesOnly) && (
         <View className="mx-6 mt-4 mb-2 flex-row items-center justify-between">
           <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)", fontSize: 12, letterSpacing: 0.5, textTransform: "uppercase" }}>
             {t('lib_plants_found').replace('{count}', displayedPlants.length.toString())}
           </Text>
-          <TouchableOpacity 
-            onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
-            style={{ padding: 4 }}
-          >
-            <Ionicons name={viewMode === 'list' ? 'grid-outline' : 'list-outline'} size={20} color={isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)"} />
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <TouchableOpacity 
+              onPress={() => setShowFavoritesOnly(!showFavoritesOnly)}
+              style={{ padding: 4 }}
+            >
+              <Ionicons name={showFavoritesOnly ? 'heart' : 'heart-outline'} size={20} color={showFavoritesOnly ? '#ef4444' : (isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)")} />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
+              style={{ padding: 4 }}
+            >
+              <Ionicons name={viewMode === 'list' ? 'grid-outline' : 'list-outline'} size={20} color={isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)"} />
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>

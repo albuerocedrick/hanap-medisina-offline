@@ -210,46 +210,6 @@ export function HomeSearchBar({
             </TouchableOpacity>
           </AnimatedView>
         </AnimatedView>
-
-        <Animated.View
-          style={[
-            {
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              alignItems: "center",
-              justifyContent: "center",
-              marginLeft: 10,
-            },
-            actionButtonStyle,
-          ]}
-        >
-          <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={() => {
-              if (isSearchActive) {
-                clearSearch();
-                setIsFocused(false);
-                return;
-              }
-              setLibrarySearchQuery(searchQuery);
-              router.push("/(tabs)/library");
-            }}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Feather
-              name={isSearchActive ? "x" : "sliders"}
-              size={16}
-              color={isSearchActive ? (isDark ? "rgba(248,250,252,0.85)" : "#4D8035") : "#F8FAFC"}
-            />
-          </TouchableOpacity>
-        </Animated.View>
       </View>
 
       {/* ── Suggestions Dropdown ── */}

@@ -86,6 +86,9 @@ interface LibraryState {
   viewMode: 'list' | 'grid';
 
   // ── Favorites (Offline Storage) ───────────────────────────────────────────
+  /** Show only favorited plants in the library. */
+  showFavoritesOnly: boolean;
+
   /**
    * Full MedicinalPlant objects persisted to AsyncStorage.
    * Storing full objects (not just IDs) ensures zero-network offline access.
@@ -133,6 +136,8 @@ interface LibraryActions {
   setSearchQuery: (query: string) => void;
 
   setViewMode: (mode: 'list' | 'grid') => void;
+
+  setShowFavoritesOnly: (show: boolean) => void;
 
   /**
    * Sets the active category filter.
@@ -209,6 +214,7 @@ export const useLibraryStore = create<LibraryStore>()(
       activeSymptom: null,
       activePreparationMethod: null,
       viewMode: 'list',
+      showFavoritesOnly: false,
       favorites: [],
       favoriteIds: new Set<string>(),
       isLoadingFavorites: false,
@@ -301,6 +307,10 @@ export const useLibraryStore = create<LibraryStore>()(
         set({ viewMode: mode });
       },
 
+      setShowFavoritesOnly: (show) => {
+        set({ showFavoritesOnly: show });
+      },
+
       setActiveCategory: (category) => {
         set({ activeCategory: category, activeSymptom: null, activePreparationMethod: null });
         // Re-filter plants for the selected category.
@@ -329,12 +339,18 @@ export const useLibraryStore = create<LibraryStore>()(
       },
 
       getDisplayedPlants: () => {
-        const { plants, searchQuery } = get();
+        const { plants, searchQuery, showFavoritesOnly, favoriteIds } = get();
 
-        if (!searchQuery) return plants;
+        let filtered = plants;
+
+        if (showFavoritesOnly) {
+           filtered = filtered.filter(p => favoriteIds.has(p.id));
+        }
+
+        if (!searchQuery) return filtered;
         
         const lower = searchQuery.toLowerCase();
-        return plants.filter(p => 
+        return filtered.filter(p => 
           p.name.toLowerCase().includes(lower) || 
           (p.scientificName && p.scientificName.toLowerCase().includes(lower)) || 
           (p.details && p.details.localName.toLowerCase().includes(lower))

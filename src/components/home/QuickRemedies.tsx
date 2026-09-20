@@ -136,12 +136,8 @@ export function QuickRemedies() {
     router.push("/(tabs)/library");
   };
 
-  // "See all" opens the Methods tab of the Library with no method preselected.
-  // Passing null (rather than leaving the previous value) clears any filter left
-  // over from an earlier card tap, so the user actually lands on the full list.
   const handleSeeAll = () => {
-    setActivePreparationMethod(null);
-    router.push("/(tabs)/library");
+    router.push("/quick-remedies");
   };
 
 
