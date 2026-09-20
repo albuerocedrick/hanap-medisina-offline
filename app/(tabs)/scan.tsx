@@ -201,10 +201,10 @@ function SuccessState({
   const { t } = useTranslation();
 
   const isHigh = confidence >= 0.70;
-  const isMid  = confidence >= MIN_CONFIDENCE && confidence < 0.70;
   
-  const tierColor = isHigh ? (isDark ? "#A2CFA3" : "#22451C") : isMid ? (isDark ? "#FBBF24" : "#D97706") : (isDark ? "#F87171" : "#DC2626");
-  const tierBorder = isHigh ? (isDark ? "rgba(162,207,163,0.3)" : "rgba(162,207,163,0.5)") : isMid ? (isDark ? "rgba(217,119,6,0.3)" : "#FDE68A") : (isDark ? "rgba(239,68,68,0.3)" : "#FECACA");
+  // Use light green to dark green instead of traffic-light colors
+  const tierColor = isHigh ? (isDark ? "#A2CFA3" : "#22451C") : (isDark ? "#7AAB62" : "#4D8035");
+  const tierBorder = isDark ? "rgba(162,207,163,0.3)" : "rgba(34,69,28,0.3)";
 
   return (
     <View style={styles.resultContainer}>
@@ -523,33 +523,19 @@ export default function ScanScreen() {
       setResult(null);
       setSaveStatus(null);
 
-      // ── 2. Crop to screen field-of-view, then resize & pad for TFLite ────────
+      // ── 2. Resize & pad for TFLite (3:4 ratio perfectly matches training) ────────
       // Step 2a: Apply EXIF rotation so dimensions are correct for portrait.
       const uprightPhoto = await ImageManipulator.manipulateAsync(localUri, [], { format: ImageManipulator.SaveFormat.JPEG });
-      const sensorW = uprightPhoto.width;
-      const sensorH = uprightPhoto.height;
 
-      // Step 2b: Calculate which portion of the sensor is visible on screen.
-      // The camera preview uses "cover" mode — scales sensor to fill the screen
-      // and hides the left/right edges. We crop exactly that visible area so the
-      // AI sees the same field of view the user sees.
-      const visibleSensorW = Math.round(SCREEN_WIDTH * sensorH / SCREEN_HEIGHT);
-      const cropOriginX = Math.max(0, Math.floor((sensorW - visibleSensorW) / 2));
-      const safeCropW = Math.min(visibleSensorW, sensorW - cropOriginX);
-
-      const cropped = await ImageManipulator.manipulateAsync(
-        uprightPhoto.uri,
-        [{ crop: { originX: cropOriginX, originY: 0, width: safeCropW, height: sensorH } }],
-        { format: ImageManipulator.SaveFormat.JPEG }
-      );
-
-      // Step 2c: Scale longest edge to 224 (mirrors tf.image.resize_with_pad).
-      const scale   = 224 / Math.max(cropped.width, cropped.height);
-      const scaledW = Math.round(cropped.width * scale);
-      const scaledH = Math.round(cropped.height * scale);
+      // Step 2b: Scale longest edge to 224 (mirrors tf.image.resize_with_pad).
+      // Since the photo is 3:4, the width will become 168 and height 224, 
+      // adding very thin black bars on the left/right, exactly like the training data.
+      const scale   = 224 / Math.max(uprightPhoto.width, uprightPhoto.height);
+      const scaledW = Math.round(uprightPhoto.width * scale);
+      const scaledH = Math.round(uprightPhoto.height * scale);
 
       const resized = await ImageManipulator.manipulateAsync(
-        cropped.uri,
+        uprightPhoto.uri,
         [{ resize: { width: scaledW, height: scaledH } }],
         { format: ImageManipulator.SaveFormat.JPEG, compress: 1.0, base64: true }
       );
@@ -686,10 +672,11 @@ export default function ScanScreen() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
+    <View style={{ flex: 1, backgroundColor: "#000", justifyContent: "center" }}>
       {/* Tap-to-focus Wrapper */}
       <TouchableWithoutFeedback onPress={handleFocus}>
-        <View style={StyleSheet.absoluteFill}>
+        {/* Strictly 3:4 Portrait Box (Width to Height = 3:4 -> Height = Width * 4/3) */}
+        <View style={{ width: SCREEN_WIDTH, height: SCREEN_WIDTH * (4 / 3), overflow: 'hidden' }}>
           {/* Camera feed */}
           <Camera
             ref={camera}

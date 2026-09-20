@@ -1,26 +1,21 @@
 import React, { useEffect } from "react";
 import {
-  Modal,
   Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import Animated, {
   FadeIn,
   FadeOut,
   ZoomIn,
   ZoomOut,
-  useAnimatedStyle,
   useReducedMotion,
-  useSharedValue,
-  withSpring,
 } from "react-native-reanimated";
 import { useTheme } from "@/src/theme/useTheme";
-import { MIN_TOUCH_TARGET, spacing } from "@/src/theme/tokens";
 
 interface DeleteConfirmationModalProps {
   visible: boolean;
@@ -34,12 +29,10 @@ interface DeleteConfirmationModalProps {
   onCancel: () => void;
 }
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
 export function DeleteConfirmationModal({
   visible,
-  title = "Delete Scan",
-  message = "This scan and its stored image will be permanently deleted from your device.",
+  title,
+  message,
   itemName,
   confirmLabel = "Delete",
   cancelLabel = "Cancel",
@@ -49,9 +42,7 @@ export function DeleteConfirmationModal({
 }: DeleteConfirmationModalProps) {
   const t = useTheme();
   const reduceMotion = useReducedMotion();
-
-  const confirmScale = useSharedValue(1);
-  const cancelScale = useSharedValue(1);
+  const isDark = t.isDark;
 
   useEffect(() => {
     if (visible) {
@@ -64,14 +55,12 @@ export function DeleteConfirmationModal({
   const isMultiple = itemCount !== undefined && itemCount > 1;
 
   const displayTitle = isMultiple
-    ? `Delete ${itemCount} Scans`
-    : itemName
-    ? `Delete ${itemName}?`
-    : title;
+    ? `Delete ${itemCount} Scans?`
+    : title || "Delete Scan?";
 
   const displayMessage = isMultiple
-    ? `Are you sure you want to permanently delete these ${itemCount} selected scans? This action cannot be undone.`
-    : message;
+    ? `Are you sure you want to permanently delete these ${itemCount} selected scans?\n\nThis action cannot be undone.`
+    : message || `Are you sure you want to permanently delete the scan for ${itemName || "this plant"}?\n\nThis action cannot be undone.`;
 
   const handleCancel = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -84,13 +73,7 @@ export function DeleteConfirmationModal({
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="none"
-      onRequestClose={handleCancel}
-      statusBarTranslucent
-    >
+    <View style={[StyleSheet.absoluteFill, { zIndex: 9999, elevation: 9999 }]} pointerEvents="box-none">
       <View style={styles.backdrop}>
         {/* Backdrop Tap to Dismiss */}
         <Pressable style={StyleSheet.absoluteFill} onPress={handleCancel}>
@@ -99,7 +82,7 @@ export function DeleteConfirmationModal({
             exiting={FadeOut.duration(140)}
             style={[
               StyleSheet.absoluteFill,
-              { backgroundColor: t.isDark ? "rgba(0, 0, 0, 0.78)" : "rgba(10, 20, 10, 0.52)" },
+              { backgroundColor: "rgba(11, 18, 11, 0.6)" },
             ]}
           />
         </Pressable>
@@ -111,94 +94,39 @@ export function DeleteConfirmationModal({
           style={[
             styles.card,
             {
-              backgroundColor: t.isDark ? "#132113" : "#FAFEEF",
-              borderColor: t.isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(34, 69, 28, 0.14)",
-              shadowColor: t.isDark ? "#000000" : "#22451C",
-              shadowOpacity: t.isDark ? 0.45 : 0.16,
+              backgroundColor: isDark ? "#0B120B" : "#FAFEEF",
+              borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
+              shadowColor: isDark ? "#000" : "#22451C",
+              shadowOpacity: isDark ? 0.3 : 0.1,
             },
           ]}
           accessibilityRole="alert"
         >
-          {/* Subtle Accent Glow Ring & Icon Disc */}
-          <View
-            style={[
-              styles.iconOuterRing,
-              {
-                backgroundColor: t.isDark
-                  ? "rgba(239, 68, 68, 0.12)"
-                  : "rgba(220, 38, 38, 0.08)",
-                borderColor: t.isDark
-                  ? "rgba(239, 68, 68, 0.25)"
-                  : "rgba(220, 38, 38, 0.16)",
-              },
-            ]}
-          >
-            <View
-              style={[
-                styles.iconInnerDisc,
-                {
-                  backgroundColor: t.isDark
-                    ? "rgba(239, 68, 68, 0.22)"
-                    : "rgba(220, 38, 38, 0.14)",
-                },
-              ]}
-            >
-              <Ionicons
-                name="trash-outline"
-                size={26}
-                color={t.isDark ? "#F87171" : "#DC2626"}
-              />
+          {/* Header Row */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
+            <View style={{
+                backgroundColor: isDark ? "rgba(239, 68, 68, 0.1)" : "#fee2e2",
+                width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center'
+            }}>
+              <Feather name="trash-2" size={20} color={isDark ? "#fca5a5" : "#dc2626"} />
             </View>
+            <Text
+              style={[
+                styles.title,
+                { color: isDark ? "#F8FAFC" : "#22451C" },
+              ]}
+              numberOfLines={2}
+            >
+              {displayTitle}
+            </Text>
           </View>
-
-          {/* Title */}
-          <Text
-            style={[
-              styles.title,
-              { color: t.textPrimary },
-            ]}
-            numberOfLines={2}
-            maxFontSizeMultiplier={1.4}
-          >
-            {displayTitle}
-          </Text>
-
-          {/* Target Chip (if single item with name or multi batch) */}
-          {(itemName || isMultiple) && (
-            <View
-              style={[
-                styles.targetChip,
-                {
-                  backgroundColor: t.isDark ? "rgba(255,255,255,0.06)" : "rgba(34,69,28,0.06)",
-                  borderColor: t.isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)",
-                },
-              ]}
-            >
-              <Ionicons
-                name={isMultiple ? "layers-outline" : "leaf-outline"}
-                size={14}
-                color={t.textSecondary}
-                style={{ marginRight: 6 }}
-              />
-              <Text
-                style={[
-                  styles.targetChipText,
-                  { color: t.textSecondary },
-                ]}
-                numberOfLines={1}
-              >
-                {isMultiple ? `${itemCount} items selected` : itemName}
-              </Text>
-            </View>
-          )}
 
           {/* Description Message */}
           <Text
             style={[
               styles.message,
-              { color: t.isDark ? "rgba(248, 250, 252, 0.7)" : "rgba(34, 69, 28, 0.72)" },
+              { color: isDark ? "rgba(248, 250, 252, 0.6)" : "rgba(34, 69, 28, 0.7)" },
             ]}
-            maxFontSizeMultiplier={1.5}
           >
             {displayMessage}
           </Text>
@@ -214,18 +142,11 @@ export function DeleteConfirmationModal({
               style={[
                 styles.cancelButton,
                 {
-                  backgroundColor: t.isDark ? "rgba(255, 255, 255, 0.07)" : "rgba(34, 69, 28, 0.07)",
-                  borderColor: t.isDark ? "rgba(255, 255, 255, 0.14)" : "rgba(34, 69, 28, 0.16)",
+                  backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(162,207,163,0.15)",
                 },
               ]}
             >
-              <Text
-                style={[
-                  styles.cancelText,
-                  { color: t.textPrimary },
-                ]}
-                maxFontSizeMultiplier={1.3}
-              >
+              <Text style={[styles.cancelText, { color: isDark ? "#F8FAFC" : "#22451C" }]}>
                 {cancelLabel}
               </Text>
             </TouchableOpacity>
@@ -239,20 +160,19 @@ export function DeleteConfirmationModal({
               style={[
                 styles.deleteButton,
                 {
-                  backgroundColor: t.isDark ? "#DC2626" : "#DC2626",
-                  shadowColor: "#DC2626",
+                  backgroundColor: "transparent",
+                  borderColor: isDark ? "rgba(239, 68, 68, 0.4)" : "#fca5a5",
                 },
               ]}
             >
-              <Ionicons name="trash" size={16} color="#FFFFFF" style={{ marginRight: 6 }} />
-              <Text style={styles.deleteText} maxFontSizeMultiplier={1.3}>
+              <Text style={[styles.deleteText, { color: isDark ? "#fca5a5" : "#dc2626" }]}>
                 {confirmLabel}
               </Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
       </View>
-    </Modal>
+    </View>
   );
 }
 
@@ -261,66 +181,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 28,
+    paddingHorizontal: 24,
   },
   card: {
     width: "100%",
-    maxWidth: 348,
-    borderRadius: 28,
-    paddingHorizontal: spacing.xl,
-    paddingTop: 28,
-    paddingBottom: 22,
-    alignItems: "center",
-    borderWidth: 1,
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 24,
-    elevation: 10,
-  },
-  iconOuterRing: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-    borderWidth: 1,
-  },
-  iconInnerDisc: {
-    width: 48,
-    height: 48,
+    maxWidth: 340,
     borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 24,
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 8,
   },
   title: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 19,
-    textAlign: "center",
-    marginBottom: 8,
-    letterSpacing: -0.2,
-  },
-  targetChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 20,
-    borderWidth: 1,
-    marginBottom: 10,
-    maxWidth: "92%",
-  },
-  targetChipText: {
-    fontFamily: "Quicksand_600SemiBold",
-    fontSize: 12,
-    letterSpacing: 0.1,
+    fontFamily: "serif",
+    fontSize: 22,
+    fontStyle: "italic",
+    flex: 1,
   },
   message: {
     fontFamily: "Quicksand_500Medium",
-    fontSize: 13.5,
-    lineHeight: 19,
-    textAlign: "center",
+    fontSize: 14.5,
+    lineHeight: 22,
     marginBottom: 24,
-    paddingHorizontal: 6,
   },
   buttonRow: {
     flexDirection: "row",
@@ -329,33 +212,25 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    minHeight: MIN_TOUCH_TARGET,
-    paddingVertical: 13,
-    borderRadius: 16,
+    paddingVertical: 14,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
   },
   cancelText: {
-    fontFamily: "Quicksand_700Bold",
-    fontSize: 14.5,
+    fontFamily: "Quicksand_600SemiBold",
+    fontSize: 15,
   },
   deleteButton: {
     flex: 1,
-    minHeight: MIN_TOUCH_TARGET,
-    paddingVertical: 13,
-    borderRadius: 16,
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.28,
-    shadowRadius: 8,
-    elevation: 3,
   },
   deleteText: {
     fontFamily: "Quicksand_700Bold",
-    fontSize: 14.5,
-    color: "#FFFFFF",
+    fontSize: 15,
   },
 });
