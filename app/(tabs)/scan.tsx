@@ -733,7 +733,7 @@ export default function ScanScreen() {
       {/* Network badge removed in offline version */}
 
       {sheetState === "hidden" && <>
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_help")} onPress={() => setShowGuide(true)} style={{ position: "absolute", left: 20, top: safeInsets.top + 12, minHeight: 44, paddingHorizontal: 14, borderRadius: 14, backgroundColor: "rgba(14,29,19,0.85)", flexDirection: "row", gap: 8, alignItems: "center" }}>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_help")} onPress={() => setShowGuide(true)} style={{ position: "absolute", right: 20, top: safeInsets.top + 12, minHeight: 44, paddingHorizontal: 14, borderRadius: 14, backgroundColor: "rgba(14,29,19,0.85)", flexDirection: "row", gap: 8, alignItems: "center" }}>
           <Ionicons name="help-circle-outline" size={20} color="#C5FFDE" /><Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: "#FAFEEF" }}>{t("capture_help")}</Text>
         </TouchableOpacity>
         <View pointerEvents="none" style={{ position: "absolute", bottom: Math.max(safeInsets.bottom, 12) + 76, left: 20, right: 20, padding: 14, borderRadius: 16, backgroundColor: "rgba(14,29,19,0.90)" }}>

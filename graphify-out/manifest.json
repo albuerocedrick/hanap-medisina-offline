@@ -60,9 +60,9 @@
     "semantic_hash": ""
   },
   "app/(tabs)/scan.tsx": {
-    "mtime": 1791020782.0710163,
-    "seen": 1791020837.744195,
-    "ast_hash": "5088e896a5982f3cc87a1535a4096e44",
+    "mtime": 1791024419.111738,
+    "seen": 1791024424.3907113,
+    "ast_hash": "9390c3f74173a156f755d535b795c9cc",
     "semantic_hash": ""
   },
   "app/+not-found.tsx": {
