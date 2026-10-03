@@ -22,6 +22,7 @@ import {
   getPlantsByIds,
   getPlantsBySymptom,
   getPlantsByPreparationMethod,
+  searchPlantsLocally,
 } from "../services/localLibrary";
 
 
@@ -349,12 +350,7 @@ export const useLibraryStore = create<LibraryStore>()(
 
         if (!searchQuery) return filtered;
         
-        const lower = searchQuery.toLowerCase();
-        return filtered.filter(p => 
-          p.name.toLowerCase().includes(lower) || 
-          (p.scientificName && p.scientificName.toLowerCase().includes(lower)) || 
-          (p.details && p.details.localName.toLowerCase().includes(lower))
-        );
+        return searchPlantsLocally(filtered, searchQuery);
       },
 
       // ── Favorites ──────────────────────────────────────────────────────────

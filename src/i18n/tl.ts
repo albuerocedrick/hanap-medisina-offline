@@ -7,6 +7,9 @@ export default {
   tab_profile: 'Profile',
 
   // Profile
+  photo_credits: "Mga kredito sa larawan",
+  photo_credits_note: "Mga larawan mula sa Wikimedia Commons. Pinaliit at kinompress para magamit offline; naka-crop sa mga card. Nananatili ang orihinal na lisensya ng bawat larawan.",
+  photo_source: "Tingnan ang orihinal na larawan",
   onboard_welcome: "Tuklasin ang halamang gamot.",
   onboard_welcome_body: "Mag-scan ng dahon, tingnan ang library, at i-save ang natuklasan. Gumagana kahit offline.",
   onboard_offline: "Maligayang pagdating",
@@ -29,11 +32,12 @@ export default {
   capture_light: "Maliwanag at pantay na ilaw",
   capture_light_body: "Gumamit ng natural na liwanag. Iwasan ang matinding anino, silaw, at malabong larawan.",
   capture_frame: "I-frame at mag-focus",
-  capture_frame_body: "Ilagay ang buong dahon sa frame. I-tap ang dahon para mag-focus, huwag gumalaw, at i-tap muli ang Scan para kumuha ng larawan.",
+  capture_frame_body: "Ilagay ang buong dahon sa frame. I-tap para mag-focus, huwag gumalaw, saka i-tap ang Kunan ng larawan.",
   capture_ready: "Handa nang mag-scan",
   capture_help: "Mga tip sa larawan",
   capture_reminder: "Isang dahon · Simpleng background · Maliwanag",
-  capture_hold: "I-tap para mag-focus. Huwag gumalaw, saka i-tap ang Scan.",
+  capture_photo: "Kunan ng larawan",
+  capture_hold: "I-tap para mag-focus. Huwag gumalaw, saka i-tap ang Kunan ng larawan.",
   profile_title: "Profile",
   profile_subtitle: "Pamahalaan ang iyong account at mga setting",
   profile_account: "Account",
@@ -110,6 +114,13 @@ export default {
   home_trivia_title: "Kaalaman Ngayon",
   home_stats_title: "Iyong Stats",
   home_search_placeholder: "Maghanap ng sintomas, halaman...",
+  home_search_clear: "Burahin ang hinahanap",
+  home_search_plants: "Mga halaman",
+  home_search_group_count: "{count} halaman",
+  home_search_one_plant: "1 halaman",
+  home_search_results: "{count} halamang nahanap",
+  home_search_hint: "Subukan ang sintomas tulad ng ubo, lagnat, o sakit ng tiyan.",
+  home_search_empty: "Walang halamang nahanap. Subukan ang ibang sintomas o pangalan ng halaman.",
 
   // Scan Screen
   scan_instruction: "Itutok ang camera sa halaman",

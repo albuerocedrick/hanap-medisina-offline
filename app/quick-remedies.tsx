@@ -11,7 +11,6 @@ import {
   StatusBar,
 } from "react-native";
 import Animated, {
-  FadeIn,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -57,7 +56,7 @@ function RemedyCard({ group, index, viewMode, onPress }: {
 
   return (
     <AnimatedPressable
-      entering={FadeIn.delay(index * 40)}
+      collapsable={false}
       onPressIn={() => { scale.value = withSpring(0.95, { damping: 15, stiffness: 300 }); }}
       onPressOut={() => { scale.value = withSpring(1, { damping: 15, stiffness: 300 }); }}
       onPress={() => onPress(group)}
@@ -327,6 +326,7 @@ export default function QuickRemediesScreen() {
             paddingBottom: 120,
           }}
           showsVerticalScrollIndicator={false}
+          removeClippedSubviews={false}
         />
       </SafeAreaView>
     </View>

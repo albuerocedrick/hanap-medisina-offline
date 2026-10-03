@@ -2,6 +2,7 @@ import { Image } from 'react-native';
 import { MedicinalPlant, ComparisonTraits, ResearchEntry as ResearchItem } from '../types';
 import { SymptomItem, PreparationGroup } from '../types/homeFeed';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { searchPlantRecords } from './plantSearch';
 
 // Load both datasets
 import plantsDataEn from '../data/plants_en.json';
@@ -88,15 +89,7 @@ export function getPlantsByCategory(category: string): MedicinalPlant[] {
 }
 
 export function searchPlantsLocally(list: MedicinalPlant[], query: string): MedicinalPlant[] {
-  const lowercaseQuery = query.toLowerCase();
-  
-  return list.filter(plant => {
-    return (
-      (plant.name && plant.name.toLowerCase().includes(lowercaseQuery)) ||
-      (plant.scientificName && plant.scientificName.toLowerCase().includes(lowercaseQuery)) ||
-      (plant.details?.localName && plant.details.localName.toLowerCase().includes(lowercaseQuery))
-    );
-  });
+  return searchPlantRecords(list, query);
 }
 
 export function searchPlants(query: string): MedicinalPlant[] {

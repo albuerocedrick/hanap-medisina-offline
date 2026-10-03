@@ -68,7 +68,7 @@ const MAX_SLEEP_DOT_TICKS = 8;
 /** How long a non-looping pose stays up when animations are suppressed. */
 const STATIC_POSE_MS = 1200;
 
-export function MascotChatSlot() {
+export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -94,8 +94,8 @@ export function MascotChatSlot() {
     return () => sub.remove();
   }, []);
 
-  const animationsEnabled = isFocused && isAppActive && !reduceMotion;
-  const timersEnabled = isFocused && isAppActive;
+  const animationsEnabled = visible && isFocused && isAppActive && !reduceMotion;
+  const timersEnabled = visible && isFocused && isAppActive;
 
   const activeConfig = useMemo(() => {
     if (mode === "expression") return MASCOT_CONFIG.expressions[exprIdx];

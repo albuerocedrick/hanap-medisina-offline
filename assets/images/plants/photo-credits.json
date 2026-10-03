@@ -1,0 +1,56 @@
+[
+  {
+    "target": "bayabas.jpg",
+    "species": "Psidium guajava",
+    "source": "https://commons.wikimedia.org/wiki/File:Psidium_guajava_leafbud_26032014.jpg",
+    "artist": "Joydeep",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "name": "Bayabas"
+  },
+  {
+    "target": "lagundi.jpg",
+    "species": "Vitex negundo",
+    "source": "https://commons.wikimedia.org/wiki/File:Vitex_negundo_leaves.jpg",
+    "artist": "Doronenko",
+    "license": "CC BY 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+    "name": "Lagundi"
+  },
+  {
+    "target": "sambong.jpg",
+    "species": "Blumea balsamifera",
+    "source": "https://commons.wikimedia.org/wiki/File:Lakad-bulan_-_Blumea_balsamifera_(Philippines).jpg",
+    "artist": "Daramlagon",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "name": "Sambong"
+  },
+  {
+    "target": "serpentina.jpg",
+    "species": "Andrographis paniculata",
+    "source": "https://commons.wikimedia.org/wiki/File:Andrographis_paniculata_from_Trivandrum.jpg",
+    "artist": "Deoxyribose12",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "name": "Serpentina"
+  },
+  {
+    "target": "kamaria.jpg",
+    "species": "Artemisia vulgaris",
+    "source": "https://commons.wikimedia.org/wiki/File:Artemisia_vulgaris_SCA-181108.jpg",
+    "artist": "R.A.Nonenmacher",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "name": "Kamaria"
+  },
+  {
+    "target": "madre-cacao.jpg",
+    "species": "Gliricidia sepium",
+    "source": "https://commons.wikimedia.org/wiki/File:Starr_071024-0427_Gliricidia_sepium.jpg",
+    "artist": "Forest &amp; Kim Starr",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "name": "Madre Cacao"
+  }
+]

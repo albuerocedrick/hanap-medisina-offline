@@ -24,10 +24,10 @@
     "semantic_hash": ""
   },
   "app/(tabs)/index.tsx": {
-    "mtime": 1791011268.088295,
-    "seen": 1791011973.0888133,
-    "ast_hash": "f0c939c6b09cc3e65556bb28f731e53a",
-    "semantic_hash": "f0c939c6b09cc3e65556bb28f731e53a"
+    "mtime": 1791028071.9879975,
+    "seen": 1791028075.42593,
+    "ast_hash": "e6b5ff7776ca9976506118ad5f835a30",
+    "semantic_hash": ""
   },
   "app/(tabs)/library/[id].tsx": {
     "mtime": 1791011268.088295,
@@ -54,15 +54,15 @@
     "semantic_hash": "87069a5f579001f44f19b89995e6e311"
   },
   "app/(tabs)/profile.tsx": {
-    "mtime": 1791020782.07004,
-    "seen": 1791020837.744195,
-    "ast_hash": "b3f19e506924e2842d7246def7f096a1",
+    "mtime": 1791029821.6186974,
+    "seen": 1791029900.6476507,
+    "ast_hash": "cc11649baa28babad880d07b85bf0fb5",
     "semantic_hash": ""
   },
   "app/(tabs)/scan.tsx": {
-    "mtime": 1791024419.111738,
-    "seen": 1791024424.3907113,
-    "ast_hash": "9390c3f74173a156f755d535b795c9cc",
+    "mtime": 1791030876.6912088,
+    "seen": 1791030879.9976702,
+    "ast_hash": "d3bcb4ae870514279d88c70dc844b955",
     "semantic_hash": ""
   },
   "app/+not-found.tsx": {
@@ -72,22 +72,22 @@
     "semantic_hash": "85ad6f73226e5e2562d30fc01a7e548f"
   },
   "app/_layout.tsx": {
-    "mtime": 1791020782.07004,
-    "seen": 1791020837.744195,
-    "ast_hash": "78233b6f52b24871169441b3a18e52f5",
+    "mtime": 1791029558.851632,
+    "seen": 1791029900.6476507,
+    "ast_hash": "71cadb1e19790355c38cad3bfb0d8abf",
     "semantic_hash": ""
   },
   "app/quick-remedies.tsx": {
-    "mtime": 1791011268.0912957,
-    "seen": 1791011973.0888133,
-    "ast_hash": "b5ee9eda9de5ff6bc1e3ec7b2eac49a8",
-    "semantic_hash": "b5ee9eda9de5ff6bc1e3ec7b2eac49a8"
+    "mtime": 1791029558.76116,
+    "seen": 1791029900.6476507,
+    "ast_hash": "ccf7a0eb58f9c8e66190b31401c286a1",
+    "semantic_hash": ""
   },
   "app/symptoms.tsx": {
-    "mtime": 1791011268.092296,
-    "seen": 1791011973.0888133,
-    "ast_hash": "8c22603f64674be9241117d809331370",
-    "semantic_hash": "8c22603f64674be9241117d809331370"
+    "mtime": 1791029558.668499,
+    "seen": 1791029900.6476507,
+    "ast_hash": "4dab09eee72710c6ce9650fb89c30600",
+    "semantic_hash": ""
   },
   "babel.config.js": {
     "mtime": 1780650494.724852,
@@ -174,10 +174,10 @@
     "semantic_hash": "0f61d3f056da90c664e78ddf0430a0ad"
   },
   "src/components/home/HomeSearchBar.tsx": {
-    "mtime": 1791011268.1012955,
-    "seen": 1791011973.0888133,
-    "ast_hash": "47b313739ce365886e97dfc4d12a4562",
-    "semantic_hash": "47b313739ce365886e97dfc4d12a4562"
+    "mtime": 1791028652.7228365,
+    "seen": 1791028660.5304759,
+    "ast_hash": "12f1ce5c4c44f81a990e8be5a73734fb",
+    "semantic_hash": ""
   },
   "src/components/home/HomeSkeletons.tsx": {
     "mtime": 1791011268.1022942,
@@ -186,10 +186,10 @@
     "semantic_hash": "8e56ec93022728acb8673aa706ad1050"
   },
   "src/components/home/MascotChatSlot.tsx": {
-    "mtime": 1791011268.1022942,
-    "seen": 1791011973.0888133,
-    "ast_hash": "77e07c30d0566d1cfc82af72d45a8e32",
-    "semantic_hash": "77e07c30d0566d1cfc82af72d45a8e32"
+    "mtime": 1791027665.7180278,
+    "seen": 1791027669.7191868,
+    "ast_hash": "d9618209e886f95c60ca830da75bba8b",
+    "semantic_hash": ""
   },
   "src/components/home/MySavedPlants.tsx": {
     "mtime": 1791011268.1022942,
@@ -402,15 +402,15 @@
     "semantic_hash": "a6ae3b3efa1ae7c0d6a9b89cd8942f27"
   },
   "src/i18n/en.ts": {
-    "mtime": 1791025232.484105,
-    "seen": 1791025262.5855818,
-    "ast_hash": "051d93ec5f5e8800b720ca7dfb34904f",
+    "mtime": 1791029821.7047756,
+    "seen": 1791029900.6476507,
+    "ast_hash": "2256ec2c176d20594dce12bce9929e4e",
     "semantic_hash": ""
   },
   "src/i18n/tl.ts": {
-    "mtime": 1791025232.5707438,
-    "seen": 1791025262.5855818,
-    "ast_hash": "300d8e7a8e99e2e56380f71f805a0506",
+    "mtime": 1791029821.792082,
+    "seen": 1791029900.6476507,
+    "ast_hash": "a7b7c9f1bebad2a9747301516863849f",
     "semantic_hash": ""
   },
   "src/i18n/useTranslation.ts": {
@@ -438,10 +438,10 @@
     "semantic_hash": "714e8803797acb3b6e65361a5b7552fe"
   },
   "src/services/localLibrary.ts": {
-    "mtime": 1789602691.4393816,
-    "seen": 1790731651.2607505,
-    "ast_hash": "16189645ee9629c8595a4ad935f13d17",
-    "semantic_hash": "16189645ee9629c8595a4ad935f13d17"
+    "mtime": 1791026987.9968865,
+    "seen": 1791027087.3170805,
+    "ast_hash": "577f2cad923cdcb6260b7949227a76e5",
+    "semantic_hash": ""
   },
   "src/store/useCameraStore.ts": {
     "mtime": 1780650494.74096,
@@ -462,10 +462,10 @@
     "semantic_hash": "12df4361517d00eb1200b630b4b544cc"
   },
   "src/store/useLibraryStore.ts": {
-    "mtime": 1789873529.689846,
-    "seen": 1790731651.2607505,
-    "ast_hash": "0ed472576c0d7d3f20b51a049052159d",
-    "semantic_hash": "0ed472576c0d7d3f20b51a049052159d"
+    "mtime": 1791026988.0783525,
+    "seen": 1791027087.3170805,
+    "ast_hash": "0c6f97b157ad648ae2156f4b6c62dbca",
+    "semantic_hash": ""
   },
   "src/store/useProfileStore.ts": {
     "mtime": 1780650494.741959,
@@ -714,9 +714,9 @@
     "semantic_hash": ""
   },
   "assets/images/plants/bayabas.jpg": {
-    "mtime": 1789478724.029073,
-    "seen": 1790732210.9410853,
-    "ast_hash": "61a8a023066b7f4ab44082a8d3636ea5",
+    "mtime": 1791029653.8581524,
+    "seen": 1791029900.6476507,
+    "ast_hash": "18a58d84c94a7f471fc4bd52fed98935",
     "semantic_hash": ""
   },
   "assets/images/plants/calamansi.jpg": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "assets/images/plants/kamaria.jpg": {
-    "mtime": 1789478724.0320728,
-    "seen": 1790732210.9410853,
-    "ast_hash": "a34c8530b200da7629de86466b7f410c",
+    "mtime": 1791029653.8601062,
+    "seen": 1791029900.6476507,
+    "ast_hash": "a9088ee5af200603845291138ed3e2cf",
     "semantic_hash": ""
   },
   "assets/images/plants/kamias.jpg": {
@@ -774,15 +774,15 @@
     "semantic_hash": ""
   },
   "assets/images/plants/lagundi.jpg": {
-    "mtime": 1789478724.035073,
-    "seen": 1790732210.9410853,
-    "ast_hash": "94d6ea443683ead9ca7655c99f4be993",
+    "mtime": 1791029653.859129,
+    "seen": 1791029900.6476507,
+    "ast_hash": "39b368a54d3362dba28d906ed807282b",
     "semantic_hash": ""
   },
   "assets/images/plants/madre-cacao.jpg": {
-    "mtime": 1789478724.0385787,
-    "seen": 1790732210.9410853,
-    "ast_hash": "5894a233f72f404f7c87fb1480b0c12d",
+    "mtime": 1791029653.8601062,
+    "seen": 1791029900.6476507,
+    "ast_hash": "d06ff4870a539635b19845c501ed6780",
     "semantic_hash": ""
   },
   "assets/images/plants/makabuhay.jpg": {
@@ -828,15 +828,15 @@
     "semantic_hash": ""
   },
   "assets/images/plants/sambong.jpg": {
-    "mtime": 1789478724.044084,
-    "seen": 1790732210.9410853,
-    "ast_hash": "b8a905a03ec044d35d7e03860677f076",
+    "mtime": 1791029653.859129,
+    "seen": 1791029900.6476507,
+    "ast_hash": "4311cbda1381de00f9d532ee6d959a6d",
     "semantic_hash": ""
   },
   "assets/images/plants/serpentina.jpg": {
-    "mtime": 1789478724.046587,
-    "seen": 1790732210.9410853,
-    "ast_hash": "12d51c86a1b192a8048849912066bfc5",
+    "mtime": 1791029653.859129,
+    "seen": 1791029900.6476507,
+    "ast_hash": "c67e49b281a2fa52478e3ea0cfcc26db",
     "semantic_hash": ""
   },
   "assets/images/plants/suha.jpg": {
@@ -909,6 +909,36 @@
     "mtime": 1791026301.1914423,
     "seen": 1791026349.2427042,
     "ast_hash": "19f0e5f70ecaf2fe5e969d2985b9b3a3",
+    "semantic_hash": ""
+  },
+  "src/services/plantSearch.ts": {
+    "mtime": 1791028652.6325793,
+    "seen": 1791028660.5304759,
+    "ast_hash": "b79b3c1af8a8c2d6f06280d24f5fcba9",
+    "semantic_hash": ""
+  },
+  "tests/plantSearch.test.cjs": {
+    "mtime": 1791028652.9702826,
+    "seen": 1791028660.5304759,
+    "ast_hash": "63777968a56df1d9395db794b25b8a59",
+    "semantic_hash": ""
+  },
+  "assets/images/plants/photo-credits.json": {
+    "mtime": 1791029775.3814592,
+    "seen": 1791029900.6476507,
+    "ast_hash": "016411b5a2a339fc0401e26e4634f994",
+    "semantic_hash": ""
+  },
+  "src/components/profile/PhotoCreditsSheet.tsx": {
+    "mtime": 1791029821.5286052,
+    "seen": 1791029900.6476507,
+    "ast_hash": "4dbaea962dbcbbcc90a17096bf35b38d",
+    "semantic_hash": ""
+  },
+  "assets/images/plants/PHOTO_CREDITS.md": {
+    "mtime": 1791029653.8610823,
+    "seen": 1791029900.6476507,
+    "ast_hash": "51030436a3acbf03f936146b4281b0c6",
     "semantic_hash": ""
   }
 }

@@ -7,6 +7,9 @@ export default {
   tab_profile: 'Profile',
 
   // Profile
+  photo_credits: "Photo credits",
+  photo_credits_note: "Plant photos from Wikimedia Commons. Resized and compressed for offline use; cropped to fit cards. Each photo keeps its original license.",
+  photo_source: "View original photo",
   onboard_welcome: "Explore medicinal plants.",
   onboard_welcome_body: "Scan a leaf, browse the library, and save your discoveries. Works offline.",
   onboard_offline: "Welcome",
@@ -29,11 +32,12 @@ export default {
   capture_light: "Bright, even lighting",
   capture_light_body: "Use natural light. Avoid strong shadows, glare, and a blurry photo.",
   capture_frame: "Frame and focus",
-  capture_frame_body: "Keep the entire leaf inside the frame. Tap the leaf to focus, hold still, then tap Scan again to capture.",
+  capture_frame_body: "Keep the entire leaf inside the frame. Tap the leaf to focus, hold still, then tap Take photo to capture.",
   capture_ready: "Ready to scan",
   capture_help: "Photo tips",
   capture_reminder: "One leaf · Plain background · Good light",
-  capture_hold: "Tap the leaf to focus. Hold still, then tap Scan.",
+  capture_photo: "Take photo",
+  capture_hold: "Tap the leaf to focus. Hold still, then tap Take photo.",
   profile_title: "Profile",
   profile_subtitle: "Manage your account & preferences",
   profile_account: "Account",
@@ -111,6 +115,13 @@ export default {
   home_trivia_title: "Daily Trivia",
   home_stats_title: "Your Stats",
   home_search_placeholder: "Search symptoms, plants...",
+  home_search_clear: "Clear search",
+  home_search_plants: "Plants",
+  home_search_group_count: "{count} plants",
+  home_search_one_plant: "1 plant",
+  home_search_results: "{count} plants found",
+  home_search_hint: "Try a symptom like cough, fever, or stomach ache.",
+  home_search_empty: "No plants found. Try another symptom or plant name.",
 
   // Scan Screen
   scan_instruction: "Point camera at a plant",

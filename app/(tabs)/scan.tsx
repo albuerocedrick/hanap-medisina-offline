@@ -405,7 +405,7 @@ export default function ScanScreen() {
   const isDark = colorScheme === "dark";
   const { t } = useTranslation();
 
-  const { captureTrigger, setIsProcessing } = useCameraStore();
+  const { captureTrigger, setIsProcessing, isProcessing } = useCameraStore();
   const addScan = useHistoryStore((s) => s.addScan);
 
   // Lifecycle & focus handling (Vision Camera needs active session sync)
@@ -716,7 +716,7 @@ export default function ScanScreen() {
       {device.hasFlash && (
         <TouchableOpacity
           activeOpacity={0.8}
-          style={[styles.flashButton, { top: Platform.OS === "ios" ? 60 : 40, backgroundColor: isDark ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.2)", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.2)" }]}
+          style={[styles.flashButton, { top: safeInsets.top + 12, backgroundColor: isDark ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.2)", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.2)" }]}
           onPress={() => setFlashMode(m => m === "off" ? "on" : m === "on" ? "auto" : "off")}
         >
           <Ionicons 
@@ -733,10 +733,24 @@ export default function ScanScreen() {
       {/* Network badge removed in offline version */}
 
       {sheetState === "hidden" && <>
+        <View pointerEvents="box-none" style={{ position: "absolute", bottom: Math.max(safeInsets.bottom, 12) + 76, left: 20, right: 20, alignItems: "center" }}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={t("capture_photo")}
+            accessibilityState={{ disabled: !model || isProcessing || guideOpen, busy: isProcessing }}
+            disabled={!model || isProcessing || guideOpen}
+            onPress={handleCapture}
+            activeOpacity={0.8}
+            style={{ minHeight: 52, minWidth: 148, paddingHorizontal: 22, borderRadius: 16, backgroundColor: "#C5FFDE", opacity: !model || isProcessing ? 0.55 : 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, borderWidth: 1, borderColor: "rgba(255,255,255,0.35)" }}
+          >
+            {isProcessing ? <ActivityIndicator size="small" color="#173B28" /> : <Ionicons name="camera-outline" size={24} color="#173B28" />}
+            <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 14, color: "#173B28" }}>{t("capture_photo")}</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_help")} onPress={() => setShowGuide(true)} style={{ position: "absolute", right: 20, top: safeInsets.top + 12, minHeight: 44, paddingHorizontal: 14, borderRadius: 14, backgroundColor: "rgba(14,29,19,0.85)", flexDirection: "row", gap: 8, alignItems: "center" }}>
           <Ionicons name="help-circle-outline" size={20} color="#C5FFDE" /><Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: "#FAFEEF" }}>{t("capture_help")}</Text>
         </TouchableOpacity>
-        <View pointerEvents="none" style={{ position: "absolute", bottom: Math.max(safeInsets.bottom, 12) + 76, left: 20, right: 20, padding: 14, borderRadius: 16, backgroundColor: "rgba(14,29,19,0.90)" }}>
+        <View pointerEvents="none" style={{ position: "absolute", bottom: Math.max(safeInsets.bottom, 12) + 140, left: 20, right: 20, padding: 14, borderRadius: 16, backgroundColor: "rgba(14,29,19,0.90)" }}>
           <Text style={{ fontFamily: "Quicksand_700Bold", color: "#C5FFDE", fontSize: 12, textAlign: "center" }}>{t("capture_reminder")}</Text>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: "#FAFEEF", fontSize: 12, lineHeight: 18, textAlign: "center", marginTop: 5 }}>{t("capture_hold")}</Text>
         </View>

@@ -61,6 +61,7 @@ export default function HomeScreen() {
         />
 
         <ScrollView
+          removeClippedSubviews={false}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           refreshControl={
@@ -77,9 +78,8 @@ export default function HomeScreen() {
         >
           <HomeHeader />
           <HomeSearchBar onActiveChange={setIsSearchActive} />
-          {!isSearchActive && (
-            <>
-              <MascotChatSlot />
+          <View collapsable={false} pointerEvents={isSearchActive ? "none" : "auto"} importantForAccessibility={isSearchActive ? "no-hide-descendants" : "auto"} style={{ height: isSearchActive ? 0 : undefined, overflow: "hidden" }}>
+              <MascotChatSlot visible={!isSearchActive} />
               <ScanNowBanner />
               <SymptomGrid />
               <QuickRemedies />
@@ -87,8 +87,7 @@ export default function HomeScreen() {
               <RecentScans ref={recentScansRef} onScanPress={(scan) => setSelectedScanId(scan.id)} />
               <DailyTrivia />
               <YourStats />
-            </>
-          )}
+          </View>
         </ScrollView>
         <ScanDetailSheet 
           visible={!!selectedScanId}
