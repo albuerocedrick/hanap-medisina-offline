@@ -26,7 +26,7 @@ interface Props {
   onToggleSelect: (id: string) => void;
 }
 
-export const HistoryGridCard: React.FC<Props> = ({
+export const HistoryGridCard = React.memo(function HistoryGridCard({
   item,
   onPress,
   onLongPress,
@@ -34,7 +34,7 @@ export const HistoryGridCard: React.FC<Props> = ({
   isSelecting,
   isSelected,
   onToggleSelect,
-}) => {
+}: Props) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -197,4 +197,4 @@ export const HistoryGridCard: React.FC<Props> = ({
       </View>
     </AnimatedTouchable>
   );
-};
+});

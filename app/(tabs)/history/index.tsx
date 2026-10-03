@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "nativewind";
-import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StatusBar, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { FlatList, StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PageTransition } from "@/src/components/ui/PageTransition";
@@ -53,42 +53,43 @@ export default function HistoryScreen() {
   }, [incomingScanId, incomingOpenAt]);
 
   // Derived filtered & sorted data
-  const filteredScans = activeTab === "favorites" 
+  const filteredScans = useMemo(() => activeTab === "favorites"
     ? scans.filter(s => s.isFavorite) 
-    : scans;
+    : scans, [activeTab, scans]);
 
-  const sortedScans = [...filteredScans].sort((a, b) => {
+  const sortedScans = useMemo(() => [...filteredScans].sort((a, b) => {
     const timeA = new Date(a.scannedAt).getTime();
     const timeB = new Date(b.scannedAt).getTime();
     return sortBy === "newest" ? timeB - timeA : timeA - timeB;
-  });
+  }), [filteredScans, sortBy]);
 
-  const favoriteCount = scans.filter(s => s.isFavorite).length;
+  const favoriteCount = useMemo(() => scans.filter(s => s.isFavorite).length, [scans]);
   const totalCount = scans.length;
 
   // Handlers
-  const handleLongPress = (item: LocalScanRecord) => {
+  const handleLongPress = useCallback((item: LocalScanRecord) => {
     if (!isSelecting) {
       setIsSelecting(true);
       setSelectedIds(new Set([item.id]));
     }
-  };
+  }, [isSelecting]);
 
-  const handleToggleSelect = (id: string) => {
-    const newSet = new Set(selectedIds);
-    if (newSet.has(id)) {
-      newSet.delete(id);
-      if (newSet.size === 0) setIsSelecting(false);
-    } else {
-      newSet.add(id);
-    }
-    setSelectedIds(newSet);
-  };
+  const handleToggleSelect = useCallback((id: string) => {
+    setSelectedIds(previous => {
+      const next = new Set(previous);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+  useEffect(() => {
+    if (selectedIds.size === 0) setIsSelecting(false);
+  }, [selectedIds.size]);
 
-  const handleDeleteScan = (id: string) => {
+  const handleDeleteScan = useCallback((id: string) => {
     const scanItem = scans.find((s) => s.id === id);
     setDeleteTarget({ type: "single", id, plantName: scanItem?.plantName });
-  };
+  }, [scans]);
 
   const handleDeleteSelected = () => {
     if (selectedIds.size === 0) return;
@@ -112,12 +113,12 @@ export default function HistoryScreen() {
     setSelectedIds(new Set());
   };
 
-  const handlePressScan = (id: string) => {
+  const handlePressScan = useCallback((item: LocalScanRecord) => {
     // Defer state update so animations and gestures can finish cleanly
     requestAnimationFrame(() => {
-      setSelectedScanId(id);
+      setSelectedScanId(item.id);
     });
-  };
+  }, []);
 
   // UI layout constants
   const pillHeight = 78;
@@ -154,13 +155,14 @@ export default function HistoryScreen() {
           data={sortedScans}
           keyExtractor={(item) => item.id}
           numColumns={viewMode === "grid" ? 2 : 1}
+          extraData={selectedIds}
           columnWrapperStyle={viewMode === "grid" ? { paddingHorizontal: 16, justifyContent: "space-between" } : undefined}
           renderItem={({ item }) => {
             if (viewMode === "grid") {
               return (
                 <HistoryGridCard
                   item={item}
-                  onPress={() => handlePressScan(item.id)}
+                  onPress={handlePressScan}
                   onLongPress={handleLongPress}
                   onToggleFavorite={toggleFavorite}
                   isSelecting={isSelecting}
@@ -172,7 +174,7 @@ export default function HistoryScreen() {
             return (
               <HistoryCard
                 item={item}
-                onPress={() => handlePressScan(item.id)}
+                onPress={handlePressScan}
                 onLongPress={handleLongPress}
                 onToggleFavorite={toggleFavorite}
                 onDelete={handleDeleteScan}

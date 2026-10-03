@@ -1,16 +1,34 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
-import React from "react";
+import React, { useRef } from "react";
 import { Image, Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import Swipeable from "react-native-gesture-handler/Swipeable";
+import { useTranslation } from "@/src/i18n/useTranslation";
+import Swipeable, { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  SharedValue,
+  interpolate,
+  Extrapolation,
 } from "react-native-reanimated";
 import { LocalScanRecord } from "../../types";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+
+function DeleteAction({ progress, onPress, label, plantName, isDark }: { progress: SharedValue<number>; onPress: () => void; label: string; plantName: string; isDark: boolean }) {
+  const style = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
+    transform: [{ translateX: interpolate(progress.value, [0, 1], [18, 0], Extrapolation.CLAMP) }],
+  }));
+  const color = isDark ? "#FFB4A9" : "#A63328";
+  return <Animated.View style={[{ width: 88, paddingLeft: 8 }, style]}>
+    <TouchableOpacity activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${label}: ${plantName}`} onPress={onPress}
+      style={{ flex: 1, borderRadius: 20, borderWidth: 1, borderColor: isDark ? "#63312C" : "#EBCBC4", backgroundColor: isDark ? "#38201F" : "#FBE9E5", justifyContent: "center", alignItems: "center", gap: 8 }}>
+      <Feather name="trash-2" size={21} color={color} /><Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 12, color }}>{label}</Text>
+    </TouchableOpacity>
+  </Animated.View>;
+}
 
 interface Props {
   item: LocalScanRecord;
@@ -23,7 +41,7 @@ interface Props {
   onToggleSelect: (id: string) => void;
 }
 
-export const HistoryCard: React.FC<Props> = ({
+export const HistoryCard = React.memo(function HistoryCard({
   item,
   onPress,
   onLongPress,
@@ -32,9 +50,11 @@ export const HistoryCard: React.FC<Props> = ({
   isSelecting,
   isSelected,
   onToggleSelect,
-}) => {
+}: Props) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
+  const swipeRef = useRef<SwipeableMethods>(null);
 
   const scale = useSharedValue(1);
   const animStyle = useAnimatedStyle(() => ({
@@ -73,29 +93,10 @@ export const HistoryCard: React.FC<Props> = ({
     });
   };
 
-  const renderRightActions = () => {
-    return (
-      <View style={{ justifyContent: "center", alignItems: "center", width: 80, paddingVertical: 8, paddingRight: 16 }}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => onDelete(item.id)}
-          style={{
-            backgroundColor: "#ef4444",
-            justifyContent: "center",
-            alignItems: "center",
-            width: 50,
-            height: 50,
-            borderRadius: 25,
-          }}
-        >
-          <Feather name="trash-2" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  const renderRightActions = (progress: SharedValue<number>) => <DeleteAction progress={progress} label={t("history_delete")} plantName={item.plantName} isDark={isDark} onPress={() => { swipeRef.current?.close(); onDelete(item.id); }} />;
 
   return (
-    <Swipeable renderRightActions={renderRightActions} enabled={!isSelecting} containerStyle={{ overflow: "visible" }}>
+    <Swipeable ref={swipeRef} renderRightActions={renderRightActions} enabled={!isSelecting} overshootRight={false} rightThreshold={40} friction={2} containerStyle={{ marginHorizontal: 24, marginBottom: 12, overflow: "hidden", borderRadius: 24 }}>
       <AnimatedTouchable
         activeOpacity={1}
         onPressIn={() => {
@@ -114,7 +115,7 @@ export const HistoryCard: React.FC<Props> = ({
         onLongPress={() => onLongPress(item)}
         style={[
           animStyle,
-          { marginHorizontal: 24, marginBottom: 12 }
+          { width: "100%" }
         ]}
       >
         <View
@@ -238,4 +239,4 @@ export const HistoryCard: React.FC<Props> = ({
       </AnimatedTouchable>
     </Swipeable>
   );
-};
+});
