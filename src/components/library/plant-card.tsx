@@ -8,6 +8,7 @@
  * - Falls back to a placeholder when the image fails to load.
  */
 
+import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { memo, useState } from "react";
@@ -34,7 +35,6 @@ const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const PLACEHOLDER_IMAGE = require("../../../assets/images/plant-placeholder.jpg");
 const MAX_VISIBLE_CATEGORIES = 2;
-const THUMB_SIZE = 88;
 
 interface PlantCardProps {
   plant: MedicinalPlant;
@@ -160,23 +160,24 @@ export function PlantCardComponent({
             flexDirection: "row",
             borderRadius: radius.card - 1,
             overflow: "hidden",
-            padding: spacing.md,
-            alignItems: "center",
+            minHeight: 144,
           }}
         >
-          {/* Inset thumbnail with its own radius, rather than a flush square edge */}
+          {/* Edge-to-edge photo, blended into the theme surface on the right. */}
           <View
             style={{
-              width: THUMB_SIZE,
-              height: THUMB_SIZE,
-              borderRadius: radius.input,
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              width: "36%",
               overflow: "hidden",
               backgroundColor: t.surfaceTint,
             }}
           >
             <Image
               source={!imageError && plant.imageUrl ? { uri: plant.imageUrl } : PLACEHOLDER_IMAGE}
-              style={{ width: "100%", height: "100%", opacity: !imageError && plant.imageUrl ? 1 : 0 }}
+              style={{ width: "100%", height: "100%", opacity: 1 }}
               resizeMode="cover"
               onError={handleImageError}
 
@@ -198,9 +199,16 @@ export function PlantCardComponent({
                 <Ionicons name="leaf-outline" size={24} color={t.iconInactive} />
               </View>
             )}
+            <LinearGradient
+              pointerEvents="none"
+              colors={[`${t.surface}00`, t.surface]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: "34%" }}
+            />
           </View>
 
-          <View style={{ flex: 1, paddingLeft: spacing.md, justifyContent: "center" }}>
+          <View style={{ flex: 1, marginLeft: "32%", padding: spacing.md, justifyContent: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" }}>
               <View style={{ flex: 1, paddingRight: spacing.sm }}>
                 <Text

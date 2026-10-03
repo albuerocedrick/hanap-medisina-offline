@@ -2,7 +2,9 @@ import { useFonts } from 'expo-font';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Onboarding } from '@/src/components/onboarding/Onboarding';
+import { useOnboardingStore } from '@/src/store/useOnboardingStore';
 import {
   Quicksand_400Regular,
   Quicksand_500Medium,
@@ -17,6 +19,13 @@ import "../global.css";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const completed = useOnboardingStore(s => s.completed);
+  const [hydrated, setHydrated] = useState(useOnboardingStore.persist.hasHydrated());
+  useEffect(() => {
+    const unsubscribe = useOnboardingStore.persist.onFinishHydration(() => setHydrated(true));
+    setHydrated(useOnboardingStore.persist.hasHydrated());
+    return unsubscribe;
+  }, []);
   const [fontsLoaded, error] = useFonts({
     'Quicksand_400Regular': Quicksand_400Regular,
     'Quicksand_500Medium': Quicksand_500Medium,
@@ -31,19 +40,19 @@ export default function RootLayout() {
 
   // Hide the splash screen once fonts are fully ready
   useEffect(() => {
-    if (fontsLoaded) {
+    if (fontsLoaded && hydrated) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, hydrated]);
 
   // Do not render the app until fonts are loaded
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !hydrated) {
     return null;
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false }}>
+      {!completed ? <Onboarding /> : <Stack screenOptions={{ headerShown: false }}>
         {/* Tabs Group */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         
@@ -52,7 +61,7 @@ export default function RootLayout() {
 
         {/* 404 Fallback */}
         <Stack.Screen name="+not-found" options={{ presentation: 'modal' }} />
-      </Stack>
+      </Stack>}
     </GestureHandlerRootView>
   );
 }

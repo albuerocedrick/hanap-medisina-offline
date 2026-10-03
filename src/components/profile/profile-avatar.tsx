@@ -37,16 +37,16 @@ export function ProfileAvatar({ avatarUri, displayName, onEditPress }: Props) {
     .slice(0, 2);
 
   return (
-    <View className="items-center mb-6">
+    <View className="items-center">
       <View className="relative">
         {/* Avatar */}
         <View 
           style={{
-            backgroundColor: isDark ? "#0B120B" : "#FAFEEF",
+            backgroundColor: isDark ? "#203922" : "#E7EFDD",
             borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.8)",
             borderWidth: StyleSheet.hairlineWidth,
           }}
-          className="w-24 h-24 rounded-full overflow-hidden items-center justify-center"
+          className="w-20 h-20 rounded-full overflow-hidden items-center justify-center"
         >
           {avatarUri ? (
             <Image source={{ uri: avatarUri }} className="w-full h-full" resizeMode="cover" />
@@ -72,7 +72,7 @@ export function ProfileAvatar({ avatarUri, displayName, onEditPress }: Props) {
           activeOpacity={1}
           style={[
             {
-              backgroundColor: isDark ? "#0B120B" : "#FAFEEF",
+              backgroundColor: isDark ? "#203922" : "#E7EFDD",
               borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.8)",
               borderWidth: StyleSheet.hairlineWidth,
             },

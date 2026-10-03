@@ -1,3 +1,6 @@
+import { CaptureGuide } from "@/src/components/onboarding/CaptureGuide";
+import { useOnboardingStore } from "@/src/store/useOnboardingStore";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useColorScheme } from "nativewind";
@@ -407,6 +410,12 @@ export default function ScanScreen() {
 
   // Lifecycle & focus handling (Vision Camera needs active session sync)
   const isFocused = useIsFocused();
+  const safeInsets = useSafeAreaInsets();
+  const guideSeen = useOnboardingStore(s => s.cameraGuideSeen);
+  const [showGuide, setShowGuide] = useState(false);
+  const guideOpen = isFocused && (!guideSeen || showGuide);
+  const closeGuide = () => { useOnboardingStore.getState().markCameraGuideSeen(); setShowGuide(false); };
+  const guide = <CaptureGuide visible={guideOpen} onClose={closeGuide} />;
   const [isAppForeground, setIsAppForeground] = useState(AppState.currentState === "active");
 
   useEffect(() => {
@@ -434,7 +443,7 @@ export default function ScanScreen() {
     }
   }, [isFocused, setIsProcessing]);
 
-  const isCameraActive = isFocused && isAppForeground && sheetState === "hidden";
+  const isCameraActive = isFocused && isAppForeground && !guideOpen && sheetState === "hidden";
 
   // Focus state
   const [focusPoint, setFocusPoint] = useState<{ x: number; y: number } | null>(null);
@@ -505,7 +514,7 @@ export default function ScanScreen() {
   }, [result, router, handleDismiss, setIsProcessing]);
 
   const handleCapture = async () => {
-    if (!camera.current || !model || isCapturing.current) return;
+    if (!isFocused || guideOpen || !camera.current || !model || isCapturing.current) return;
     isCapturing.current = true;
 
     try {
@@ -664,11 +673,11 @@ export default function ScanScreen() {
   };
 
   // ── Guards ─────────────────────────────────────────────────────────────────
-  if (!hasPermission) return <PermissionGate onRequest={requestPermission} />;
+  if (!hasPermission) return <><PermissionGate onRequest={requestPermission} />{guide}</>;
   if (!device) return (
-    <View style={styles.loadingScreen}>
+    <><View style={styles.loadingScreen}>
       <ActivityIndicator size="large" color={tokens.green} />
-    </View>
+    </View>{guide}</>
   );
 
   return (
@@ -723,6 +732,16 @@ export default function ScanScreen() {
 
       {/* Network badge removed in offline version */}
 
+      {sheetState === "hidden" && <>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_help")} onPress={() => setShowGuide(true)} style={{ position: "absolute", left: 20, top: safeInsets.top + 12, minHeight: 44, paddingHorizontal: 14, borderRadius: 14, backgroundColor: "rgba(14,29,19,0.85)", flexDirection: "row", gap: 8, alignItems: "center" }}>
+          <Ionicons name="help-circle-outline" size={20} color="#C5FFDE" /><Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: "#FAFEEF" }}>{t("capture_help")}</Text>
+        </TouchableOpacity>
+        <View pointerEvents="none" style={{ position: "absolute", bottom: Math.max(safeInsets.bottom, 12) + 76, left: 20, right: 20, padding: 14, borderRadius: 16, backgroundColor: "rgba(14,29,19,0.90)" }}>
+          <Text style={{ fontFamily: "Quicksand_700Bold", color: "#C5FFDE", fontSize: 12, textAlign: "center" }}>{t("capture_reminder")}</Text>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: "#FAFEEF", fontSize: 12, lineHeight: 18, textAlign: "center", marginTop: 5 }}>{t("capture_hold")}</Text>
+        </View>
+      </>}
+      {guide}
       {/* Reticle */}
       <View style={styles.reticleContainer} pointerEvents="none">
         <View style={styles.reticle}>

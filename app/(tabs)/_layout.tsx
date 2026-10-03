@@ -1,311 +1,98 @@
-import { Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
+import { LanguageDialogProvider } from "@/src/components/ui/LanguageSheet";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Easing, Pressable, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useTranslation } from "@/src/i18n/useTranslation";
+import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
 import { useColorScheme } from "nativewind";
-import React, { useEffect } from "react";
-import { ActivityIndicator, Dimensions, Platform, Pressable, StyleSheet, View } from "react-native";
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
-import { useCameraStore } from "../../src/store/useCameraStore";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { House, BookOpen, ScanLine, History, UserRound } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
-import { ScanLine } from "lucide-react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing as AnimatedEasing, useReducedMotion } from "react-native-reanimated";
+import { useCameraStore } from "../../src/store/useCameraStore";
 
-// ─── Design Tokens ───────────────────────────────────────────
-const tokens = {
-  greenDark: "#22451C",
-  greenAccent: "#4D8035",
-  muted: "#A2CFA3",
-  pillHeight: 64,
-  horizontalPadding: 24,
-};
-
-// Calculate exact width of one tab for the slider
-const SCREEN_WIDTH = Dimensions.get("window").width;
-const TAB_WIDTH = (SCREEN_WIDTH - tokens.horizontalPadding * 2) / 5;
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-// ─── Tab Config ───────────────────────────────────────────────────────────────
-const TABS = [
-  { name: "index", label: "Home", icon: "home-outline", iconActive: "home" },
-  { name: "library", label: "Library", icon: "book-outline", iconActive: "book" },
-  { name: "scan", label: "Scan", icon: "camera", iconActive: "camera", center: true },
-  { name: "history", label: "History", icon: "time-outline", iconActive: "time" },
-  { name: "profile", label: "Profile", icon: "person-outline", iconActive: "person" },
+const tabs = [
+  { name: "index", label: "Home", labelKey: "tab_home", Icon: House },
+  { name: "library", label: "Library", labelKey: "tab_library", Icon: BookOpen },
+  { name: "scan", label: "Scan", labelKey: "tab_scan", Icon: ScanLine },
+  { name: "history", label: "History", labelKey: "tab_history", Icon: History },
+  { name: "profile", label: "Profile", labelKey: "tab_profile", Icon: UserRound },
 ] as const;
 
-// ─── Single Reanimated Tab Item ───────────────────────────────────────────────
-function TabItem({
-  tab,
-  isActive,
-  isProcessing,
-  isDark,
-  onPress,
-}: {
-  tab: (typeof TABS)[number] & { center?: boolean };
-  isActive: boolean;
-  isProcessing: boolean;
-  isDark: boolean;
-  onPress: () => void;
-}) {
-  const activeAnim = useSharedValue(isActive ? 1 : 0);
-  const pressAnim = useSharedValue(0);
-
-  useEffect(() => {
-    activeAnim.value = withSpring(isActive ? 1 : 0, {
-      damping: 15,
-      stiffness: 200,
-    });
-  }, [isActive]);
-
-  const animatedIconStyle = useAnimatedStyle(() => {
-    const scale =
-      interpolate(activeAnim.value, [0, 1], [1, 1.15], Extrapolate.CLAMP) *
-      interpolate(pressAnim.value, [0, 1], [1, 0.85], Extrapolate.CLAMP);
-
-    // Moves the icon up slightly when active to make room for the line
-    const translateY = tab.center ? 0 : interpolate(activeAnim.value, [0, 1], [0, -3], Extrapolate.CLAMP);
-
-    return { transform: [{ scale }, { translateY }] };
-  });
-
-  const handlePressIn = () => (pressAnim.value = withSpring(1, { damping: 15, stiffness: 300 }));
-  const handlePressOut = () => (pressAnim.value = withSpring(0, { damping: 15, stiffness: 300 }));
-
-  // ── Sleek Center Button ──
-  if (tab.center) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", zIndex: 10 }}>
-        <AnimatedPressable
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-          onPress={onPress}
-          disabled={isProcessing}
-        >
-          <Animated.View style={animatedIconStyle}>
-            <View
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 24,
-                backgroundColor: isDark ? "rgba(255,255,255,0.12)" : tokens.greenDark,
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 2,
-                borderColor: isDark ? "rgba(255,255,255,0.18)" : "rgba(250, 254, 239, 0.8)",
-                // Same reasoning as the bar itself: a black drop shadow on a
-                // dark surface reads as grime, not lift. The lighter fill and
-                // the rim border already separate this button in dark mode.
-                ...(isDark
-                  ? { elevation: 0 }
-                  : {
-                      shadowColor: tokens.greenDark,
-                      shadowOffset: { width: 0, height: 4 },
-                      shadowOpacity: 0.3,
-                      shadowRadius: 8,
-                      elevation: 4,
-                    }),
-
-              }}
-            >
-              {isProcessing ? (
-                <ActivityIndicator color={isDark ? tokens.greenDark : "#FAFEEF"} size="small" />
-              ) : (
-                <ScanLine size={24} color={isDark ? "rgba(248,250,252,0.9)" : "#FAFEEF"} strokeWidth={2.2} />
-              )}
-            </View>
-          </Animated.View>
-        </AnimatedPressable>
-      </View>
-    );
-  }
-
-  // ── Regular Tabs ──
-  return (
-    <AnimatedPressable
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={onPress}
-      style={{ flex: 1, alignItems: "center", justifyContent: "center", height: "100%" }}
-      hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-    >
-      <Animated.View style={animatedIconStyle}>
-        <Ionicons
-          name={isActive ? tab.iconActive : tab.icon}
-          size={22}
-          color={
-            isActive
-              ? isDark
-                ? "rgba(248,250,252,0.9)"
-                : tokens.greenDark
-              : isDark
-                ? "rgba(248,250,252,0.45)"
-                : tokens.muted
-          }
-        />
-      </Animated.View>
-    </AnimatedPressable>
-  );
+function NavItem({ tab, active, dark, busy, onPress, onLongPress }: { tab: typeof tabs[number]; active: boolean; dark: boolean; busy: boolean; onPress: () => void; onLongPress: () => void }) {
+  const scale = useSharedValue(1);
+  const reduced = useReducedMotion();
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const { t } = useTranslation();
+  const center = tab.name === "scan";
+  const color = active ? (dark ? "#C5FFDE" : "#22451C") : (dark ? "#A5B2B7" : "#647661");
+  return <Pressable onPress={onPress} onLongPress={onLongPress}
+    onPressIn={() => { scale.value = reduced ? 1 : withTiming(0.93, { duration: 100 }); }}
+    onPressOut={() => { scale.value = withTiming(1, { duration: reduced ? 0 : 140 }); }}
+    disabled={center && busy} accessibilityRole="tab" accessibilityLabel={t(tab.labelKey)}
+    accessibilityState={{ selected: active, disabled: center && busy }}
+    style={{ flex: 1, minHeight: 56, alignItems: "center", justifyContent: "center" }}>
+    <Animated.View style={[style, { width: "100%", minHeight: 44, alignItems: "center", justifyContent: "center", gap: 2 }]}>
+      {center && busy ? <ActivityIndicator color={color} /> : <tab.Icon size={19} color={color} strokeWidth={active ? 2.2 : 1.8} />}
+      <Text numberOfLines={1} style={{ fontFamily: active ? "Quicksand_700Bold" : "Quicksand_500Medium", fontSize: 10, color }}>{t(tab.labelKey)}</Text>
+    </Animated.View>
+  </Pressable>;
 }
 
-// ─── Custom Floating Glassmorphism Tab Bar ────────────────────────────────────
-function CustomTabBar({ state, navigation }: any) {
-  const triggerCapture = useCameraStore((s) => s.triggerCapture);
-  const isProcessing = useCameraStore((s) => s.isProcessing);
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-
-  // 🌟 Sliding Indicator Animation Value
-  const sliderPosition = useSharedValue(state.index);
-
-  // Sync slider if navigation happens from outside the tab bar (like a back button)
+function GlassTabBar({ state, navigation }: BottomTabBarProps) {
+  const dark = useColorScheme().colorScheme === "dark";
+  const insets = useSafeAreaInsets();
+  const busy = useCameraStore(s => s.isProcessing);
+  const capture = useCameraStore(s => s.triggerCapture);
+  const [width, setWidth] = useState(0);
+  const reduced = useReducedMotion();
+  const selectedIndex = tabs.findIndex(tab => tab.name === state.routes[state.index]?.name);
+  const position = useSharedValue(selectedIndex);
   useEffect(() => {
-    sliderPosition.value = withSpring(state.index, { damping: 16, stiffness: 110, mass: 0.9 });
-  }, [state.index]);
-
-  const animatedSliderStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: sliderPosition.value * TAB_WIDTH }],
-    };
-  });
-
-  return (
-    <View
-      style={{
-        position: "absolute",
-        bottom: Platform.OS === "ios" ? 34 : 20,
-        left: tokens.horizontalPadding,
-        right: tokens.horizontalPadding,
-        height: tokens.pillHeight,
-        borderRadius: tokens.pillHeight / 2,
-        // Dark mode used a 40%-opacity pure-black shadow at elevation 8. A dark
-        // shadow only reads as depth when it can darken something lighter than
-        // itself — over a #0B120B background it just smears a dirty grey halo
-        // under the bar. Real dark-mode UIs convey elevation with a *lighter*
-        // surface plus a light rim, not a drop shadow, so the shadow is dropped
-        // entirely here and the rim below does the work.
-        ...(isDark
-          ? { elevation: 0 }
-          : {
-              shadowColor: tokens.greenDark,
-              shadowOffset: { width: 0, height: 10 },
-              shadowOpacity: 0.1,
-              shadowRadius: 20,
-              elevation: 8,
-            }),
-      }}
-
-    >
-      <View style={{ flex: 1, borderRadius: tokens.pillHeight / 2, overflow: "hidden" }}>
-        <BlurView
-          intensity={Platform.OS === "ios" ? 60 : 90}
-          tint={isDark ? "dark" : "light"}
-          style={StyleSheet.absoluteFill}
-        />
-
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            { backgroundColor: isDark ? "rgba(10, 12, 10, 0.72)" : "rgba(250, 254, 239, 0.75)" },
-          ]}
-        />
-
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              borderWidth: 1.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.8)",
-              borderRadius: tokens.pillHeight / 2,
-            },
-          ]}
-        />
-
-        {/* 🌟 The Sliding Line Indicator */}
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              bottom: 12, // 🌟 Moved up closer to the icons (was 6)
-              width: TAB_WIDTH,
-              height: 4,
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 0,
-            },
-            animatedSliderStyle,
-          ]}
-        >
-          <View
-            style={{
-              width: 18,
-              height: 4,
-              borderRadius: 2,
-              backgroundColor: isDark ? "rgba(248,250,252,0.55)" : tokens.greenAccent,
-            }}
-          />
-        </Animated.View>
-
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-          {TABS.map((tab) => {
-            const routeIndex = state.routes.findIndex((r: any) => r.name === tab.name);
-            const isActive = state.index === routeIndex;
-
-            return (
-              <TabItem
-                key={tab.name}
-                tab={tab}
-                isActive={isActive}
-                isDark={isDark}
-                isProcessing={isProcessing}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
-                  const route = state.routes[routeIndex];
-                  const event = navigation.emit({
-                    type: "tabPress",
-                    target: route?.key,
-                    canPreventDefault: true,
-                  });
-
-                  if (!isActive && !event.defaultPrevented) {
-                    // 🌟 1. INSTANTLY trigger the sliding animation (you will see it glide)
-                    sliderPosition.value = withSpring(routeIndex, {
-                      damping: 15,
-                      stiffness: 110, // Smoother, slightly slower spring so you can see it slide
-                      mass: 0.9,
-                    });
-
-                    // 🌟 2. Load the next page a split second later so it doesn't freeze the slide
-                    setTimeout(() => {
-                      navigation.navigate(tab.name);
-                    }, 10);
-                  } else if (isActive && tab.name === "scan") {
-                    triggerCapture();
-                  }
-                }}
-              />
-            );
-          })}
-        </View>
-      </View>
+    position.value = withTiming(selectedIndex, { duration: reduced ? 0 : 260, easing: AnimatedEasing.out(AnimatedEasing.cubic) });
+  }, [selectedIndex, reduced, position]);
+  const indicator = useAnimatedStyle(() => ({
+    transform: [{ translateX: position.value * width / tabs.length }],
+  }));
+  return <View onLayout={event => setWidth(event.nativeEvent.layout.width - 14)} style={{ position: "absolute", bottom: Math.max(insets.bottom, 12), left: 12, right: 12,
+    borderRadius: 15, shadowColor: "#07140C", shadowOpacity: dark ? 0.35 : 0.12, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 5 }}>
+    <View style={{ paddingHorizontal: 6, flexDirection: "row", borderRadius: 15, overflow: "hidden", borderWidth: 1,
+      borderColor: dark ? "rgba(193,220,209,0.22)" : "rgba(112,150,107,0.28)" }}>
+    <LinearGradient pointerEvents="none" colors={dark ? ["#263330", "#131D1B", "#263137"] : ["#FDFFF6", "#EFF5E7", "#F8FCEE"]}
+      start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} />
+    {width > 0 && <Animated.View pointerEvents="none" style={[indicator, {
+      position: "absolute", left: 9, top: 6, width: Math.max(0, width / tabs.length - 4), height: 44,
+      borderRadius: 10, overflow: "hidden", borderWidth: 1,
+      borderColor: dark ? "rgba(111,230,169,0.25)" : "rgba(114,153,85,0.20)",
+    }]}>
+      <LinearGradient colors={dark ? ["#2B5741", "#183D2C", "#295740"] : ["#DCECCF", "#E8F3DB", "#D1E6BF"]}
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ flex: 1 }} />
+    </Animated.View>}
+    {tabs.map(tab => {
+      const route = state.routes.find(r => r.name === tab.name);
+      const active = state.routes[state.index]?.name === tab.name;
+      return <NavItem key={tab.name} tab={tab} active={active} dark={dark} busy={busy}
+        onLongPress={() => navigation.emit({ type: "tabLongPress", target: route?.key })}
+        onPress={() => {
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+          const event = navigation.emit({ type: "tabPress", target: route?.key, canPreventDefault: true });
+          if (!active && !event.defaultPrevented) navigation.navigate(tab.name);
+          else if (active && tab.name === "scan" && !event.defaultPrevented) capture();
+        }} />;
+    })}
     </View>
-  );
+  </View>;
 }
 
 export default function TabLayout() {
-  return (
-    <Tabs tabBar={(props) => <CustomTabBar {...props} />} screenOptions={{ headerShown: false }}>
-      <Tabs.Screen name="index" options={{ title: "Home" }} />
-      <Tabs.Screen name="library" options={{ title: "Library" }} />
-      <Tabs.Screen name="scan" options={{ title: "Scan" }} />
-      <Tabs.Screen name="history" options={{ title: "History" }} />
-      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
-    </Tabs>
-  );
+  const dark = useColorScheme().colorScheme === "dark";
+  const reduced = useReducedMotion();
+  return <View style={{ flex: 1, backgroundColor: dark ? "#0B120B" : "#FAFEEF" }}><LanguageDialogProvider><Tabs tabBar={props => <GlassTabBar {...props} />} screenOptions={{ headerShown: false,
+    sceneStyle: { backgroundColor: dark ? "#0B120B" : "#FAFEEF" },
+    animation: reduced ? "none" : "fade",
+    transitionSpec: { animation: "timing", config: { duration: 240, easing: Easing.inOut(Easing.cubic) } },
+  }}>
+    {tabs.map(tab => <Tabs.Screen key={tab.name} name={tab.name} options={{ title: tab.label }} />)}
+  </Tabs></LanguageDialogProvider></View>;
 }

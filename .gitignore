@@ -47,3 +47,6 @@ graphify-out/cache/
 graphify-out/reflections/
 
 
+
+# Graphify automatic dated backups
+graphify-out/20??-??-??/
