@@ -693,6 +693,7 @@ export default function ScanScreen() {
             device={device}
             isActive={isCameraActive}
             photo={true}
+            enableZoomGesture={true}
           />
           
           {/* Focus Indicator */}

@@ -1,25 +1,25 @@
-# Graph Report - hanap-medisina-offline  (2026-10-03)
+# Graph Report - hanap-medisina-offline  (2026-10-04)
 
 ## Corpus Check
-- 103 files · ~2,931,689 words
+- 105 files · ~2,932,274 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 6 file(s) not represented in the graph (top: .tflite 3, (none) 1, .ttf 1)
 
 ## Summary
-- 658 nodes · 1669 edges · 38 communities (31 shown, 7 thin omitted)
+- 675 nodes · 1688 edges · 34 communities (26 shown, 8 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 41 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `54fab86b`
+- Built from commit: `68f40adc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - dependencies
-- dataTransfer.ts
+- index.ts
 - details-tab.tsx
-- nativewind
+- (tabs)/index.tsx
 - react
 - package.json
 - expo
@@ -27,25 +27,21 @@
 - Onboarding.tsx
 - withHighRefreshRate.js
 - Medicinal Plant Leaf Classification
-- @expo/vector-icons
+- useTheme.ts
 - expo-file-system
-- localLibrary.ts
+- release-builds/README.md
 - AGENTS.md
 - plantSearch.ts
 - scan.tsx
 - compilerOptions
 - useTranslation
-- library/index.tsx
-- [id].tsx
+- localLibrary.ts
+- Navigation & UI pass — what changed, and what I'd do next
 - metro.config.js
 - devDependencies
 - scripts
 - MySavedPlants.tsx
-- useLibraryStore
 - utils.ts
-- plant-grid-card.tsx
-- useLibraryStore.ts
-- physical-checklist.tsx
 - Plant photograph credits
 - cultivation-tab.tsx
 - research-tab.tsx
@@ -58,14 +54,12 @@
 4. `useTheme()` - 58 edges
 5. `nativewind` - 39 edges
 6. `@expo/vector-icons` - 36 edges
-7. `useLibraryStore` - 36 edges
+7. `useLibraryStore` - 35 edges
 8. `expo-router` - 25 edges
 9. `react-native-reanimated` - 23 edges
 10. `MedicinalPlant` - 18 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `4. Elevation, radius, and spacing scales` --references--> `HomeHeader()`  [INFERRED]
-  UI_RECOMMENDATIONS.md → src/components/home/HomeHeader.tsx
 - `Part 2 — The cramped "See all" cards` --references--> `SymptomGrid()`  [INFERRED]
   UI_NAVIGATION.md → src/components/home/SymptomGrid.tsx
 - `What I did not change` --references--> `useTheme()`  [INFERRED]
@@ -74,31 +68,33 @@
   UI_RECOMMENDATIONS.md → src/theme/useTheme.ts
 - `Suggested order of work` --references--> `useTheme()`  [INFERRED]
   UI_RECOMMENDATIONS.md → src/theme/useTheme.ts
+- `4. Elevation, radius, and spacing scales` --references--> `HomeHeader()`  [INFERRED]
+  UI_RECOMMENDATIONS.md → src/components/home/HomeHeader.tsx
 
 ## Import Cycles
 - None detected.
 
-## Communities (38 total, 7 thin omitted)
+## Communities (34 total, 8 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.04
 Nodes (53): dependencies, babel-preset-expo, buffer, clsx, expo, expo-asset, expo-blur, expo-build-properties (+45 more)
 
-### Community 1 - "dataTransfer.ts"
-Cohesion: 0.22
-Nodes (14): expo-document-picker, expo-sharing, ExportImportSection(), AnimatedTouchable, ProfileMenuItem(), Props, applyImport(), ensureDir() (+6 more)
+### Community 1 - "index.ts"
+Cohesion: 0.10
+Nodes (28): expo-document-picker, expo-sharing, ERD for hanap-medisina-offline, Notes, Props, RecentScans, RecentScansHandle, RecentScansProps (+20 more)
 
 ### Community 2 - "details-tab.tsx"
 Cohesion: 0.33
 Nodes (8): CRITICAL_WARNING_TERMS, DetailsTab(), DetailsTabProps, EmptySection(), getWarningSeverity(), SectionHeader(), WarningSeverity, PlantDetails
 
-### Community 3 - "nativewind"
-Cohesion: 0.09
-Nodes (39): AnimatedPressable, QuickRemediesScreen(), RemedyCard(), ViewMode, ViewToggle(), AllSymptomsScreen(), AnimatedPressable, SymptomCard() (+31 more)
+### Community 3 - "(tabs)/index.tsx"
+Cohesion: 0.10
+Nodes (33): AnimatedPressable, QuickRemediesScreen(), RemedyCard(), ViewMode, ViewToggle(), HomeScreen(), DailyTrivia(), SkeletonChip() (+25 more)
 
 ### Community 4 - "react"
-Cohesion: 0.06
-Nodes (37): NotFoundScreen(), LibraryLayout(), react, react-native, SPRITE, AnimatedTouchable, IconButton(), AnimatedTouchable (+29 more)
+Cohesion: 0.05
+Nodes (59): NotFoundScreen(), ViewMode, HistoryScreen(), PLACEHOLDER_IMAGE, PLACEHOLDER_IMAGE, PlantSummary, TabKey, expo-router (+51 more)
 
 ### Community 5 - "package.json"
 Cohesion: 0.07
@@ -120,21 +116,17 @@ Nodes (7): RootLayout(), expo-font, @expo-google-fonts/quicksand, expo-splash-sc
 Cohesion: 0.15
 Nodes (12): Cell 1: Mount Google Drive, Cell 2: Set Up Data Pipeline, Cell 3: Build the MobileNetV3-Large Architecture, Cell 4: Train the AI, Cell 5: The Final Exam (Evaluating the Test Set), Cell 6: Export to TFLite and Save Labels, Cell 6b (Optional): Full-Integer Quantization for Maximum Accuracy Retention, Cell 7: The Retraining Phase (Fine-Tuning) (+4 more)
 
-### Community 11 - "@expo/vector-icons"
-Cohesion: 0.10
-Nodes (34): HistoryScreen(), expo-linear-gradient, @expo/vector-icons, react-native-reanimated, react-native-safe-area-context, AnimatedTouchable, DeleteAction(), HistoryCard (+26 more)
+### Community 11 - "useTheme.ts"
+Cohesion: 0.16
+Nodes (17): react-native-reanimated, AnimatedTouchable, IconButton(), AnimatedTouchable, CategoryChip, PLACEHOLDER_IMAGE, PlantCardComponent(), IconButton() (+9 more)
 
 ### Community 12 - "expo-file-system"
 Cohesion: 0.33
 Nodes (4): expo-asset, expo-file-system, react-native-fast-tflite, useTFLite()
 
-### Community 13 - "localLibrary.ts"
-Cohesion: 0.17
-Nodes (12): getHomeFeed(), mulberry32(), getAllPreparationGroups(), getAllSymptoms(), imageMap, METHOD_ICON_RULES, plantsEn, plantsTl (+4 more)
-
 ### Community 15 - "plantSearch.ts"
-Cohesion: 0.08
-Nodes (25): typescript, HomeSearchBar(), aliases, containsTerms(), fieldCache, getFields(), groupPlantSearchResults(), matchesDocumentedUse() (+17 more)
+Cohesion: 0.06
+Nodes (37): typescript, HomeSearchBar(), aliases, containsTerms(), fieldCache, getFields(), groupPlantSearchResults(), matchesDocumentedUse() (+29 more)
 
 ### Community 16 - "scan.tsx"
 Cohesion: 0.14
@@ -145,16 +137,16 @@ Cohesion: 0.22
 Nodes (8): expo/tsconfig.base, compilerOptions, module, moduleResolution, paths, strict, extends, include
 
 ### Community 18 - "useTranslation"
-Cohesion: 0.11
-Nodes (33): GlassTabBar(), NavItem(), TabLayout(), tabs, ProfileScreen(), expo-haptics, lucide-react-native, @react-native-async-storage/async-storage (+25 more)
+Cohesion: 0.08
+Nodes (41): AllSymptomsScreen(), AnimatedPressable, SymptomCard(), ViewToggle(), GlassTabBar(), NavItem(), TabLayout(), tabs (+33 more)
 
-### Community 19 - "library/index.tsx"
-Cohesion: 0.21
-Nodes (13): LibraryFeed(), FilterPills(), FilterPillsProps, Pill(), PillProps, SKELETON_WIDTHS, SkeletonPill(), PlantCard (+5 more)
+### Community 19 - "localLibrary.ts"
+Cohesion: 0.07
+Nodes (46): PlantComparisonScreen(), loadComparisonData(), PlantDetailsScreen(), loadPlantData(), LibraryFeed(), ScanDetailSheet(), loadScanData(), FilterPills() (+38 more)
 
-### Community 20 - "[id].tsx"
-Cohesion: 0.20
-Nodes (11): PLACEHOLDER_IMAGE, PlantDetailsScreen(), loadPlantData(), PlantSummary, TabKey, CompareTab(), CompareTabProps, LookAlikeCard() (+3 more)
+### Community 20 - "Navigation & UI pass — what changed, and what I'd do next"
+Cohesion: 0.18
+Nodes (10): Navigation & UI pass — what changed, and what I'd do next, Part 1 — The back button problem, Part 2 — The cramped "See all" cards, Part 3 — The rest of the pass, Part 4 — What I'd replace or remake next, The actual root cause, Tier 1 — high impact, low risk, Tier 2 — meaningful UX wins (+2 more)
 
 ### Community 21 - "metro.config.js"
 Cohesion: 0.40
@@ -169,24 +161,8 @@ Cohesion: 0.40
 Nodes (5): scripts, android, android:release, ios, start
 
 ### Community 24 - "MySavedPlants.tsx"
-Cohesion: 0.05
-Nodes (39): expo-blur, MascotChatSlot(), AnimatedTouchableOpacity, MySavedPlants(), PlantCard(), GlassCard(), GlassCardProps, Typography() (+31 more)
-
-### Community 25 - "useLibraryStore"
-Cohesion: 0.24
-Nodes (15): PLACEHOLDER_IMAGE, PlantComparisonScreen(), loadComparisonData(), SearchBar(), SearchBarProps, getActivePlants(), getAllCategories(), getPlantsByCategory() (+7 more)
-
-### Community 27 - "plant-grid-card.tsx"
-Cohesion: 0.18
-Nodes (11): ERD for hanap-medisina-offline, Notes, PlantCardProps, AnimatedTouchable, PLACEHOLDER_IMAGE, PlantGridCardComponent(), PlantGridCardProps, PlantSearchGroup (+3 more)
-
-### Community 32 - "useLibraryStore.ts"
-Cohesion: 0.18
-Nodes (4): LibraryErrorCode, LibraryStore, LibraryStoreError, wrapError()
-
-### Community 33 - "physical-checklist.tsx"
-Cohesion: 0.28
-Nodes (7): PhysicalChecklistRow(), PhysicalChecklistRowProps, PhysicalChecklistTable(), PhysicalChecklistTableProps, TRAIT_META, TRAIT_ORDER, ComparisonTraits
+Cohesion: 0.06
+Nodes (36): expo-blur, HomeHeader(), MascotChatSlot(), AnimatedTouchableOpacity, MySavedPlants(), PlantCard(), GlassCard(), GlassCardProps (+28 more)
 
 ### Community 34 - "Plant photograph credits"
 Cohesion: 0.25
@@ -205,24 +181,24 @@ Cohesion: 0.33
 Nodes (5): @react-navigation/native, EXPRESSION_MESSAGES, IDLE_MESSAGES, MASCOT_CONFIG, MascotMode
 
 ## Knowledge Gaps
-- **246 isolated node(s):** `name`, `slug`, `version`, `orientation`, `icon` (+241 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 297 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **257 isolated node(s):** `name`, `slug`, `version`, `orientation`, `icon` (+252 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 305 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `package.json`?**
-  _High betweenness centrality (0.133) - this node is a cross-community bridge._
-- **Why does `react-native` connect `react` to `dataTransfer.ts`, `details-tab.tsx`, `nativewind`, `package.json`, `Onboarding.tsx`, `@expo/vector-icons`, `localLibrary.ts`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `library/index.tsx`, `[id].tsx`, `MySavedPlants.tsx`, `useLibraryStore`, `plant-grid-card.tsx`, `physical-checklist.tsx`, `cultivation-tab.tsx`, `research-tab.tsx`, `MascotChatSlot.tsx`?**
-  _High betweenness centrality (0.114) - this node is a cross-community bridge._
-- **Why does `react` connect `react` to `dataTransfer.ts`, `details-tab.tsx`, `nativewind`, `package.json`, `Onboarding.tsx`, `@expo/vector-icons`, `expo-file-system`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `library/index.tsx`, `[id].tsx`, `MySavedPlants.tsx`, `useLibraryStore`, `plant-grid-card.tsx`, `physical-checklist.tsx`, `cultivation-tab.tsx`, `research-tab.tsx`, `MascotChatSlot.tsx`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
+  _High betweenness centrality (0.130) - this node is a cross-community bridge._
+- **Why does `react-native` connect `react` to `index.ts`, `details-tab.tsx`, `(tabs)/index.tsx`, `cultivation-tab.tsx`, `package.json`, `MascotChatSlot.tsx`, `research-tab.tsx`, `Onboarding.tsx`, `useTheme.ts`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `localLibrary.ts`, `MySavedPlants.tsx`?**
+  _High betweenness centrality (0.113) - this node is a cross-community bridge._
+- **Why does `react` connect `react` to `index.ts`, `details-tab.tsx`, `(tabs)/index.tsx`, `cultivation-tab.tsx`, `package.json`, `MascotChatSlot.tsx`, `research-tab.tsx`, `Onboarding.tsx`, `useTheme.ts`, `expo-file-system`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `localLibrary.ts`, `MySavedPlants.tsx`?**
+  _High betweenness centrality (0.091) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `useTheme()` (e.g. with `3. Design tokens` and `What I did not change`) actually correct?**
   _`useTheme()` has 5 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `name`, `slug`, `version` to the rest of the system?**
-  _246 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _257 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.03773584905660377 - nodes in this community are weakly interconnected._
-- **Should `nativewind` be split into smaller, more focused modules?**
-  _Cohesion score 0.09433962264150944 - nodes in this community are weakly interconnected._
+- **Should `index.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.10476190476190476 - nodes in this community are weakly interconnected._

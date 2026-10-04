@@ -402,14 +402,17 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                 activeOpacity={0.8}
                 onPress={handleDelete}
                 style={{
-                  backgroundColor: "transparent",
-                  borderColor: isDark ? "rgba(239, 68, 68, 0.4)" : "#fca5a5",
+                    backgroundColor: isDark ? "#38201F" : "#FBE9E5",
+                    borderColor: isDark ? "#63312C" : "#EBCBC4",
                   borderWidth: 1,
+                    minHeight: 54, marginTop: 16, borderRadius: 16,
+                    flexDirection: "row", gap: 10, alignItems: "center", justifyContent: "center",
                 }}
-                className="w-full flex-row items-center justify-center gap-2 py-3.5 rounded-xl mt-4"
+                  accessibilityRole="button"
+                  accessibilityLabel="Delete scan"
               >
-                <Feather name="trash-2" size={16} color={isDark ? "#fca5a5" : "#dc2626"} />
-                <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#fca5a5" : "#dc2626" }} className="text-sm">
+                  <Feather name="trash-2" size={18} color={isDark ? "#FFB4A9" : "#A63328"} />
+                  <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 14, color: isDark ? "#FFB4A9" : "#A63328" }}>
                   Delete Scan
                 </Text>
               </TouchableOpacity>

@@ -205,12 +205,13 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
             activeOpacity={0.7}
             style={{
               opacity: selectedCount === 0 ? 0.5 : 1,
-              backgroundColor: isDark ? "rgba(239, 68, 68, 0.15)" : "#fee2e2",
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 12,
+                backgroundColor: isDark ? "#38201F" : "#FBE9E5",
+                borderWidth: 1, borderColor: isDark ? "#63312C" : "#EBCBC4",
+                paddingHorizontal: 14, minHeight: 46, borderRadius: 14,
+                flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center",
             }}
-            className="flex-row items-center gap-2"
+              accessibilityRole="button"
+              accessibilityLabel={t("history_delete")}
           >
             <Feather
               name="trash-2"

@@ -18,7 +18,6 @@ import { ProfileAvatar } from "@/src/components/profile/profile-avatar";
 import { EditProfileModal } from "@/src/components/profile/edit-profile-modal";
 import { ExportImportSection } from "@/src/components/profile/export-import-section";
 import { ProfileMenuItem } from "@/src/components/profile/profile-menu-item";
-import { PhotoCreditsSheet } from "@/src/components/profile/PhotoCreditsSheet";
 import { useProfileStore } from "@/src/store/useProfileStore";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
@@ -43,7 +42,6 @@ export default function ProfileScreen() {
   const [editProfileVisible, setEditProfileVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
   const [resetVisible, setResetVisible] = useState(false);
-  const [creditsVisible, setCreditsVisible] = useState(false);
 
 
   const totalScans = useHistoryStore((s) => s.scans.length); 
@@ -118,7 +116,6 @@ export default function ProfileScreen() {
           <ProfileMenuItem icon="edit-2" label={t("profile_edit")} onPress={() => setEditProfileVisible(true)} />
           <ProfileMenuItem icon="globe" label={`${t("profile_language")}: ${language === "en" ? "English" : "Tagalog"}`} onPress={() => setLanguageSheetVisible(true)} />
           <ProfileMenuItem icon="help-circle" label={t("onboard_replay")} onPress={useOnboardingStore.getState().replay} />
-          <ProfileMenuItem icon="image" label={t("photo_credits")} onPress={() => setCreditsVisible(true)} />
           <ExportImportSection />
         </View>
         <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 12, color: theme.textSecondary, marginBottom: 12, letterSpacing: 1 }}>{t("profile_session").toUpperCase()}</Text>
@@ -129,7 +126,6 @@ export default function ProfileScreen() {
     </PageTransition>
     <EditProfileModal visible={editProfileVisible} currentFirstName={firstName} currentLastName={lastName} onSave={(first, last) => { setFirstName(first); setLastName(last); }} onClose={() => setEditProfileVisible(false)} />
     <LanguageSheet visible={languageSheetVisible} current={language} onSelect={setLanguage} onClose={() => setLanguageSheetVisible(false)} />
-    <PhotoCreditsSheet visible={creditsVisible} onClose={() => setCreditsVisible(false)} />
     <AppSheet visible={resetVisible} title={t("profile_reset")} onClose={() => setResetVisible(false)}>
       <View style={{ width: 48, height: 48, backgroundColor: "rgba(239,68,68,0.10)", borderRadius: 14, alignItems: "center", justifyContent: "center", marginBottom: 16 }}><Feather name="refresh-cw" size={23} color={theme.danger} /></View>
       <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 15, lineHeight: 23, color: theme.textSecondary, marginBottom: 24 }}>{t("profile_reset_description")}</Text>

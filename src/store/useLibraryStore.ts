@@ -6,8 +6,8 @@
  *
  *  - Local data from embedded JSON via localLibrary.ts.
  *  - Persists full MedicinalPlant objects as favorites to AsyncStorage.
- *  - `plants` is persisted to AsyncStorage alongside `favorites`.
- *  - `getDisplayedPlants()` uses the `plants` list as source of truth.
+ *  - The bundled catalog is available immediately, including on first launch.
+ *  - Favorites and view mode are persisted; filtered catalog subsets are not.
  *  - Search and filter run client-side (zero extra reads).
  */
 
@@ -18,7 +18,6 @@ import { MedicinalPlant } from "../types";
 import {
   getAllCategories,
   getAllPlants,
-  getPlantsByCategory,
   getPlantsByIds,
   getPlantsBySymptom,
   getPlantsByPreparationMethod,
@@ -206,7 +205,7 @@ export const useLibraryStore = create<LibraryStore>()(
   persist(
     (set, get) => ({
       // ── Initial State ──────────────────────────────────────────────────────
-      plants: [],
+      plants: getAllPlants(),
       categories: [],
       isLoadingPlants: false,
       isLoadingCategories: false,
@@ -245,33 +244,8 @@ export const useLibraryStore = create<LibraryStore>()(
       },
 
       fetchPlantsByActiveCategory: () => {
-        const { activeCategory } = get();
-
-        // No active filter — just fetch everything
-        if (!activeCategory) {
-          return get().fetchPlants();
-        }
-
-        if (get().isLoadingPlants) return;
-
-        set({ isLoadingPlants: true, plantsError: null });
-
-        try {
-          const plants = getPlantsByCategory(activeCategory);
-          set({ plants, isLoadingPlants: false });
-        } catch (err) {
-          const error = wrapError(
-            "FETCH_PLANTS_FAILED",
-            `Could not load plants for category "${activeCategory}".`,
-            err,
-          );
-          console.error(
-            "[useLibraryStore] fetchPlantsByActiveCategory:",
-            error.message,
-            err,
-          );
-          set({ isLoadingPlants: false, plantsError: error });
-        }
+        // Keep the complete catalog. The displayed list derives its filters.
+        get().fetchPlants();
       },
 
       fetchCategories: () => {
@@ -321,28 +295,27 @@ export const useLibraryStore = create<LibraryStore>()(
 
       setActiveSymptom: (symptom) => {
         set({ activeSymptom: symptom, activeCategory: null, activePreparationMethod: null });
-        if (symptom) {
-          const plants = getPlantsBySymptom(symptom);
-          set({ plants, isLoadingPlants: false });
-        } else {
-          get().fetchPlants();
-        }
+        get().fetchPlants();
       },
 
       setActivePreparationMethod: (method) => {
         set({ activePreparationMethod: method, activeCategory: null, activeSymptom: null });
-        if (method) {
-          const plants = getPlantsByPreparationMethod(method);
-          set({ plants, isLoadingPlants: false });
-        } else {
-          get().fetchPlants();
-        }
+        get().fetchPlants();
       },
 
       getDisplayedPlants: () => {
-        const { plants, searchQuery, showFavoritesOnly, favoriteIds } = get();
+        const { plants, activeCategory, activeSymptom, activePreparationMethod, searchQuery, showFavoritesOnly, favoriteIds } = get();
 
-        let filtered = plants;
+        let filtered = plants.length ? plants : getAllPlants();
+        if (activeCategory) filtered = filtered.filter(plant => plant.categories.includes(activeCategory));
+        if (activeSymptom) {
+          const ids = new Set(getPlantsBySymptom(activeSymptom).map(plant => plant.id));
+          filtered = filtered.filter(plant => ids.has(plant.id));
+        }
+        if (activePreparationMethod) {
+          const ids = new Set(getPlantsByPreparationMethod(activePreparationMethod).map(plant => plant.id));
+          filtered = filtered.filter(plant => ids.has(plant.id));
+        }
 
         if (showFavoritesOnly) {
            filtered = filtered.filter(p => favoriteIds.has(p.id));
@@ -472,6 +445,17 @@ export const useLibraryStore = create<LibraryStore>()(
         favorites: state.favorites,
         viewMode: state.viewMode,
       }),
+
+      // Older releases saved filtered `plants` arrays. Restore preferences only,
+      // so a cached single plant cannot replace the bundled catalog on launch.
+      merge: (persisted, current) => {
+        const saved = persisted as Partial<LibraryStore> | undefined;
+        return {
+          ...current,
+          favorites: Array.isArray(saved?.favorites) ? saved.favorites.map(plant => getPlantsByIds([plant.id])[0] || plant) : current.favorites,
+          viewMode: saved?.viewMode === "grid" ? "grid" : "list",
+        };
+      },
 
       /**
        * After rehydration from AsyncStorage, the `favoriteIds` Set must be

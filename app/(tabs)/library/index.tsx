@@ -76,11 +76,10 @@ export default function LibraryFeed() {
   const displayedPlants = getDisplayedPlants();
 
   useEffect(() => {
-    // Only fetch all plants if no filter is active
-    if (!activeCategory && !activeSymptom && !activePreparationMethod) {
-      if (plants.length === 0) fetchPlants();
-    }
-  }, [activeCategory, activeSymptom, activePreparationMethod, plants.length, fetchPlants]);
+    // Refresh the complete bundled catalog even if an older cache was partial.
+    // Category/symptom filters are applied independently in getDisplayedPlants.
+    fetchPlants();
+  }, [fetchPlants]);
 
   const handleRefresh = useCallback(() => {
     clearErrors();

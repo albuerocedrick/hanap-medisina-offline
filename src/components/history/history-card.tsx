@@ -22,10 +22,10 @@ function DeleteAction({ progress, onPress, label, plantName, isDark }: { progres
     transform: [{ translateX: interpolate(progress.value, [0, 1], [18, 0], Extrapolation.CLAMP) }],
   }));
   const color = isDark ? "#FFB4A9" : "#A63328";
-  return <Animated.View style={[{ width: 88, paddingLeft: 8 }, style]}>
+  return <Animated.View style={[{ width: 92, paddingLeft: 10, justifyContent: "center" }, style]}>
     <TouchableOpacity activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${label}: ${plantName}`} onPress={onPress}
-      style={{ flex: 1, borderRadius: 20, borderWidth: 1, borderColor: isDark ? "#63312C" : "#EBCBC4", backgroundColor: isDark ? "#38201F" : "#FBE9E5", justifyContent: "center", alignItems: "center", gap: 8 }}>
-      <Feather name="trash-2" size={21} color={color} /><Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 12, color }}>{label}</Text>
+      style={{ minHeight: 76, paddingVertical: 14, borderRadius: 16, borderWidth: 1, borderColor: isDark ? "#63312C" : "#EBCBC4", backgroundColor: isDark ? "#38201F" : "#FBE9E5", justifyContent: "center", alignItems: "center", gap: 7 }}>
+      <Feather name="trash-2" size={20} color={color} /><Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 11, color }}>{label}</Text>
     </TouchableOpacity>
   </Animated.View>;
 }
