@@ -1,9 +1,9 @@
-# Graph Report - hanap-medisina-offline  (2026-10-04)
+# Graph Report - hanap-medisina-offline  (2026-10-11)
 
 ## Corpus Check
-- 105 files · ~2,932,274 words
+- 105 files · ~2,932,277 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 6 file(s) not represented in the graph (top: .tflite 3, (none) 1, .ttf 1)
+- Unclassified: 8 file(s) not represented in the graph (top: .tflite 4, (none) 1, .ttf 1)
 
 ## Summary
 - 675 nodes · 1688 edges · 34 communities (26 shown, 8 thin omitted)
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `68f40adc`
+- Built from commit: `468c2b16`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,11 +41,11 @@
 - devDependencies
 - scripts
 - MySavedPlants.tsx
-- utils.ts
-- Plant photograph credits
 - cultivation-tab.tsx
-- research-tab.tsx
+- utils.ts
 - MascotChatSlot.tsx
+- Plant photograph credits
+- research-tab.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `useTranslation()` - 79 edges
@@ -164,21 +164,21 @@ Nodes (5): scripts, android, android:release, ios, start
 Cohesion: 0.06
 Nodes (36): expo-blur, HomeHeader(), MascotChatSlot(), AnimatedTouchableOpacity, MySavedPlants(), PlantCard(), GlassCard(), GlassCardProps (+28 more)
 
+### Community 25 - "cultivation-tab.tsx"
+Cohesion: 0.48
+Nodes (6): CultivationTab(), CultivationTabProps, EmptySection(), SectionHeader(), SectionItem(), CultivationGuide
+
+### Community 27 - "MascotChatSlot.tsx"
+Cohesion: 0.33
+Nodes (5): @react-navigation/native, EXPRESSION_MESSAGES, IDLE_MESSAGES, MASCOT_CONFIG, MascotMode
+
 ### Community 34 - "Plant photograph credits"
 Cohesion: 0.25
 Nodes (7): bayabas.jpg, kamaria.jpg, lagundi.jpg, madre-cacao.jpg, Plant photograph credits, sambong.jpg, serpentina.jpg
 
-### Community 35 - "cultivation-tab.tsx"
-Cohesion: 0.48
-Nodes (6): CultivationTab(), CultivationTabProps, EmptySection(), SectionHeader(), SectionItem(), CultivationGuide
-
 ### Community 36 - "research-tab.tsx"
 Cohesion: 0.43
 Nodes (5): ResearchCard(), ResearchCardProps, ResearchTab(), ResearchTabProps, ResearchEntry
-
-### Community 37 - "MascotChatSlot.tsx"
-Cohesion: 0.33
-Nodes (5): @react-navigation/native, EXPRESSION_MESSAGES, IDLE_MESSAGES, MASCOT_CONFIG, MascotMode
 
 ## Knowledge Gaps
 - **257 isolated node(s):** `name`, `slug`, `version`, `orientation`, `icon` (+252 more)
@@ -190,9 +190,9 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `package.json`?**
   _High betweenness centrality (0.130) - this node is a cross-community bridge._
-- **Why does `react-native` connect `react` to `index.ts`, `details-tab.tsx`, `(tabs)/index.tsx`, `cultivation-tab.tsx`, `package.json`, `MascotChatSlot.tsx`, `research-tab.tsx`, `Onboarding.tsx`, `useTheme.ts`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `localLibrary.ts`, `MySavedPlants.tsx`?**
+- **Why does `react-native` connect `react` to `index.ts`, `details-tab.tsx`, `(tabs)/index.tsx`, `research-tab.tsx`, `package.json`, `Onboarding.tsx`, `useTheme.ts`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `localLibrary.ts`, `MySavedPlants.tsx`, `cultivation-tab.tsx`, `MascotChatSlot.tsx`?**
   _High betweenness centrality (0.113) - this node is a cross-community bridge._
-- **Why does `react` connect `react` to `index.ts`, `details-tab.tsx`, `(tabs)/index.tsx`, `cultivation-tab.tsx`, `package.json`, `MascotChatSlot.tsx`, `research-tab.tsx`, `Onboarding.tsx`, `useTheme.ts`, `expo-file-system`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `localLibrary.ts`, `MySavedPlants.tsx`?**
+- **Why does `react` connect `react` to `index.ts`, `details-tab.tsx`, `(tabs)/index.tsx`, `research-tab.tsx`, `package.json`, `Onboarding.tsx`, `useTheme.ts`, `expo-file-system`, `plantSearch.ts`, `scan.tsx`, `useTranslation`, `localLibrary.ts`, `MySavedPlants.tsx`, `cultivation-tab.tsx`, `MascotChatSlot.tsx`?**
   _High betweenness centrality (0.091) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `useTheme()` (e.g. with `3. Design tokens` and `What I did not change`) actually correct?**
   _`useTheme()` has 5 INFERRED edges - model-reasoned connections that need verification._

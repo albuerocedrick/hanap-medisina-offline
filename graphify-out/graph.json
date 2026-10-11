@@ -446,6 +446,45 @@
       "source_location": "L4"
     },
     {
+      "id": "src_components_plant_details_cultivation_tab_cultivationtabprops",
+      "label": "CultivationTabProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "cultivation-tab.tsx",
+      "file_type": "code",
+      "norm_label": "cultivationtabprops",
+      "source_file": "src/components/plant-details/cultivation-tab.tsx",
+      "source_location": "L10"
+    },
+    {
+      "id": "src_types_index_cultivationguide",
+      "label": "CultivationGuide",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "cultivation-tab.tsx",
+      "file_type": "code",
+      "norm_label": "cultivationguide",
+      "source_file": "src/types/index.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "src_components_home_mascotchatslot_mascotmode",
+      "label": "MascotMode",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "MascotChatSlot.tsx",
+      "file_type": "code",
+      "norm_label": "mascotmode",
+      "source_file": "src/components/home/MascotChatSlot.tsx",
+      "source_location": "L52"
+    },
+    {
       "id": "app_quick_remedies_viewmode",
       "label": "ViewMode",
       "_callable": true,
@@ -576,32 +615,6 @@
       "source_location": "L24"
     },
     {
-      "id": "src_components_plant_details_cultivation_tab_cultivationtabprops",
-      "label": "CultivationTabProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "cultivation-tab.tsx",
-      "file_type": "code",
-      "norm_label": "cultivationtabprops",
-      "source_file": "src/components/plant-details/cultivation-tab.tsx",
-      "source_location": "L10"
-    },
-    {
-      "id": "src_types_index_cultivationguide",
-      "label": "CultivationGuide",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "cultivation-tab.tsx",
-      "file_type": "code",
-      "norm_label": "cultivationguide",
-      "source_file": "src/types/index.ts",
-      "source_location": "L7"
-    },
-    {
       "id": "src_components_plant_details_research_tab_researchcardprops",
       "label": "ResearchCardProps",
       "_callable": true,
@@ -639,19 +652,6 @@
       "norm_label": "researchentry",
       "source_file": "src/types/index.ts",
       "source_location": "L17"
-    },
-    {
-      "id": "src_components_home_mascotchatslot_mascotmode",
-      "label": "MascotMode",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "MascotChatSlot.tsx",
-      "file_type": "code",
-      "norm_label": "mascotmode",
-      "source_file": "src/components/home/MascotChatSlot.tsx",
-      "source_location": "L52"
     },
     {
       "id": "app_symptoms_viewmode",
@@ -2175,6 +2175,54 @@
       "source_location": "L37"
     },
     {
+      "id": "src_components_plant_details_cultivation_tab_cultivationtab",
+      "label": "CultivationTab()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "cultivation-tab.tsx",
+      "file_type": "code",
+      "norm_label": "cultivationtab()",
+      "source_file": "src/components/plant-details/cultivation-tab.tsx",
+      "source_location": "L70"
+    },
+    {
+      "id": "src_components_plant_details_cultivation_tab_emptysection",
+      "label": "EmptySection()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "cultivation-tab.tsx",
+      "file_type": "code",
+      "norm_label": "emptysection()",
+      "source_file": "src/components/plant-details/cultivation-tab.tsx",
+      "source_location": "L57"
+    },
+    {
+      "id": "src_components_plant_details_cultivation_tab_sectionheader",
+      "label": "SectionHeader()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "cultivation-tab.tsx",
+      "file_type": "code",
+      "norm_label": "sectionheader()",
+      "source_file": "src/components/plant-details/cultivation-tab.tsx",
+      "source_location": "L35"
+    },
+    {
+      "id": "src_components_plant_details_cultivation_tab_sectionitem",
+      "label": "SectionItem()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "cultivation-tab.tsx",
+      "file_type": "code",
+      "norm_label": "sectionitem()",
+      "source_file": "src/components/plant-details/cultivation-tab.tsx",
+      "source_location": "L14"
+    },
+    {
       "id": "src_lib_utils_cn",
       "label": "cn()",
       "_callable": true,
@@ -2449,54 +2497,6 @@
       "norm_label": "selectsymptoms()",
       "source_file": "src/store/useFeedStore.ts",
       "source_location": "L184"
-    },
-    {
-      "id": "src_components_plant_details_cultivation_tab_cultivationtab",
-      "label": "CultivationTab()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "cultivation-tab.tsx",
-      "file_type": "code",
-      "norm_label": "cultivationtab()",
-      "source_file": "src/components/plant-details/cultivation-tab.tsx",
-      "source_location": "L70"
-    },
-    {
-      "id": "src_components_plant_details_cultivation_tab_emptysection",
-      "label": "EmptySection()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "cultivation-tab.tsx",
-      "file_type": "code",
-      "norm_label": "emptysection()",
-      "source_file": "src/components/plant-details/cultivation-tab.tsx",
-      "source_location": "L57"
-    },
-    {
-      "id": "src_components_plant_details_cultivation_tab_sectionheader",
-      "label": "SectionHeader()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "cultivation-tab.tsx",
-      "file_type": "code",
-      "norm_label": "sectionheader()",
-      "source_file": "src/components/plant-details/cultivation-tab.tsx",
-      "source_location": "L35"
-    },
-    {
-      "id": "src_components_plant_details_cultivation_tab_sectionitem",
-      "label": "SectionItem()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "cultivation-tab.tsx",
-      "file_type": "code",
-      "norm_label": "sectionitem()",
-      "source_file": "src/components/plant-details/cultivation-tab.tsx",
-      "source_location": "L14"
     },
     {
       "id": "src_components_plant_details_research_tab_researchcard",
@@ -5772,6 +5772,17 @@
       "source_location": "L297"
     },
     {
+      "id": "src_components_plant_details_cultivation_tab",
+      "label": "cultivation-tab.tsx",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "cultivation-tab.tsx",
+      "file_type": "code",
+      "norm_label": "cultivation-tab.tsx",
+      "source_file": "src/components/plant-details/cultivation-tab.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_lib_utils",
       "label": "utils.ts",
       "_origin": "ast",
@@ -5803,6 +5814,61 @@
       "norm_label": "tailwind-merge",
       "source_file": "package.json",
       "source_location": "L60"
+    },
+    {
+      "id": "src_components_home_mascotchatslot",
+      "label": "MascotChatSlot.tsx",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "MascotChatSlot.tsx",
+      "file_type": "code",
+      "norm_label": "mascotchatslot.tsx",
+      "source_file": "src/components/home/MascotChatSlot.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_home_mascotchatslot_expression_messages",
+      "label": "EXPRESSION_MESSAGES",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "MascotChatSlot.tsx",
+      "file_type": "code",
+      "norm_label": "expression_messages",
+      "source_file": "src/components/home/MascotChatSlot.tsx",
+      "source_location": "L26"
+    },
+    {
+      "id": "src_components_home_mascotchatslot_idle_messages",
+      "label": "IDLE_MESSAGES",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "MascotChatSlot.tsx",
+      "file_type": "code",
+      "norm_label": "idle_messages",
+      "source_file": "src/components/home/MascotChatSlot.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "src_components_home_mascotchatslot_mascot_config",
+      "label": "MASCOT_CONFIG",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "MascotChatSlot.tsx",
+      "file_type": "code",
+      "norm_label": "mascot_config",
+      "source_file": "src/components/home/MascotChatSlot.tsx",
+      "source_location": "L34"
+    },
+    {
+      "id": "ref_react_navigation_native",
+      "label": "@react-navigation/native",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "MascotChatSlot.tsx",
+      "file_type": "concept",
+      "norm_label": "@react-navigation/native",
+      "source_file": "package.json",
+      "source_location": "L18"
     },
     {
       "id": "tailwindcss",
@@ -6088,17 +6154,6 @@
       "source_location": "L42"
     },
     {
-      "id": "src_components_plant_details_cultivation_tab",
-      "label": "cultivation-tab.tsx",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "cultivation-tab.tsx",
-      "file_type": "code",
-      "norm_label": "cultivation-tab.tsx",
-      "source_file": "src/components/plant-details/cultivation-tab.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_components_plant_details_research_tab",
       "label": "research-tab.tsx",
       "_origin": "ast",
@@ -6108,61 +6163,6 @@
       "norm_label": "research-tab.tsx",
       "source_file": "src/components/plant-details/research-tab.tsx",
       "source_location": "L1"
-    },
-    {
-      "id": "src_components_home_mascotchatslot",
-      "label": "MascotChatSlot.tsx",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "MascotChatSlot.tsx",
-      "file_type": "code",
-      "norm_label": "mascotchatslot.tsx",
-      "source_file": "src/components/home/MascotChatSlot.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_home_mascotchatslot_expression_messages",
-      "label": "EXPRESSION_MESSAGES",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "MascotChatSlot.tsx",
-      "file_type": "code",
-      "norm_label": "expression_messages",
-      "source_file": "src/components/home/MascotChatSlot.tsx",
-      "source_location": "L26"
-    },
-    {
-      "id": "src_components_home_mascotchatslot_idle_messages",
-      "label": "IDLE_MESSAGES",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "MascotChatSlot.tsx",
-      "file_type": "code",
-      "norm_label": "idle_messages",
-      "source_file": "src/components/home/MascotChatSlot.tsx",
-      "source_location": "L19"
-    },
-    {
-      "id": "src_components_home_mascotchatslot_mascot_config",
-      "label": "MASCOT_CONFIG",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "MascotChatSlot.tsx",
-      "file_type": "code",
-      "norm_label": "mascot_config",
-      "source_file": "src/components/home/MascotChatSlot.tsx",
-      "source_location": "L34"
-    },
-    {
-      "id": "ref_react_navigation_native",
-      "label": "@react-navigation/native",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "MascotChatSlot.tsx",
-      "file_type": "concept",
-      "norm_label": "@react-navigation/native",
-      "source_file": "package.json",
-      "source_location": "L18"
     },
     {
       "id": "app_not_found",
@@ -27595,5 +27595,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "68f40adcd3919fe2d20595ae556c10fd20b21b9b"
+  "built_at_commit": "468c2b1696943d4bfd1e21359768197000975edf"
 }

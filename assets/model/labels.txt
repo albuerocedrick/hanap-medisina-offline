@@ -1,8 +1,9 @@
-Bayabas
-Guyabano
 Kamaria
+Katakataka
 Lagundi
+Litlit
 Madre cacao
+Makabuhay
 Mango
 Oregano
 Pansit-Pansitan
@@ -10,4 +11,5 @@ Sambong
 Serpentina
 Tawa-tawa
 Tsaang gubat
+Tubang Bakod
 Unknown

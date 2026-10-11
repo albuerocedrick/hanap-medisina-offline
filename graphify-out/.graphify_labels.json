@@ -24,13 +24,13 @@
   "22": "devDependencies",
   "23": "scripts",
   "24": "MySavedPlants.tsx",
+  "25": "cultivation-tab.tsx",
   "26": "utils.ts",
+  "27": "MascotChatSlot.tsx",
   "28": "tailwind.config.js",
   "29": "babel.config.js",
   "30": "nativewind-env.d.ts",
   "31": "assets_images_home_mascot_herbi_happy",
   "34": "Plant photograph credits",
-  "35": "cultivation-tab.tsx",
-  "36": "research-tab.tsx",
-  "37": "MascotChatSlot.tsx"
+  "36": "research-tab.tsx"
 }
