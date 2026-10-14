@@ -1,17 +1,17 @@
 # Graph Report - hanap-medisina-offline  (2026-10-15)
 
 ## Corpus Check
-- 111 files · ~2,537,261 words
+- 111 files · ~2,537,285 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: .tflite 4, (none) 1, .ttf 1)
 
 ## Summary
-- 1141 nodes · 3360 edges · 69 communities (60 shown, 9 thin omitted)
+- 1141 nodes · 3363 edges · 68 communities (59 shown, 9 thin omitted)
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 259 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5366f43a`
+- Built from commit: `a6e9fd59`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -44,16 +44,16 @@
 - index.ts
 - utils.ts
 - [id].tsx
-- cd
-- t
+- fu
+- i
 - Plant photograph credits
-- mc
+- wc
 - localLibrary.ts
 - n
 - site.js
-- h
-- wc
-- ts
+- Pd
+- cd
+- t
 - plantLocalization.test.cjs
 - split
 - libraryBootstrap.test.cjs
@@ -61,9 +61,9 @@
 - modelCatalog.test.cjs
 - plantSearch.test.cjs
 - plant-card.tsx
-- cs
-- fu
-- ap
+- es
+- dr
+- G
 - useLibraryStore.ts
 - react-native-reanimated
 - physical-checklist.tsx
@@ -72,12 +72,11 @@
 - Q: Check trained TFLite labels against the Library and fix symptom search
 - Navigation & UI pass — what changed, and what I'd do next
 - Herbi.tsx
-- uu
+- lr
 - Fo
 - UI fixes — implementation notes
-- gu
+- getAllPlants
 - Typography.tsx
-- PlantDetailsScreen
 - GlassCard.tsx
 - MascotChatSlot.tsx
 - Build & verification
@@ -109,19 +108,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (69 total, 9 thin omitted)
+## Communities (68 total, 9 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.04
 Nodes (53): dependencies, babel-preset-expo, buffer, clsx, expo, expo-asset, expo-blur, expo-build-properties (+45 more)
 
 ### Community 1 - "useLibraryStore"
-Cohesion: 0.32
-Nodes (11): LibraryFeed(), ScanDetailSheet(), loadScanData(), PlantCard, PlantGridCard, SearchBar(), SearchBarProps, getAllPlants() (+3 more)
+Cohesion: 0.28
+Nodes (13): PLACEHOLDER_IMAGE, PlantComparisonScreen(), loadComparisonData(), LibraryFeed(), expo-linear-gradient, PlantCard, PlantGridCard, SearchBar() (+5 more)
 
 ### Community 2 - "details-tab.tsx"
-Cohesion: 0.31
-Nodes (9): CRITICAL_WARNING_TERMS, DetailsTab(), DetailsTabProps, EmptySection(), getWarningSeverity(), SectionHeader(), WarningSeverity, getPlantFactLabel() (+1 more)
+Cohesion: 0.23
+Nodes (11): CRITICAL_WARNING_TERMS, DetailsTab(), DetailsTabProps, EmptySection(), getWarningSeverity(), SectionHeader(), WarningSeverity, categoryLabels (+3 more)
 
 ### Community 3 - "useTranslation"
 Cohesion: 0.18
@@ -172,12 +171,12 @@ Cohesion: 0.22
 Nodes (8): expo/tsconfig.base, compilerOptions, module, moduleResolution, paths, strict, extends, include
 
 ### Community 18 - "useTheme"
-Cohesion: 0.14
+Cohesion: 0.15
 Nodes (20): LibraryLayout(), ProfileScreen(), @react-native-async-storage/async-storage, zustand, CaptureGuide(), EditProfileModal(), PhotoCreditsSheet(), AppSheet() (+12 more)
 
 ### Community 19 - "plant-grid-card.tsx"
-Cohesion: 0.13
-Nodes (16): ERD for hanap-medisina-offline, Notes, PlantCardProps, AnimatedTouchable, PLACEHOLDER_IMAGE, PlantGridCardComponent(), PlantGridCardProps, CompareTab() (+8 more)
+Cohesion: 0.18
+Nodes (11): ERD for hanap-medisina-offline, Notes, PlantCardProps, AnimatedTouchable, PLACEHOLDER_IMAGE, PlantGridCardComponent(), PlantGridCardProps, PlantSearchGroup (+3 more)
 
 ### Community 20 - "useFeedStore.ts"
 Cohesion: 0.13
@@ -207,21 +206,21 @@ Nodes (26): expo-file-system, react-native-safe-area-context, ANIM_CONFIG, Props
 Cohesion: 0.13
 Nodes (19): NotFoundScreen(), PLACEHOLDER_IMAGE, PlantSummary, TabKey, CultivationTab(), CultivationTabProps, EmptySection(), SectionHeader() (+11 more)
 
-### Community 32 - "cd"
-Cohesion: 0.05
-Nodes (60): Au(), Be(), bu(), cd(), cr(), Cu(), dd(), dp() (+52 more)
+### Community 32 - "fu"
+Cohesion: 0.07
+Nodes (55): ad(), ap(), Au(), Be(), bu(), Cu(), di(), dp() (+47 more)
 
-### Community 33 - "t"
+### Community 33 - "i"
 Cohesion: 0.16
-Nodes (48): Aa(), a(), b(), c(), d(), f(), g(), i() (+40 more)
+Nodes (37): Aa(), b(), c(), d(), f(), i(), l(), m() (+29 more)
 
 ### Community 34 - "Plant photograph credits"
 Cohesion: 0.06
 Nodes (31): aloe-vera.jpg, alugbati.jpg, banaba.jpg, bayabas.jpg, calamansi.jpg, dila-dila.jpg, gumamela.jpg, guyabano.jpg (+23 more)
 
-### Community 35 - "mc"
-Cohesion: 0.10
-Nodes (42): ac(), ae(), cf(), ci(), de(), fa(), fc(), Fe() (+34 more)
+### Community 35 - "wc"
+Cohesion: 0.07
+Nodes (70): $a(), a(), ac(), af(), bc(), Bd(), cc(), ce() (+62 more)
 
 ### Community 36 - "localLibrary.ts"
 Cohesion: 0.15
@@ -229,23 +228,23 @@ Nodes (17): getHomeFeed(), mulberry32(), getActivePlants(), getAllCategories(), 
 
 ### Community 37 - "n"
 Cohesion: 0.10
-Nodes (28): af(), C(), cp(), ct(), dn(), E(), fl(), fromTo() (+20 more)
+Nodes (51): g(), h(), r(), ae(), b(), bo(), C(), cp() (+43 more)
 
 ### Community 38 - "site.js"
 Cohesion: 0.07
-Nodes (9): Dc(), ei(), Gd(), gt(), Hr(), vf(), xd(), xu() (+1 more)
+Nodes (10): Eu(), gt(), Hr(), ku(), Ou(), register(), Uo(), us() (+2 more)
 
-### Community 39 - "h"
-Cohesion: 0.11
-Nodes (39): h(), df(), ef(), Et(), ft(), gf(), Ha(), Hf() (+31 more)
+### Community 39 - "Pd"
+Cohesion: 0.15
+Nodes (28): At(), br(), df(), ef(), ft(), gf(), Hf(), If() (+20 more)
 
-### Community 40 - "wc"
-Cohesion: 0.12
-Nodes (34): $a(), bc(), Bd(), bo(), cc(), ce(), di(), ec() (+26 more)
-
-### Community 41 - "ts"
+### Community 40 - "cd"
 Cohesion: 0.17
-Nodes (12): Do(), gr(), ls(), mo(), No(), os(), qo(), rs() (+4 more)
+Nodes (16): cd(), dd(), fd(), Kn(), ln(), Nt(), qn(), rd() (+8 more)
+
+### Community 41 - "t"
+Cohesion: 0.31
+Nodes (9): Ht(), Md(), St(), t(), Vt(), We(), wt(), xt() (+1 more)
 
 ### Community 42 - "plantLocalization.test.cjs"
 Cohesion: 0.16
@@ -260,8 +259,8 @@ Cohesion: 0.14
 Nodes (12): assert, catalog, { createRequire }, fs, load(), memory, modules, path (+4 more)
 
 ### Community 45 - "s"
-Cohesion: 0.19
-Nodes (15): Ao(), as(), ba(), Co(), is(), jo(), ko(), ni() (+7 more)
+Cohesion: 0.10
+Nodes (31): Ao(), as(), ba(), ca(), Co(), Do(), ds(), is() (+23 more)
 
 ### Community 46 - "modelCatalog.test.cjs"
 Cohesion: 0.15
@@ -272,20 +271,20 @@ Cohesion: 0.15
 Nodes (10): assert, { createRequire }, en, filename, fs, loaded, path, test (+2 more)
 
 ### Community 48 - "plant-card.tsx"
-Cohesion: 0.23
-Nodes (9): PLACEHOLDER_IMAGE, expo-linear-gradient, AnimatedTouchable, CategoryChip, PLACEHOLDER_IMAGE, PlantCardComponent(), categoryLabels, factLabels (+1 more)
-
-### Community 49 - "cs"
-Cohesion: 0.33
-Nodes (7): cs(), gs(), Ia(), np(), t(), Ra(), ta()
-
-### Community 50 - "fu"
 Cohesion: 0.18
-Nodes (15): At(), br(), dr(), es(), fu(), Jr(), la(), ns() (+7 more)
+Nodes (13): PlantDetailsScreen(), loadPlantData(), AnimatedTouchable, CategoryChip, PLACEHOLDER_IMAGE, PlantCardComponent(), CompareTab(), CompareTabProps (+5 more)
 
-### Community 51 - "ap"
+### Community 49 - "es"
+Cohesion: 0.33
+Nodes (6): es(), gs(), Ia(), ks(), ns(), ws()
+
+### Community 50 - "dr"
 Cohesion: 0.25
-Nodes (7): ap(), ip(), kp(), op(), rp(), tp(), wp()
+Nodes (8): dr(), gr(), Jr(), la(), ls(), xr(), yr(), Zr()
+
+### Community 51 - "G"
+Cohesion: 0.33
+Nodes (6): dt(), Et(), fr(), G(), kt(), pr()
 
 ### Community 52 - "useLibraryStore.ts"
 Cohesion: 0.18
@@ -315,9 +314,9 @@ Nodes (4): Answer, Outcome, Q: Check trained TFLite labels against the Library a
 Cohesion: 0.18
 Nodes (10): Navigation & UI pass — what changed, and what I'd do next, Part 1 — The back button problem, Part 2 — The cramped "See all" cards, Part 3 — The rest of the pass, Part 4 — What I'd replace or remake next, The actual root cause, Tier 1 — high impact, low risk, Tier 2 — meaningful UX wins (+2 more)
 
-### Community 60 - "uu"
-Cohesion: 0.25
-Nodes (8): ca(), ds(), jl(), ks(), ld(), sa(), uu(), ws()
+### Community 60 - "lr"
+Cohesion: 0.50
+Nodes (5): cr(), en(), lr(), nr(), ur()
 
 ### Community 61 - "Fo"
 Cohesion: 0.67
@@ -327,17 +326,13 @@ Nodes (4): Fo(), Io(), Lo(), Po()
 Cohesion: 0.27
 Nodes (9): MascotChatSlot(), AnimatedTouchableOpacity, PlantCard(), 1. The one that actually matters: the mascot never stopped animating, 2. Contrast, 4. Touch targets, 5. Card surfaces, UI fixes — implementation notes (+1 more)
 
-### Community 63 - "gu"
-Cohesion: 0.25
-Nodes (8): gu(), mp(), Oo(), qe(), ut(), vs(), yf(), ys()
+### Community 63 - "getAllPlants"
+Cohesion: 1.00
+Nodes (3): ScanDetailSheet(), loadScanData(), getAllPlants()
 
 ### Community 64 - "Typography.tsx"
 Cohesion: 0.29
 Nodes (6): colorStyles, Typography(), TypographyProps, variantStyles, 3. Design tokens, 5. Typography
-
-### Community 65 - "PlantDetailsScreen"
-Cohesion: 0.53
-Nodes (6): PlantComparisonScreen(), loadComparisonData(), PlantDetailsScreen(), loadPlantData(), getPlantById(), getPlantsByIds()
 
 ### Community 66 - "GlassCard.tsx"
 Cohesion: 0.33
@@ -359,7 +354,7 @@ Nodes (3): Build & verification, Still worth a human eye, Two things to know abo
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `en()` connect `cd` to `useTheme`, `n`, `site.js`?**
+- **Why does `en()` connect `lr` to `cd`, `useTheme`, `n`, `site.js`?**
   _High betweenness centrality (0.409) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `package.json`?**
   _High betweenness centrality (0.112) - this node is a cross-community bridge._
