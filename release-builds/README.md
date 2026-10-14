@@ -1,13 +1,14 @@
 # Installing a release
 
-The latest release is **hanap-medisina-latest.apk**, built on **2026-10-14**.
-It includes the Litlit leaf photograph, all 14 trained plants in the Library,
-symptom search fixes, and complete Tagalog plant profiles.
+The latest release is **hanap-medisina-latest.apk**, built on **2026-10-15**.
+All 30 Library plants now use credited, real camera photographs focused on
+leaves. It also includes all 14 trained plants in the Library, symptom search
+fixes, and complete Tagalog plant profiles.
 
 This APK works on Android phones and LDPlayer. It includes `armeabi-v7a`,
 `arm64-v8a`, `x86`, and `x86_64` and requires Android 7.0 or newer.
 
-The dated copy is **hanap-medisina-2026-10-14-universal.apk**.
+The dated copy is **hanap-medisina-2026-10-15-universal.apk**.
 **hanap-medisina-phone.apk** also contains this same latest release.
 
 The older architecture-specific and `library` / `tagalog` APKs in this folder

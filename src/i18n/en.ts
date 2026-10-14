@@ -8,7 +8,8 @@ export default {
 
   // Profile
   photo_credits: "Photo credits",
-  photo_credits_note: "Plant photos from Wikimedia Commons. Resized and compressed for offline use; cropped to fit cards. Each photo keeps its original license.",
+  photo_credits_note: "Real plant photographs from Wikimedia Commons, selected to show the leaves. Resized for offline use; some photos are cropped to focus on leaves. Each photo keeps its original license.",
+  photo_leaf_crop: "Cropped to focus on the leaves.",
   photo_source: "View original photo",
   onboard_welcome: "Explore medicinal plants.",
   onboard_welcome_body: "Scan a leaf, browse the library, and save your discoveries. Works offline.",

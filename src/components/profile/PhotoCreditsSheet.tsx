@@ -13,6 +13,7 @@ export function PhotoCreditsSheet({ visible, onClose }: { visible: boolean; onCl
     {credits.map(credit => <View key={credit.target} style={{ marginBottom: 20, paddingBottom: 16, borderBottomWidth: 1, borderColor: theme.borderSubtle }}>
       <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 16, color: theme.textPrimary }}>{credit.name}</Text>
       <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 12, lineHeight: 20, color: theme.textSecondary }}>{credit.species}{"\n"}© {credit.artist}</Text>
+      {credit.cropped && <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 12, lineHeight: 20, color: theme.textSecondary }}>{t("photo_leaf_crop")}</Text>}
       <TouchableOpacity accessibilityRole="link" onPress={() => { void Linking.openURL(credit.source).catch(error => console.warn("Photo source could not open", error)); }} style={{ minHeight: 44, justifyContent: "center" }}>
         <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.accent }}>{t("photo_source")}</Text>
       </TouchableOpacity>

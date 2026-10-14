@@ -8,7 +8,8 @@ export default {
 
   // Profile
   photo_credits: "Mga kredito sa larawan",
-  photo_credits_note: "Mga larawan mula sa Wikimedia Commons. Pinaliit at kinompress para magamit offline; naka-crop sa mga card. Nananatili ang orihinal na lisensya ng bawat larawan.",
+  photo_credits_note: "Mga litrato ng totoong halaman mula sa Wikimedia Commons, na pinili upang ipakita ang mga dahon. Pinaliit para magamit kahit walang internet; may ilang larawang ginupit upang ituon sa mga dahon. Nananatili ang orihinal na lisensya ng bawat litrato.",
+  photo_leaf_crop: "Ginupit ang larawan upang ituon sa mga dahon.",
   photo_source: "Tingnan ang orihinal na larawan",
   onboard_welcome: "Tuklasin ang halamang gamot.",
   onboard_welcome_body: "Mag-scan ng dahon, tingnan ang library, at i-save ang natuklasan. Gumagana kahit offline.",
