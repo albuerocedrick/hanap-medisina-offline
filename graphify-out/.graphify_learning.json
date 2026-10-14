@@ -1,5 +1,54 @@
 {
-  "generated_at": "2026-09-30T01:41:28.872520+00:00",
-  "nodes": {},
+  "generated_at": "2026-10-14T12:25:17.841752+00:00",
+  "nodes": {
+    "app_tabs_library_index_libraryfeed": {
+      "code_fingerprint": "f1dd223edc975db88c85ef4e3b9ec987b7c0460c44ea9c513c19f68e83a55863",
+      "label": "LibraryFeed()",
+      "last": "2026-10-14T12:17:51.959470+00:00",
+      "provenance": [
+        {
+          "date": "2026-10-14T12:17:51.959470+00:00",
+          "outcome": "useful",
+          "q": "Check trained TFLite labels against the Library and fix symptom search"
+        }
+      ],
+      "score": 0.99988077,
+      "source_file": "app/(tabs)/library/index.tsx",
+      "status": "tentative",
+      "uses": 1
+    },
+    "src_hooks_usetflite_usetflite": {
+      "code_fingerprint": "cea351f5cf8f152ff84681bb8e30013356062281c48c9dc711436c6ec2350bc5",
+      "label": "useTFLite()",
+      "last": "2026-10-14T12:17:51.959470+00:00",
+      "provenance": [
+        {
+          "date": "2026-10-14T12:17:51.959470+00:00",
+          "outcome": "useful",
+          "q": "Check trained TFLite labels against the Library and fix symptom search"
+        }
+      ],
+      "score": 0.99988077,
+      "source_file": "src/hooks/useTFLite.ts",
+      "status": "tentative",
+      "uses": 1
+    },
+    "src_services_plantsearch_searchplantrecords": {
+      "code_fingerprint": "17f09145a48ed65581a351f42fbd5783313ddd0d99123b20dd8c47e1436d2ac7",
+      "label": "searchPlantRecords()",
+      "last": "2026-10-14T12:17:51.959470+00:00",
+      "provenance": [
+        {
+          "date": "2026-10-14T12:17:51.959470+00:00",
+          "outcome": "useful",
+          "q": "Check trained TFLite labels against the Library and fix symptom search"
+        }
+      ],
+      "score": 0.99988077,
+      "source_file": "src/services/plantSearch.ts",
+      "status": "tentative",
+      "uses": 1
+    }
+  },
   "version": 1
 }

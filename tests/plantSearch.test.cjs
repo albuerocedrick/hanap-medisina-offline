@@ -32,6 +32,17 @@ test("plant names still rank first; whitespace and case are normalized", () => {
   assert.deepEqual(search(en, "   "), en);
   assert.deepEqual(search(en, "zzunknownzz"), []);
 });
+
+test("new trained plants and alternate model names are searchable in both languages", () => {
+  for (const list of [en, tl]) {
+    assert.equal(ids(list, "litlit")[0], "litlit");
+    assert.equal(ids(list, "piper retrofractum")[0], "litlit");
+    assert.equal(ids(list, "tubang bakod")[0], "tuba-tuba");
+    assert.ok(ids(list, "cough").includes("litlit"));
+    assert.ok(ids(list, "ubo").includes("litlit"));
+    assert.ok(ids(list, "sakit ng tiyan").includes("litlit"));
+  }
+});
 test("search preserves supplied filters, records, and language", () => {
   const subset = en.filter(plant => plant.id === "oregano");
   assert.deepEqual(ids(subset, "cough"), ["oregano"]);

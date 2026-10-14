@@ -1,6 +1,18 @@
 # Plant photograph credits
 
-These six photographs replace white-background images. Downloaded from Wikimedia Commons on 2026-10-03 and resized to a maximum of 640 pixels for offline use. The photographs remain under their individual licenses.
+The first six photographs replace white-background images. They were downloaded from Wikimedia Commons on 2026-10-03 and resized to a maximum of 640 pixels for offline use. Litlit's leaf photograph was added on 2026-10-14 at its original 480 × 640 resolution. The photographs remain under their individual licenses.
+
+## litlit.jpg
+
+Species: Piper retrofractum (synonym: Piper officinarum)
+
+Credit: Kurt Stueber (biolib.de)
+
+Source: https://commons.wikimedia.org/wiki/File:Piper_officinarum1.jpg
+
+License: CC BY-SA 3.0 — https://creativecommons.org/licenses/by-sa/3.0/
+
+Changes: downloaded the original photograph without editing; the app crops the display to fit plant cards.
 
 ## bayabas.jpg
 

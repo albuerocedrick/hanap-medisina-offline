@@ -14,7 +14,7 @@ import Animated, { FadeIn, FadeInDown, FadeOut } from "react-native-reanimated";
 
 import {
   ActivityIndicator,
-  Platform,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -40,6 +40,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({
+  placeholder,
   debounceMs = DEBOUNCE_MS,
   onSearch,
   onFocusChange,
@@ -61,7 +62,6 @@ export function SearchBar({
   const inputRef = useRef<TextInput>(null);
 
   const plants = useLibraryStore((s) => s.plants);
-  const favorites = useLibraryStore((s) => s.favorites);
 
   const sourceList = plants;
 
@@ -109,6 +109,15 @@ export function SearchBar({
   const handleChangeText = (text: string) => {
     setLocalValue(text);
     commitQuery(text);
+  };
+
+  const handleSubmit = () => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    setSearchQuery(localValue);
+    onSearch?.(localValue);
+    setIsBusy(false);
+    inputRef.current?.blur();
+    Keyboard.dismiss();
   };
 
   const handleClear = () => {
@@ -179,9 +188,11 @@ export function SearchBar({
           onChangeText={handleChangeText}
           onFocus={() => { setIsFocused(true); onFocusChange?.(true); }}
           onBlur={() => { setIsFocused(false); onFocusChange?.(false); }}
-          placeholder={t('library_search')}
+          placeholder={placeholder ?? t('library_search')}
           placeholderTextColor={isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)"}
           returnKeyType="search"
+          onSubmitEditing={handleSubmit}
+          accessibilityLabel={placeholder ?? t('library_search')}
           autoCapitalize="none"
           autoCorrect={false}
           clearButtonMode="never"

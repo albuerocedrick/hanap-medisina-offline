@@ -27,6 +27,7 @@ import {
 type PlantSummary = Plant;
 import { useLibraryStore } from "../../../src/store/useLibraryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { getPlantCategoryLabel } from "@/src/i18n/plantLabels";
 import { BackButton } from "@/src/components/ui/BackButton";
 import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
 
@@ -46,7 +47,7 @@ export default function PlantDetailsScreen() {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   // ─── Global State ────────────────────────────────────────────────────────
 
@@ -122,7 +123,7 @@ export default function PlantDetailsScreen() {
     return () => {
       isMounted = false;
     };
-  }, [id, favorites]);
+  }, [id, favorites, language]);
 
   // ─── Handlers ────────────────────────────────────────────────────────────
 
@@ -330,7 +331,7 @@ export default function PlantDetailsScreen() {
                   }}
                 >
                   <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 12, color: isDark ? "rgba(248,250,252,0.8)" : "#22451C" }}>
-                    {cat}
+                    {getPlantCategoryLabel(cat, language)}
                   </Text>
                 </View>
               ))}
@@ -358,9 +359,10 @@ export default function PlantDetailsScreen() {
               >
                 <Text
                   style={{
-                    fontFamily: "Quicksand_700Bold", fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5,
+                    fontFamily: "Quicksand_700Bold", fontSize: 12, textAlign: "center",
                     color: isActive ? (isDark ? "#A2CFA3" : "#22451C") : (isDark ? "rgba(255,255,255,0.4)" : "rgba(34,69,28,0.5)")
                   }}
+                  numberOfLines={1}
                 >
                   {t(`details_tab_${tab}` as any)}
                 </Text>

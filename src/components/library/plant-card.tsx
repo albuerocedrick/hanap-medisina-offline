@@ -29,6 +29,8 @@ import Animated, {
 import { MedicinalPlant } from "@/src/services/localLibrary";
 import { useLibraryStore } from "@/src/store/useLibraryStore";
 import { useTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "@/src/i18n/useTranslation";
+import { getPlantCategoryLabel } from "@/src/i18n/plantLabels";
 import { elevation, MIN_TOUCH_TARGET, radius, spacing } from "@/src/theme/tokens";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -81,6 +83,7 @@ export function PlantCardComponent({
 }: PlantCardProps) {
   const router = useRouter();
   const t = useTheme();
+  const { language } = useTranslation();
 
   // Respect the OS "reduce motion" setting — skip the press-scale spring entirely.
   const reduceMotion = useReducedMotion();
@@ -285,7 +288,7 @@ export function PlantCardComponent({
             {!hideCategoryChips && safeCategories.length > 0 && (
               <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: spacing.xs, alignItems: "center" }}>
                 {visibleCategories.map((cat: string) => (
-                  <CategoryChip key={cat} label={cat} />
+                  <CategoryChip key={cat} label={getPlantCategoryLabel(cat, language)} />
                 ))}
                 {overflowCount > 0 && (
                   <Text

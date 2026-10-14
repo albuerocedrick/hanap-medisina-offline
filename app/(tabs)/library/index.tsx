@@ -11,7 +11,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -313,7 +312,7 @@ export default function LibraryFeed() {
           </Animated.View>
         )}
 
-        <SearchBar onFocusChange={setIsSearchFocused} />
+        <SearchBar onFocusChange={setIsSearchFocused} showSuggestions={false} />
 
         {!isSearchFocused && (
           <Animated.View
@@ -348,13 +347,6 @@ export default function LibraryFeed() {
               />
             }
           />
-          
-          {isSearchFocused && (
-            <Pressable
-              style={StyleSheet.absoluteFill}
-              onPress={() => Keyboard.dismiss()}
-            />
-          )}
         </View>
 
         <ScanDetailSheet

@@ -2099,7 +2099,7 @@
     ],
     "lookAlikeIds": [],
     "details": {
-      "localName": "Tuba-tuba, Physic Nut",
+      "localName": "Tuba-tuba, Tubang Bakod, Physic Nut",
       "preparation": [
         {
           "method": "Poultice (Leaves)",
@@ -2383,6 +2383,75 @@
       "flower": "Bright orange, delicate, cone-like flowers appearing at the top of the plant",
       "stem": "Upright, thick, green, and fleshy stems growing from creeping rhizomes",
       "smell": "Leaves have a mild, earthy, and slightly acidic or sour scent when crushed or chewed"
+    }
+  },
+  {
+    "id": "litlit",
+    "name": "Litlit",
+    "scientificName": "Piper retrofractum Vahl",
+    "shortDescription": "A Philippine climbing pepper also called Javanese long pepper. Its leaves and roots have recorded traditional uses; these reports do not establish an effective medical treatment.",
+    "imageSource": "litlit.jpg",
+    "categories": ["cough", "digestive", "pain-relief"],
+    "lookAlikeIds": [],
+    "details": {
+      "localName": "Litlit, Ikmong parang, Amaras, Javanese long pepper",
+      "preparation": [
+        {
+          "method": "Traditional leaf preparations",
+          "description": "Philippine ethnobotanical records describe leaf use for these complaints. They do not provide a clinically validated dose or prove effectiveness.",
+          "uses": ["Cough (traditional use)", "Colds (traditional use)", "Sore throat (traditional use)", "Headache (traditional use)"]
+        },
+        {
+          "method": "Root decoction (traditional record)",
+          "description": "PROSEA records root decoctions for colic in the Philippines. This is a historical use, not a recommended home treatment.",
+          "uses": ["Stomach ache / colic (traditional use)"]
+        }
+      ],
+      "facts": {
+        "origin": "Philippines; also cultivated elsewhere in tropical Asia",
+        "family": "Piperaceae",
+        "habitat": "Tropical forest margins and cultivated climbing supports"
+      },
+      "warnings": [
+        "Traditional-use records do not establish a safe medicinal dose or human effectiveness.",
+        "Ask a qualified health professional before medicinal use, especially during pregnancy, breastfeeding, for children, or when taking medicines.",
+        "Do not use a model prediction alone to decide whether a plant is safe to consume. Similar Piper species and shared local names can cause confusion."
+      ]
+    },
+    "cultivationGuide": {
+      "climate": "Tropical",
+      "soil": "Can occur on poor soils",
+      "sunlight": "Forest margins or a suitable support tree",
+      "watering": "Keep drainage adequate; adjust watering to local conditions",
+      "propagation": "Stem cuttings",
+      "growthTime": "Perennial climbing plant; establishment varies",
+      "tips": ["Provide a trellis or support tree.", "Prune to manage climbing growth and encourage flowering."]
+    },
+    "research": [
+      {
+        "title": "Philippine Traditional Knowledge Digital Library: Piper retrofractum",
+        "summary": "Documents regional traditional leaf uses for cough, colds, sore throat and headache. Ethnobotanical reports are not clinical proof of treatment effectiveness.",
+        "reference": "Philippine Traditional Knowledge Digital Library on Health, ethnopharmacology catalog. https://www.tkdlph.com/index.php/ct-menu-item-3/ct-menu-item-7/catalog?format=html&limit=100&orderby=Scientific_name&ordering=ASC&reset=false&start=11600",
+        "year": 0
+      },
+      {
+        "title": "PROSEA: Piper",
+        "summary": "Identifies Litlit as Piper retrofractum and describes its cultivation and historical root use for colic. This botanical reference does not establish a safe medicinal dose.",
+        "reference": "Plant Resources of South East Asia, Handbook 13: Spices. https://prosea.prota4u.org/view.aspx?id=590",
+        "year": 1999
+      },
+      {
+        "title": "Piper retrofractum: botanical identification",
+        "summary": "Kew accepts the species name; Flora of China describes its climbing habit, leaf veins and cylindrical flower spikes.",
+        "reference": "Kew Plants of the World Online: https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:683079-1 ; Flora of China: https://efloras.org/florataxon.aspx?flora_id=2&taxon_id=200005592",
+        "year": 0
+      }
+    ],
+    "comparisonTraits": {
+      "leaf": "Smooth, oval to oblong leaves with pointed tips and prominent side veins",
+      "flower": "Small flowers packed into narrow cylindrical spikes opposite the leaves",
+      "stem": "Slender climbing stems with attachment roots",
+      "smell": "The fruits are aromatic and peppery; smell alone is not diagnostic"
     }
   }
 ]

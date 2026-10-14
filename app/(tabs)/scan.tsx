@@ -31,6 +31,7 @@ import * as jpeg from "jpeg-js";
 
 import { useRouter } from "expo-router";
 import { getAllPlants } from "../../src/services/localLibrary";
+import { getPlantIdForModelLabel } from "../../src/services/modelLabels";
 import { useCameraStore } from "../../src/store/useCameraStore";
 import { useHistoryStore } from "../../src/store/useHistoryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
@@ -611,9 +612,9 @@ export default function ScanScreen() {
         }
       }
 
-      // Format label to match JSON ids (e.g., "Madre cacao" -> "madre-cacao")
+      // Model class names may use a different local name from the Library.
       const rawLabel = labels[maxIdx] || "unknown";
-      const identifiedId = rawLabel.toLowerCase().replace(/ /g, '-');
+      const identifiedId = getPlantIdForModelLabel(rawLabel);
       
       const localPlant = getAllPlants().find(p => p.id === identifiedId);
       const identifiedLabel = localPlant ? localPlant.name : (rawLabel === "Unknown" ? "Unknown" : rawLabel);
@@ -621,10 +622,7 @@ export default function ScanScreen() {
       // ── 4. Validation gate ─────────────────────────────────────────────────
       // Case-insensitive unknown check + confidence floor.
       // Any of these conditions means we cannot reliably identify the MedicinalPlant.
-      const isUnknownLabel =
-        !identifiedId ||
-        identifiedId.toLowerCase() === "unknown" ||
-        identifiedId.toLowerCase().startsWith("unknown");
+      const isUnknownLabel = !identifiedId;
 
       const isRejected = isUnknownLabel || maxConf < MIN_CONFIDENCE;
 

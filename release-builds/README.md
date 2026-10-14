@@ -1,15 +1,19 @@
 # Installing a release
 
-Use **hanap-medisina-phone.apk** on a phone such as the Redmi Note 10 Pro.
-It contains the verified ARM64 phone release, identical to
-`hanap-medisina-arm64-v8a.apk`. It requires Android 7.0 or newer.
+The latest release is **hanap-medisina-latest.apk**, built on **2026-10-14**.
+It includes the Litlit leaf photograph, all 14 trained plants in the Library,
+symptom search fixes, and complete Tagalog plant profiles.
 
-Use **hanap-medisina-x86_64.apk** for LDPlayer. This emulator build cannot be
-installed on an ARM phone.
+This APK works on Android phones and LDPlayer. It includes `armeabi-v7a`,
+`arm64-v8a`, `x86`, and `x86_64` and requires Android 7.0 or newer.
 
-The generic `android/app/build/outputs/apk/release/app-release.apk` belongs to
-whichever architecture was built last. After an emulator build it is an emulator
-APK, even though its name does not change. For phone installation, always use
-the clearly named phone release in this folder.
+The dated copy is **hanap-medisina-2026-10-14-universal.apk**.
+**hanap-medisina-phone.apk** also contains this same latest release.
+
+The older architecture-specific and `library` / `tagalog` APKs in this folder
+are previous builds. Use `hanap-medisina-latest.apk` for the current version.
+
+The generic `android/app/build/outputs/apk/release/app-release.apk` is the Gradle
+output and always reflects whichever build was run last.
 
 APK files are local build artifacts and are not committed to Git.

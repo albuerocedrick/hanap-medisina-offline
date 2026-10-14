@@ -19,6 +19,7 @@ import { PlantDetails } from "../../types/index";
 import { useColorScheme } from "nativewind";
 import { StyleSheet } from "react-native";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { getPlantFactLabel } from "@/src/i18n/plantLabels";
 
 // ─────────────────────────────────────────────
 // PROPS
@@ -105,7 +106,7 @@ function EmptySection({ message }: { message: string }) {
 export function DetailsTab({ localName, details }: DetailsTabProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   // ── Guard: graceful degradation if details is undefined/null ─────────────
   if (!details) {
@@ -196,7 +197,7 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
                 style={{ flexDirection: "row", paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start", borderBottomWidth: !isLast ? StyleSheet.hairlineWidth : 0, borderBottomColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}
               >
                 <Text style={{ width: 110, fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontSize: 13, marginTop: 2 }}>
-                  {key}
+                  {getPlantFactLabel(key, language)}
                 </Text>
                 <Text style={{ flex: 1, fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 14, lineHeight: 20 }}>
                   {value}

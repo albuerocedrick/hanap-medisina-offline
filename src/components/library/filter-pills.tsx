@@ -17,6 +17,7 @@ import {
   useLibraryStore,
 } from "@/src/store/useLibraryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { getPlantCategoryLabel } from "@/src/i18n/plantLabels";
 
 
 const ALL_LABEL = "All";
@@ -101,7 +102,7 @@ export function FilterPills({ onCategoryChange }: FilterPillsProps) {
   const fetchCategories = useLibraryStore((s) => s.fetchCategories);
   const isLoadingCategories = useLibraryStore((s) => s.isLoadingCategories);
   const categoriesError = useLibraryStore((s) => s.categoriesError);
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -167,7 +168,7 @@ export function FilterPills({ onCategoryChange }: FilterPillsProps) {
         {categories.map((cat) => (
           <Pill
             key={cat}
-            label={cat}
+            label={getPlantCategoryLabel(cat, language)}
             isActive={activeCategory === cat}
             isDisabled={false}
             onPress={() => handleSelect(cat)}

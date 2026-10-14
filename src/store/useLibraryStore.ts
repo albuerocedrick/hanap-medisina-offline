@@ -275,7 +275,12 @@ export const useLibraryStore = create<LibraryStore>()(
       // ── Search & Filter ────────────────────────────────────────────────────
 
       setSearchQuery: (query) => {
-        set({ searchQuery: query });
+        // Starting a new search should not inherit filters hidden during typing.
+        if (query.trim() && !get().searchQuery.trim()) {
+          set({ searchQuery: query, activeCategory: null, activeSymptom: null, activePreparationMethod: null });
+        } else {
+          set({ searchQuery: query });
+        }
       },
 
       setViewMode: (mode) => {
@@ -477,6 +482,13 @@ useSettingsStore.subscribe((state, prevState) => {
   if (state.language !== prevState?.language) {
     useLibraryStore.getState().fetchPlants();
     useLibraryStore.getState().fetchCategories();
+    const catalog = getAllPlants();
+    useLibraryStore.setState(current => ({
+      favorites: current.favorites.map(saved => catalog.find(plant => plant.id === saved.id) ?? saved),
+      // These filter values are translated text rather than stable IDs.
+      activeSymptom: null,
+      activePreparationMethod: null,
+    }));
   }
 });
 

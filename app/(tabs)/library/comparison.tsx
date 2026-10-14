@@ -28,6 +28,7 @@ import { MedicinalPlant as Plant } from "../../../src/types";
 import { getPlantsByIds } from "../../../src/services/localLibrary";
 import { useLibraryStore } from "../../../src/store/useLibraryStore";
 import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 
 
@@ -38,6 +39,7 @@ export default function PlantComparisonScreen() {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t, language } = useTranslation();
 
   // Params from router (CompareTab passes these)
   const {
@@ -75,7 +77,7 @@ export default function PlantComparisonScreen() {
 
     async function loadComparisonData() {
       if (!plantAId) {
-        if (isMounted) setError("Primary plant missing for comparison.");
+        if (isMounted) setError(t('compare_primary_missing'));
         return;
       }
 
@@ -94,13 +96,13 @@ export default function PlantComparisonScreen() {
           setPlantB(b);
 
           if (!a) {
-            setError("Plant A is not found in the local library.");
+            setError(t('compare_primary_not_found'));
           } else if (selectedPlantBId && !b) {
-            setError("The selected comparison plant is not found.");
+            setError(t('compare_selected_not_found'));
           }
         }
       } catch (err) {
-        if (isMounted) setError("Failed to load plant data. Please try again.");
+        if (isMounted) setError(t('compare_load_failed'));
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -111,7 +113,7 @@ export default function PlantComparisonScreen() {
     return () => {
       isMounted = false;
     };
-  }, [plantAId, selectedPlantBId, favorites]);
+  }, [plantAId, selectedPlantBId, favorites, language]);
 
   // ─── Render Helpers ──────────────────────────────────────────────────────
 
@@ -133,7 +135,7 @@ export default function PlantComparisonScreen() {
           {/* Header */}
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}>
             <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 20, color: isDark ? "#F8FAFC" : "#22451C" }}>
-              Select Plant to Compare
+              {t('compare_select_title')}
             </Text>
             <TouchableOpacity
               onPress={() => {
@@ -145,7 +147,7 @@ export default function PlantComparisonScreen() {
             </TouchableOpacity>
           </View>
 
-          <SearchBar placeholder="Search library to compare..." showSuggestions={false} />
+          <SearchBar placeholder={t('compare_search')} showSuggestions={false} />
 
           <FlatList
             data={pickerData}
@@ -165,7 +167,7 @@ export default function PlantComparisonScreen() {
             ListEmptyComponent={
               <View style={{ paddingTop: 40, alignItems: "center" }}>
                 <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)" }}>
-                  No plants available to compare.
+                  {t('compare_no_plants')}
                 </Text>
               </View>
             }
@@ -182,7 +184,7 @@ export default function PlantComparisonScreen() {
   if (isLoading && !isPickerOpen) {
     return (
       <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
-        <ScreenHeader title="Compare" fallbackHref="/(tabs)/library" />
+        <ScreenHeader title={t('details_compare')} fallbackHref="/(tabs)/library" />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#22451C"} />
         </View>
@@ -193,18 +195,18 @@ export default function PlantComparisonScreen() {
   if (error || !plantA) {
     return (
       <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
-        <ScreenHeader title="Compare" fallbackHref="/(tabs)/library" />
+        <ScreenHeader title={t('details_compare')} fallbackHref="/(tabs)/library" />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
           <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", marginTop: 16, textAlign: "center", marginBottom: 24 }}>
-            {error || "Could not load comparison."}
+            {error || t('compare_unavailable')}
           </Text>
           <TouchableOpacity
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/library"))}
             accessibilityRole="button"
             style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)", paddingHorizontal: 24, paddingVertical: 14, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}
           >
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>Go Back</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>{t('details_go_back')}</Text>
           </TouchableOpacity>
         </View>
         {renderPickerModal()}
@@ -217,7 +219,7 @@ export default function PlantComparisonScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
       <ScreenHeader
-        title="Compare"
+        title={t('details_compare')}
         subtitle={plantB ? `${plantA.name} vs ${plantB.name}` : plantA.name}
         fallbackHref="/(tabs)/library"
         bordered
@@ -279,7 +281,7 @@ export default function PlantComparisonScreen() {
                   >
                     <Ionicons name="swap-horizontal" size={12} color="white" />
                     <Text style={{ color: "white", fontSize: 10, fontFamily: "Quicksand_700Bold", marginLeft: 4, textTransform: "uppercase" }}>
-                      Change
+                      {t('compare_change')}
                     </Text>
                   </TouchableOpacity>
               </>
@@ -294,7 +296,7 @@ export default function PlantComparisonScreen() {
                   <Ionicons name="add" size={28} color={isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)"} />
                 </View>
                 <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 13, marginTop: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                  Select Plant
+                  {t('compare_select')}
                 </Text>
               </TouchableOpacity>
             )}
@@ -305,10 +307,10 @@ export default function PlantComparisonScreen() {
         {/* ─── Bottom: Physical Checklist ─────────────────────────────────── */}
         <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 8 }}>
           <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 20, color: isDark ? "#F8FAFC" : "#22451C", marginBottom: 4 }}>
-            Physical Checklist
+            {t('compare_checklist')}
           </Text>
           <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", fontSize: 14, lineHeight: 20, marginBottom: 20 }}>
-            Compare key physical characteristics to help accurately identify the plant.
+            {t('compare_checklist_hint')}
           </Text>
 
           {plantB ? (
@@ -322,13 +324,13 @@ export default function PlantComparisonScreen() {
             <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(34,69,28,0.02)", borderRadius: 16, padding: 32, alignItems: "center", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)" }}>
               <Ionicons name="git-compare-outline" size={36} color={isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.3)"} />
               <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", marginTop: 12, textAlign: "center" }}>
-                Select a second plant to view the physical traits comparison.
+                {t('compare_second_plant')}
               </Text>
               <TouchableOpacity
                 onPress={() => setIsPickerOpen(true)}
                 style={{ marginTop: 16, backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.1)", paddingHorizontal: 20, paddingVertical: 10, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(162,207,163,0.3)" : "rgba(34,69,28,0.2)" }}
               >
-                <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C" }}>Choose Plant</Text>
+                <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C" }}>{t('compare_choose')}</Text>
               </TouchableOpacity>
             </View>
           )}

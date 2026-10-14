@@ -82,7 +82,7 @@ function LookAlikeCard({
       onPress={onPress}
       activeOpacity={0.75}
       accessibilityRole="button"
-      accessibilityLabel={`Compare with ${plant.name}`}
+      accessibilityLabel={t('compare_with').replace('{name}', plant.name)}
       style={{ marginRight: 12 }}
     >
       <View
@@ -105,7 +105,7 @@ function LookAlikeCard({
           style={{ width: "100%", height: 112 }}
           resizeMode="cover"
           onError={handleImageError}
-          accessibilityLabel={`Image of ${plant.name}`}
+          accessibilityLabel={t('plant_image').replace('{name}', plant.name)}
         />
 
         {/* Info */}
@@ -274,7 +274,7 @@ export function CompareTab({
           onPress={handleSelectFromLibrary}
           activeOpacity={0.8}
           accessibilityRole="button"
-          accessibilityLabel="Select a MedicinalPlant from the library to compare"
+          accessibilityLabel={t('details_compare_btn')}
         >
           <View style={{ backgroundColor: isDark ? "rgba(162,207,163,0.2)" : "rgba(34,69,28,0.85)", borderRadius: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
             <Ionicons

@@ -61,3 +61,40 @@ test('category, symptom and remedy filters leave the complete catalog available'
   store.getState().setActivePreparationMethod(null);
   assert.deepEqual(ids(store.getState().getDisplayedPlants()), ids(catalog));
 });
+
+test('starting a symptom search clears hidden browse filters and keeps all matches available', () => {
+  for (const selectFilter of [
+    () => store.getState().setActiveCategory('diuretic'),
+    () => store.getState().setActiveSymptom('fever'),
+    () => store.getState().setActivePreparationMethod('Steam'),
+  ]) {
+    store.getState().setSearchQuery('');
+    selectFilter();
+    store.getState().setSearchQuery('ubo');
+    assert.equal(store.getState().activeCategory, null);
+    assert.equal(store.getState().activeSymptom, null);
+    assert.equal(store.getState().activePreparationMethod, null);
+    const matches = store.getState().getDisplayedPlants();
+    assert.ok(matches.some(plant => plant.id === 'lagundi'));
+    assert.ok(matches.some(plant => plant.id === 'litlit'));
+    assert.equal(store.getState().plants.length, catalog.length);
+  }
+  store.getState().setSearchQuery('');
+});
+
+test('switching language refreshes Library data and saved plants while preserving favorites', async () => {
+  const { useSettingsStore: settings } = load('src/store/useSettingsStore.ts');
+  const mango = catalog.find(plant => plant.id === 'mango');
+  await store.getState().toggleFavorite(mango);
+  const favoriteIds = [...store.getState().favoriteIds].sort();
+  store.getState().setActiveSymptom('cough');
+  settings.getState().setLanguage('tl');
+  assert.deepEqual([...store.getState().favoriteIds].sort(), favoriteIds);
+  assert.equal(store.getState().favorites.find(plant => plant.id === 'mango').name, 'Mangga');
+  assert.equal(store.getState().plants.find(plant => plant.id === 'mango').name, 'Mangga');
+  assert.equal(store.getState().activeSymptom, null);
+  assert.equal(store.getState().activePreparationMethod, null);
+  assert.deepEqual(ids(store.getState().getDisplayedPlants()), ids(catalog));
+  settings.getState().setLanguage('en');
+  assert.equal(store.getState().favorites.find(plant => plant.id === 'mango').name, 'Mango');
+});

@@ -39,6 +39,7 @@ const imageMap: Record<string, any> = {
   'alugbati.jpg': require('../../assets/images/plants/alugbati.jpg'),
   'tuba-tuba.jpg': require('../../assets/images/plants/tuba-tuba.jpg'),
   'katakataka.jpg': require('../../assets/images/plants/katakataka.jpg'),
+  'litlit.jpg': require('../../assets/images/plants/litlit.jpg'),
   'dila-dila.jpg': require('../../assets/images/plants/dila-dila.jpg'),
   'insulin-plant.jpg': require('../../assets/images/plants/insulin-plant.jpg'),
 };

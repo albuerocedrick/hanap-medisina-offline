@@ -52,5 +52,14 @@
     "license": "CC BY 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
     "name": "Madre Cacao"
+  },
+  {
+    "target": "litlit.jpg",
+    "species": "Piper retrofractum",
+    "source": "https://commons.wikimedia.org/wiki/File:Piper_officinarum1.jpg",
+    "artist": "Kurt Stueber (biolib.de)",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "name": "Litlit"
   }
 ]

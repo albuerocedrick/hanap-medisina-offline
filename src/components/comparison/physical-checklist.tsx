@@ -22,6 +22,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
 import { ComparisonTraits } from "../../services/localLibrary";
+import { useTranslation, type TranslationKey } from "../../i18n/useTranslation";
 
 // ─────────────────────────────────────────────
 // CONSTANTS
@@ -34,12 +35,12 @@ const TRAIT_COL_WIDTH = 96; // px  ≈ w-24
 /** Map from ComparisonTraits key → human-readable label + icon. */
 const TRAIT_META: Record<
   keyof ComparisonTraits,
-  { label: string; icon: keyof typeof Ionicons.glyphMap }
+  { label: TranslationKey; icon: keyof typeof Ionicons.glyphMap }
 > = {
-  leaf: { label: "Leaf", icon: "leaf-outline" },
-  flower: { label: "Flower", icon: "color-palette-outline" },
-  stem: { label: "Stem", icon: "git-branch-outline" },
-  smell: { label: "Smell", icon: "cloud-outline" },
+  leaf: { label: "compare_trait_leaf", icon: "leaf-outline" },
+  flower: { label: "compare_trait_flower", icon: "color-palette-outline" },
+  stem: { label: "compare_trait_stem", icon: "git-branch-outline" },
+  smell: { label: "compare_trait_smell", icon: "cloud-outline" },
 };
 
 const TRAIT_ORDER: (keyof ComparisonTraits)[] = [
@@ -78,6 +79,7 @@ export function PhysicalChecklistRow({
   const isDark = colorScheme === "dark";
 
   const safeA = valueA?.trim() || "—";
+  const { t } = useTranslation();
   const safeB = valueB?.trim() || "—";
 
   const areSame =
@@ -120,7 +122,7 @@ export function PhysicalChecklistRow({
           <View className="mt-1 flex-row items-center">
             <Ionicons name="checkmark-circle" size={10} color={isDark ? "#A2CFA3" : "#4D8035"} />
             <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#A2CFA3" : "#4D8035", fontSize: 10, marginLeft: 2 }}>
-              Same
+              {t('compare_same')}
             </Text>
           </View>
         )}
@@ -176,6 +178,7 @@ export function PhysicalChecklistTable({
 }: PhysicalChecklistTableProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   // ── Guard ─────────────────────────────────────────────────────────────────
   if (!traitsA && !traitsB) {
@@ -183,7 +186,7 @@ export function PhysicalChecklistTable({
       <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(34,69,28,0.02)", borderRadius: 16, padding: 32, alignItems: "center" }}>
         <Ionicons name="clipboard-outline" size={28} color={isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.3)"} />
         <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 14, textAlign: "center", marginTop: 8 }}>
-          Comparison traits are not available for these plants.
+          {t('compare_no_traits')}
         </Text>
       </View>
     );
@@ -228,7 +231,7 @@ export function PhysicalChecklistTable({
             style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 13, fontWeight: "600", color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}
             numberOfLines={2}
           >
-            {plantNameA?.trim() || "MedicinalPlant A"}
+            {plantNameA?.trim() || t('compare_plant_a')}
           </Text>
         </View>
 
@@ -237,7 +240,7 @@ export function PhysicalChecklistTable({
             style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 13, fontWeight: "600", color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}
             numberOfLines={2}
           >
-            {plantNameB?.trim() || "MedicinalPlant B"}
+            {plantNameB?.trim() || t('compare_plant_b')}
           </Text>
         </View>
       </View>
@@ -246,7 +249,7 @@ export function PhysicalChecklistTable({
       {visibleTraits.length === 0 ? (
         <View style={{ paddingHorizontal: 16, paddingVertical: 24, alignItems: "center", backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
           <Text style={{ fontFamily: "Quicksand_500Medium", fontStyle: "italic", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.4)", fontSize: 14 }}>
-            No trait data available.
+            {t('compare_no_traits')}
           </Text>
         </View>
       ) : (
@@ -259,7 +262,7 @@ export function PhysicalChecklistTable({
           return (
             <PhysicalChecklistRow
               key={traitKey as string}
-              traitLabel={meta.label}
+              traitLabel={t(meta.label)}
               traitIcon={meta.icon}
               valueA={valueA}
               valueB={valueB}
