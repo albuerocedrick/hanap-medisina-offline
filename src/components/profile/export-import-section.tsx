@@ -1,3 +1,4 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * src/components/profile/export-import-section.tsx
  */
@@ -7,20 +8,20 @@ import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import { exportData, importData, applyImport } from '@/src/services/dataTransfer';
 import { ProfileMenuItem } from './profile-menu-item';
-import { useColorScheme } from "nativewind";
 import { useTranslation } from "@/src/i18n/useTranslation";
 
 export function ExportImportSection() {
+  const theme = useTheme();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
+
   const { t } = useTranslation();
 
   const handleExport = async () => {
     if (isExporting || isImporting) return;
-    
+
     setIsExporting(true);
     try {
       const isAvailable = await Sharing.isAvailableAsync();
@@ -35,7 +36,7 @@ export function ExportImportSection() {
         UTI: 'public.json',
       });
     } catch (error: any) {
-      console.error("[ExportImportSection] Export failed:", error);
+      if (__DEV__) console.error("[ExportImportSection] Export failed:", error);
       Alert.alert("Export Failed", error.message || "An unknown error occurred.");
     } finally {
       setIsExporting(false);
@@ -44,7 +45,7 @@ export function ExportImportSection() {
 
   const handleImport = async () => {
     if (isExporting || isImporting) return;
-    
+
     try {
       const result = await DocumentPicker.getDocumentAsync({
         type: 'application/json',
@@ -127,14 +128,14 @@ export function ExportImportSection() {
           onPress={handleExport}
         />
         {isExporting && (
-          <ActivityIndicator 
-            size="small" 
-            color={isDark ? "rgba(248,250,252,0.85)" : "#22451C"} 
-            style={{ position: 'absolute', right: 16, top: 16 }} 
+          <ActivityIndicator
+            size="small"
+            color={theme.textPrimary}
+            style={{ position: 'absolute', right: 16, top: 16 }}
           />
         )}
       </View>
-      
+
       <View style={{ opacity: isImporting ? 0.7 : 1 }}>
         <ProfileMenuItem
           icon="upload"
@@ -142,10 +143,10 @@ export function ExportImportSection() {
           onPress={handleImport}
         />
         {isImporting && (
-          <ActivityIndicator 
-            size="small" 
-            color={isDark ? "rgba(248,250,252,0.85)" : "#22451C"} 
-            style={{ position: 'absolute', right: 16, top: 16 }} 
+          <ActivityIndicator
+            size="small"
+            color={theme.textPrimary}
+            style={{ position: 'absolute', right: 16, top: 16 }}
           />
         )}
       </View>

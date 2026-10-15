@@ -1,9 +1,9 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * src/components/profile/profile-avatar.tsx
  * Renders the user avatar with an edit-button overlay.
  */
 import { Feather } from "@expo/vector-icons";
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -21,8 +21,9 @@ interface Props {
 }
 
 export function ProfileAvatar({ avatarUri, displayName, onEditPress }: Props) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   const scale = useSharedValue(1);
   const animStyle = useAnimatedStyle(() => ({
@@ -40,10 +41,10 @@ export function ProfileAvatar({ avatarUri, displayName, onEditPress }: Props) {
     <View className="items-center">
       <View className="relative">
         {/* Avatar */}
-        <View 
+        <View
           style={{
-            backgroundColor: isDark ? "#203922" : "#E7EFDD",
-            borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.8)",
+            backgroundColor: theme.surfaceTint,
+            borderColor: theme.border,
             borderWidth: StyleSheet.hairlineWidth,
           }}
           className="w-20 h-20 rounded-full overflow-hidden items-center justify-center"
@@ -51,8 +52,8 @@ export function ProfileAvatar({ avatarUri, displayName, onEditPress }: Props) {
           {avatarUri ? (
             <Image source={{ uri: avatarUri }} className="w-full h-full" resizeMode="cover" />
           ) : (
-            <Text 
-              style={{ color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "Quicksand_700Bold" }} 
+            <Text
+              style={{ color: theme.textPrimary, fontFamily: "Quicksand_700Bold" }}
               className="text-3xl"
             >
               {initials}
@@ -72,15 +73,15 @@ export function ProfileAvatar({ avatarUri, displayName, onEditPress }: Props) {
           activeOpacity={1}
           style={[
             {
-              backgroundColor: isDark ? "#203922" : "#E7EFDD",
-              borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.8)",
+              backgroundColor: theme.surfaceTint,
+              borderColor: theme.border,
               borderWidth: StyleSheet.hairlineWidth,
             },
             animStyle
           ]}
           className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full items-center justify-center"
         >
-          <Feather name="camera" size={14} color={isDark ? "rgba(248,250,252,0.85)" : "#22451C"} />
+          <Feather name="camera" size={14} color={theme.textPrimary} />
         </AnimatedTouchable>
       </View>
     </View>

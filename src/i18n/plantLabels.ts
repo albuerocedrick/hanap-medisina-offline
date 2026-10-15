@@ -1,4 +1,4 @@
-import type { AppLanguage } from '../store/useSettingsStore';
+import type { AppLanguage } from '@/src/store/useSettingsStore';
 
 // Keep stored category IDs stable; translate only the labels shown to people.
 const categoryLabels: Record<string, { en: string; tl: string }> = {

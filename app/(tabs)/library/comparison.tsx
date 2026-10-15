@@ -1,3 +1,4 @@
+import { useTheme } from "@/src/theme/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
@@ -15,18 +16,17 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Components
-import { PhysicalChecklistTable } from "../../../src/components/comparison/physical-checklist";
-import { PlantCard } from "../../../src/components/library/plant-card";
-import { SearchBar } from "../../../src/components/library/search-bar";
+import { PhysicalChecklistTable } from "@/src/components/comparison/physical-checklist";
+import { PlantCard } from "@/src/components/library/plant-card";
+import { SearchBar } from "@/src/components/library/search-bar";
 
 // Services & Store
-import { MedicinalPlant as Plant } from "../../../src/types";
-import { getPlantsByIds } from "../../../src/services/localLibrary";
-import { useLibraryStore } from "../../../src/store/useLibraryStore";
+import { MedicinalPlant as Plant } from "@/src/types";
+import { getPlantsByIds } from "@/src/services/localLibrary";
+import { useLibraryStore } from "@/src/store/useLibraryStore";
 import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
 import { useTranslation } from "@/src/i18n/useTranslation";
 
@@ -35,10 +35,11 @@ import { useTranslation } from "@/src/i18n/useTranslation";
 const PLACEHOLDER_IMAGE = require("../../../assets/images/plant-placeholder.jpg");
 
 export default function PlantComparisonScreen() {
+  const theme = useTheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
   const { t, language } = useTranslation();
 
   // Params from router (CompareTab passes these)
@@ -130,11 +131,11 @@ export default function PlantComparisonScreen() {
         onRequestClose={() => setIsPickerOpen(false)}
       >
         <View
-          style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: Platform.OS === "ios" ? 0 : insets.top }}
+          style={{ flex: 1, backgroundColor: theme.bg, paddingTop: Platform.OS === "ios" ? 0 : insets.top }}
         >
           {/* Header */}
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}>
-            <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 20, color: isDark ? "#F8FAFC" : "#22451C" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.border }}>
+            <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 20, color: theme.textPrimary }}>
               {t('compare_select_title')}
             </Text>
             <TouchableOpacity
@@ -143,7 +144,7 @@ export default function PlantComparisonScreen() {
                 if (!plantB) router.back(); // Auto-go back if they abort initial pick
               }}
             >
-              <Ionicons name="close" size={24} color={isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)"} />
+              <Ionicons name="close" size={24} color={theme.textSecondary} />
             </TouchableOpacity>
           </View>
 
@@ -166,7 +167,7 @@ export default function PlantComparisonScreen() {
             )}
             ListEmptyComponent={
               <View style={{ paddingTop: 40, alignItems: "center" }}>
-                <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)" }}>
+                <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary }}>
                   {t('compare_no_plants')}
                 </Text>
               </View>
@@ -183,10 +184,10 @@ export default function PlantComparisonScreen() {
   // and on Android the solid green bar clashed with the screen beneath it.
   if (isLoading && !isPickerOpen) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
+      <View style={{ flex: 1, backgroundColor: theme.bg, paddingTop: insets.top }}>
         <ScreenHeader title={t('details_compare')} fallbackHref="/(tabs)/library" />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#22451C"} />
+          <ActivityIndicator size="large" color={theme.accent} />
         </View>
       </View>
     );
@@ -194,19 +195,19 @@ export default function PlantComparisonScreen() {
 
   if (error || !plantA) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
+      <View style={{ flex: 1, backgroundColor: theme.bg, paddingTop: insets.top }}>
         <ScreenHeader title={t('details_compare')} fallbackHref="/(tabs)/library" />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
-          <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", marginTop: 16, textAlign: "center", marginBottom: 24 }}>
+          <Ionicons name="alert-circle-outline" size={48} color={theme.danger} />
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, marginTop: 16, textAlign: "center", marginBottom: 24 }}>
             {error || t('compare_unavailable')}
           </Text>
           <TouchableOpacity
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/library"))}
             accessibilityRole="button"
-            style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)", paddingHorizontal: 24, paddingVertical: 14, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}
+            style={{ backgroundColor: theme.surfaceHighlight, paddingHorizontal: 24, paddingVertical: 14, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.border }}
           >
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>{t('details_go_back')}</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textPrimary }}>{t('details_go_back')}</Text>
           </TouchableOpacity>
         </View>
         {renderPickerModal()}
@@ -217,7 +218,7 @@ export default function PlantComparisonScreen() {
 
   // ─── Main Comparison Render ──────────────────────────────────────────────
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF", paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: theme.bg, paddingTop: insets.top }}>
       <ScreenHeader
         title={t('details_compare')}
         subtitle={plantB ? `${plantA.name} vs ${plantB.name}` : plantA.name}
@@ -231,9 +232,9 @@ export default function PlantComparisonScreen() {
         contentContainerStyle={{ paddingBottom: 140 }}
       >
         {/* ─── Top: Side-by-Side Images ─────────────────────────────────────── */}
-        <View style={{ flexDirection: "row", height: 256, width: "100%", backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(34,69,28,0.02)", borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}>
+        <View style={{ flexDirection: "row", height: 256, width: "100%", backgroundColor: theme.surfaceHighlight, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.border }}>
           {/* Plant A (Left) */}
-          <View style={{ flex: 1, position: "relative", borderRightWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}>
+          <View style={{ flex: 1, position: "relative", borderRightWidth: StyleSheet.hairlineWidth, borderColor: theme.border }}>
             <Image
               source={
                 plantA.imageUrl ? { uri: plantA.imageUrl } : PLACEHOLDER_IMAGE
@@ -242,11 +243,11 @@ export default function PlantComparisonScreen() {
               resizeMode="cover"
             />
             <LinearGradient
-              colors={['transparent', 'rgba(15, 35, 15, 0.6)', 'rgba(10, 25, 10, 0.95)']}
+              colors={theme.imageGradient}
               locations={[0, 0.5, 1]}
               style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingTop: 60, paddingBottom: 12, paddingHorizontal: 12 }}
             >
-              <Text style={{ color: "white", fontFamily: "serif", fontStyle: "italic", fontSize: 16, fontWeight: "600", textShadowColor: "rgba(0,0,0,0.5)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }} numberOfLines={2}>
+              <Text style={{ color: theme.onImage, fontFamily: "serif", fontStyle: "italic", fontSize: 16, fontWeight: "600", textShadowColor: theme.scrim, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }} numberOfLines={2}>
                 {plantA.name}
               </Text>
             </LinearGradient>
@@ -266,21 +267,21 @@ export default function PlantComparisonScreen() {
                   resizeMode="cover"
                 />
                   <LinearGradient
-                    colors={['transparent', 'rgba(15, 35, 15, 0.6)', 'rgba(10, 25, 10, 0.95)']}
+                    colors={theme.imageGradient}
                     locations={[0, 0.5, 1]}
                     style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingTop: 60, paddingBottom: 12, paddingHorizontal: 12 }}
                   >
-                    <Text style={{ color: "white", fontFamily: "serif", fontStyle: "italic", fontSize: 16, fontWeight: "600", textShadowColor: "rgba(0,0,0,0.5)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }} numberOfLines={2}>
+                    <Text style={{ color: theme.onImage, fontFamily: "serif", fontStyle: "italic", fontSize: 16, fontWeight: "600", textShadowColor: theme.scrim, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }} numberOfLines={2}>
                       {plantB.name}
                     </Text>
                   </LinearGradient>
                   {/* Change Plant Button */}
                   <TouchableOpacity
                     onPress={() => setIsPickerOpen(true)}
-                    style={{ position: "absolute", top: 12, right: 12, backgroundColor: "rgba(0,0,0,0.3)", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, flexDirection: "row", alignItems: "center", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.4)" }}
+                    style={{ position: "absolute", top: 12, right: 12, backgroundColor: theme.scrim, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, flexDirection: "row", alignItems: "center", borderWidth: StyleSheet.hairlineWidth, borderColor: theme.imageBorder }}
                   >
-                    <Ionicons name="swap-horizontal" size={12} color="white" />
-                    <Text style={{ color: "white", fontSize: 10, fontFamily: "Quicksand_700Bold", marginLeft: 4, textTransform: "uppercase" }}>
+                    <Ionicons name="swap-horizontal" size={12} color={theme.onImage} />
+                    <Text style={{ color: theme.onImage, fontSize: 10, fontFamily: "Quicksand_700Bold", marginLeft: 4, textTransform: "uppercase" }}>
                       {t('compare_change')}
                     </Text>
                   </TouchableOpacity>
@@ -290,12 +291,12 @@ export default function PlantComparisonScreen() {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => setIsPickerOpen(true)}
-                style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(34,69,28,0.02)" }}
+                style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.surfaceHighlight }}
               >
-                <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)", borderWidth: 1, borderStyle: "dashed", borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)", alignItems: "center", justifyContent: "center" }}>
-                  <Ionicons name="add" size={28} color={isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)"} />
+                <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: theme.surfaceHighlight, borderWidth: 1, borderStyle: "dashed", borderColor: theme.border, alignItems: "center", justifyContent: "center" }}>
+                  <Ionicons name="add" size={28} color={theme.textSecondary} />
                 </View>
-                <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 13, marginTop: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textSecondary, fontSize: 13, marginTop: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
                   {t('compare_select')}
                 </Text>
               </TouchableOpacity>
@@ -306,10 +307,10 @@ export default function PlantComparisonScreen() {
 
         {/* ─── Bottom: Physical Checklist ─────────────────────────────────── */}
         <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 8 }}>
-          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 20, color: isDark ? "#F8FAFC" : "#22451C", marginBottom: 4 }}>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 20, color: theme.textPrimary, marginBottom: 4 }}>
             {t('compare_checklist')}
           </Text>
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", fontSize: 14, lineHeight: 20, marginBottom: 20 }}>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 14, lineHeight: 20, marginBottom: 20 }}>
             {t('compare_checklist_hint')}
           </Text>
 
@@ -321,16 +322,16 @@ export default function PlantComparisonScreen() {
               plantNameB={plantB.name}
             />
           ) : (
-            <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(34,69,28,0.02)", borderRadius: 16, padding: 32, alignItems: "center", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)" }}>
-              <Ionicons name="git-compare-outline" size={36} color={isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.3)"} />
-              <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", marginTop: 12, textAlign: "center" }}>
+            <View style={{ backgroundColor: theme.surfaceHighlight, borderRadius: 16, padding: 32, alignItems: "center", borderWidth: StyleSheet.hairlineWidth, borderColor: theme.borderSubtle }}>
+              <Ionicons name="git-compare-outline" size={36} color={theme.textSecondary} />
+              <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, marginTop: 12, textAlign: "center" }}>
                 {t('compare_second_plant')}
               </Text>
               <TouchableOpacity
                 onPress={() => setIsPickerOpen(true)}
-                style={{ marginTop: 16, backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.1)", paddingHorizontal: 20, paddingVertical: 10, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(162,207,163,0.3)" : "rgba(34,69,28,0.2)" }}
+                style={{ marginTop: 16, backgroundColor: theme.accentSubtle, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.accentSoftBorder }}
               >
-                <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C" }}>{t('compare_choose')}</Text>
+                <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.accent }}>{t('compare_choose')}</Text>
               </TouchableOpacity>
             </View>
           )}

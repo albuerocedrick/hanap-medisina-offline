@@ -12,12 +12,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { getHomeFeed } from "../services/localFeed";
+import { getHomeFeed } from "@/src/services/localFeed";
+import { useSettingsStore, AppLanguage } from "./useSettingsStore";
 import {
   TriviaItem,
   SymptomItem,
   PreparationGroup,
-} from "../types/homeFeed";
+} from "@/src/types/homeFeed";
 
 // ─────────────────────────────────────────────
 // ERROR TYPE
@@ -78,7 +79,7 @@ interface FeedActions {
    *  - On success: updates all fields and sets lastFetchedAt = Date.now().
    *  - On failure: sets feedError. Does NOT clear existing cached data.
    */
-  fetchHomeFeed: () => void;
+  fetchHomeFeed: (language?: AppLanguage) => void;
 
   /**
    * Returns the trivia fact for today based on the day of the week.
@@ -110,13 +111,13 @@ export const useFeedStore = create<FeedStore>()(
 
       // ── Actions ────────────────────────────────────────────────────────────
 
-      fetchHomeFeed: () => {
+      fetchHomeFeed: (language = useSettingsStore.getState().language) => {
         if (get().isLoadingFeed) return;
 
         set({ isLoadingFeed: true, feedError: null });
 
         try {
-          const feedData = getHomeFeed();
+          const feedData = getHomeFeed(language);
 
           set({
             weeklyTrivia: feedData.weeklyTrivia,
@@ -128,7 +129,7 @@ export const useFeedStore = create<FeedStore>()(
           });
         } catch (err) {
           const storeError = new FeedStoreError("FETCH_FAILED", "Could not load the home feed.", err);
-          console.error("[useFeedStore] fetchHomeFeed failed:", err);
+          if (__DEV__) console.error("[useFeedStore] fetchHomeFeed failed:", err);
           set({ isLoadingFeed: false, feedError: storeError });
         }
       },
@@ -164,14 +165,6 @@ export const useFeedStore = create<FeedStore>()(
     },
   ),
 );
-
-// Subscribe to language changes to instantly update data
-import { useSettingsStore } from './useSettingsStore';
-useSettingsStore.subscribe((state, prevState) => {
-  if (state.language !== prevState?.language) {
-    useFeedStore.getState().fetchHomeFeed();
-  }
-});
 
 // ─────────────────────────────────────────────
 // SELECTOR HOOKS

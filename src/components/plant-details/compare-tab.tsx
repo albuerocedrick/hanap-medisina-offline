@@ -1,3 +1,4 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * components/MedicinalPlant-details/CompareTab.tsx
  *
@@ -26,9 +27,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { MedicinalPlant } from "../../services/localLibrary";
+import { MedicinalPlant } from "@/src/services/localLibrary";
 
-import { useColorScheme } from "nativewind";
 import { StyleSheet } from "react-native";
 import { useTranslation } from "@/src/i18n/useTranslation";
 
@@ -66,9 +66,10 @@ function LookAlikeCard({
   plant: MedicinalPlant;
   onPress: () => void;
 }) {
+  const theme = useTheme();
   const [imgError, setImgError] = React.useState(false);
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
   const { t } = useTranslation();
 
   if (!plant?.id) return null;
@@ -90,7 +91,7 @@ function LookAlikeCard({
           width: 144,
           backgroundColor: "transparent",
           borderWidth: StyleSheet.hairlineWidth,
-          borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.5)",
+          borderColor: theme.border,
           borderRadius: 16,
           overflow: "hidden",
         }}
@@ -109,24 +110,24 @@ function LookAlikeCard({
         />
 
         {/* Info */}
-        <View style={{ paddingHorizontal: 10, paddingVertical: 8, backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.5)" }}>
+        <View style={{ paddingHorizontal: 10, paddingVertical: 8, backgroundColor: theme.surface }}>
           <Text
-            style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 13 }}
+            style={{ fontFamily: "Quicksand_700Bold", color: theme.textPrimary, fontSize: 13 }}
             numberOfLines={1}
           >
             {plant.name}
           </Text>
           <Text
-            style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontSize: 11, fontStyle: "italic", marginTop: 2 }}
+            style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 11, fontStyle: "italic", marginTop: 2 }}
             numberOfLines={1}
           >
             {plant.scientificName}
           </Text>
         </View>
 
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 6, backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.2)", borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.3)" }}>
-          <Ionicons name="git-compare-outline" size={11} color={isDark ? "#A2CFA3" : "#22451C"} />
-          <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C", fontSize: 11, marginLeft: 4 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 6, backgroundColor: theme.accentSubtle, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.borderSubtle }}>
+          <Ionicons name="git-compare-outline" size={11} color={theme.accent} />
+          <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.accent, fontSize: 11, marginLeft: 4 }}>
             {t('details_compare')}
           </Text>
         </View>
@@ -136,14 +137,15 @@ function LookAlikeCard({
 }
 
 function LookAlikeSkeletonCard() {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   return (
     <View
       style={{
         width: 144, height: 176, marginRight: 12, borderRadius: 16,
-        backgroundColor: isDark ? "rgba(255,255,255,0.04)" : "rgba(162,207,163,0.15)",
+        backgroundColor: theme.surfaceHighlight,
       }}
       accessibilityElementsHidden
     />
@@ -160,14 +162,15 @@ export function CompareTab({
   lookAlikePlants,
   isLoadingLookAlikes = false,
 }: CompareTabProps) {
+  const theme = useTheme();
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
   const { t } = useTranslation();
 
   // ── Guard ─────────────────────────────────────────────────────────────────
   if (!currentPlantId) {
-    console.warn(
+    if (__DEV__) console.warn(
       "[CompareTab] currentPlantId is required but was not provided.",
     );
     return null;
@@ -189,7 +192,7 @@ export function CompareTab({
         },
       });
     } catch (err) {
-      console.error(
+      if (__DEV__) console.error(
         `[CompareTab] Navigation to comparison failed (${currentPlantId} vs ${targetPlant.id}):`,
         err,
       );
@@ -206,7 +209,7 @@ export function CompareTab({
         },
       });
     } catch (err) {
-      console.error("[CompareTab] Navigation to pick mode failed:", err);
+      if (__DEV__) console.error("[CompareTab] Navigation to pick mode failed:", err);
     }
   };
 
@@ -220,10 +223,10 @@ export function CompareTab({
       {/* ── Section: Look-alikes ───────────────────────────────────────────── */}
       <View style={{ marginBottom: 24 }}>
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
-          <View style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.2)", borderRadius: 8, padding: 6, marginRight: 8 }}>
-            <Ionicons name="copy-outline" size={16} color={isDark ? "#A2CFA3" : "#22451C"} />
+          <View style={{ backgroundColor: theme.accentSubtle, borderRadius: 8, padding: 6, marginRight: 8 }}>
+            <Ionicons name="copy-outline" size={16} color={theme.accent} />
           </View>
-          <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textPrimary, fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
             {t('details_lookalike')}
           </Text>
         </View>
@@ -247,9 +250,9 @@ export function CompareTab({
           </ScrollView>
         ) : (
           // Empty state
-          <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "rgba(34,69,28,0.03)", borderRadius: 16, paddingHorizontal: 16, paddingVertical: 24, alignItems: "center" }}>
-            <Ionicons name="leaf-outline" size={28} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
-            <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 13, textAlign: "center", marginTop: 8 }}>
+          <View style={{ backgroundColor: theme.surfaceHighlight, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 24, alignItems: "center" }}>
+            <Ionicons name="leaf-outline" size={28} color={theme.border} />
+            <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 13, textAlign: "center", marginTop: 8 }}>
               {t('details_no_lookalike').replace('{name}', currentPlantName)}
             </Text>
           </View>
@@ -257,16 +260,16 @@ export function CompareTab({
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
-        <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }} />
-        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.4)", fontSize: 12, paddingHorizontal: 12 }}>{t('details_or')}</Text>
-        <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }} />
+        <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: theme.surfaceTint }} />
+        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textSecondary, fontSize: 12, paddingHorizontal: 12 }}>{t('details_or')}</Text>
+        <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: theme.surfaceTint }} />
       </View>
 
-      <View style={{ backgroundColor: isDark ? "rgba(162,207,163,0.05)" : "rgba(162,207,163,0.1)", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(162,207,163,0.2)" : "rgba(162,207,163,0.4)", borderRadius: 16, padding: 16 }}>
-        <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C", fontSize: 14, marginBottom: 4 }}>
+      <View style={{ backgroundColor: theme.accentSubtle, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.accentSoftBorder, borderRadius: 16, padding: 16 }}>
+        <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.accent, fontSize: 14, marginBottom: 4 }}>
           {t('details_compare_any_title')}
         </Text>
-        <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.7)" : "#334155", fontSize: 12, lineHeight: 18, marginBottom: 16 }}>
+        <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textPrimary, fontSize: 12, lineHeight: 18, marginBottom: 16 }}>
           {t('details_compare_any_body').replace('{name}', currentPlantName)}
         </Text>
 
@@ -276,14 +279,14 @@ export function CompareTab({
           accessibilityRole="button"
           accessibilityLabel={t('details_compare_btn')}
         >
-          <View style={{ backgroundColor: isDark ? "rgba(162,207,163,0.2)" : "rgba(34,69,28,0.85)", borderRadius: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+          <View style={{ backgroundColor: theme.accentSubtle, borderRadius: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
             <Ionicons
               name="git-compare-outline"
               size={16}
-              color={isDark ? "#A2CFA3" : "#ffffff"}
+              color={theme.selectionText}
               style={{ marginRight: 8 }}
             />
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#ffffff", fontSize: 13 }}>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.selectionText, fontSize: 13 }}>
               {t('details_compare_btn')}
             </Text>
           </View>

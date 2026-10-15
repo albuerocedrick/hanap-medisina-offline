@@ -2,8 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { useHistoryStore } from "../../store/useHistoryStore";
-import { LocalScanRecord } from "../../types";
+import { useHistoryStore } from "@/src/store/useHistoryStore";
+import { LocalScanRecord } from "@/src/types";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { useTheme } from "@/src/theme/useTheme";
 

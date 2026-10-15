@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
+import { randomUUID } from "expo-crypto";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { LocalScanRecord } from "../types";
+import { LocalScanRecord } from "@/src/types";
 
 // Helper function to capitalize the first letter of each word
 export const toTitleCase = (label: string) => {
@@ -38,6 +39,9 @@ interface HistoryState {
   importScans: (scans: LocalScanRecord[], mode: "merge" | "replace") => void;
 }
 
+// Maximum number of stored scans to prevent AsyncStorage CursorWindow / SQLite overflow
+export const MAX_SCAN_HISTORY = 500;
+
 export const useHistoryStore = create<HistoryState>()(
   persist(
     (set, get) => ({
@@ -47,54 +51,71 @@ export const useHistoryStore = create<HistoryState>()(
       activeTab: "all",
 
       addScan: (scanData) => {
-        const id = `scan_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        const id = `scan_${randomUUID()}`;
         const newScan: LocalScanRecord = {
           ...scanData,
           id,
           plantName: toTitleCase(scanData.plantName),
           isFavorite: false,
         };
-        set((state) => ({ scans: [newScan, ...state.scans] }));
+        set((state) => {
+          let updated = [newScan, ...state.scans];
+          if (updated.length > MAX_SCAN_HISTORY) {
+            const pruneIdxFromEnd = [...updated].reverse().findIndex(s => !s.isFavorite);
+            if (pruneIdxFromEnd !== -1) {
+              const actualIdx = updated.length - 1 - pruneIdxFromEnd;
+              const pruned = updated[actualIdx];
+              if (pruned?.imageUri) {
+                void FileSystem.deleteAsync(pruned.imageUri, { idempotent: true }).catch(() => {});
+              }
+              updated = updated.filter((_, i) => i !== actualIdx);
+            } else {
+              const pruned = updated[updated.length - 1];
+              if (pruned?.imageUri) {
+                void FileSystem.deleteAsync(pruned.imageUri, { idempotent: true }).catch(() => {});
+              }
+              updated = updated.slice(0, MAX_SCAN_HISTORY);
+            }
+          }
+          return { scans: updated };
+        });
       },
 
       deleteScan: async (id: string) => {
-        const scan = get().scans.find((s) => s.id === id);
-        if (scan) {
-          try {
-            await FileSystem.deleteAsync(scan.imageUri, { idempotent: true });
-          } catch (err) {
-            console.warn("[useHistoryStore] Failed to delete image:", err);
-          }
-        }
-        set((state) => ({
-          scans: state.scans.filter((s) => s.id !== id),
-        }));
+        await get().deleteMultipleScans([id]);
       },
 
       deleteMultipleScans: async (ids: string[]) => {
-        const scansToDelete = get().scans.filter((s) => ids.includes(s.id));
-        for (const scan of scansToDelete) {
-          try {
-            await FileSystem.deleteAsync(scan.imageUri, { idempotent: true });
-          } catch (err) {
-            console.warn(`[useHistoryStore] Failed to delete image for ${scan.id}:`, err);
-          }
+        const requested = new Set(ids);
+        const scansToDelete = get().scans.filter(scan => requested.has(scan.id));
+        const deleted = new Map<string, string>();
+        let failedCount = 0;
+        // Bound native I/O while allowing several deletions to progress together.
+        for (let offset = 0; offset < scansToDelete.length; offset += 8) {
+          const batch = scansToDelete.slice(offset, offset + 8);
+          const results = await Promise.allSettled(batch.map(async scan => {
+            if (scan.imageUri) await FileSystem.deleteAsync(scan.imageUri, { idempotent: true });
+          }));
+          results.forEach((result, index) => {
+            if (result.status === "fulfilled") deleted.set(batch[index].id, batch[index].imageUri);
+            else {
+              failedCount++;
+              if (__DEV__) console.warn(`[useHistoryStore] Failed to delete image for ${batch[index].id}:`, result.reason);
+            }
+          });
         }
-        set((state) => ({
-          scans: state.scans.filter((s) => !ids.includes(s.id)),
+        set(state => ({
+          // A failed image deletion retains its record for a later retry.
+          // Preserve scans added or replaced while the native work was in flight.
+          scans: state.scans.filter(scan => !deleted.has(scan.id) || deleted.get(scan.id) !== scan.imageUri),
         }));
+        if (failedCount) {
+          throw new Error(`Could not delete ${failedCount} scan image(s). Those scans were kept so you can try again.`);
+        }
       },
 
       clearAllScans: async () => {
-        const scans = get().scans;
-        for (const scan of scans) {
-          try {
-            await FileSystem.deleteAsync(scan.imageUri, { idempotent: true });
-          } catch (err) {
-            console.warn(`[useHistoryStore] Failed to delete image for ${scan.id}:`, err);
-          }
-        }
-        set({ scans: [] });
+        await get().deleteMultipleScans(get().scans.map(scan => scan.id));
       },
 
       toggleFavorite: (id: string) => {
@@ -133,14 +154,20 @@ export const useHistoryStore = create<HistoryState>()(
       exportScans: () => get().scans,
 
       importScans: (newScans, mode) => {
+        const seen = new Set<string>();
+        const distinctScans = newScans.filter(scan => {
+          if (seen.has(scan.id)) return false;
+          seen.add(scan.id);
+          return true;
+        });
         if (mode === "replace") {
-          set({ scans: newScans });
+          set({ scans: distinctScans.slice(0, MAX_SCAN_HISTORY) });
         } else {
           // Merge: add scans that don't already exist
           set((state) => {
             const existingIds = new Set(state.scans.map((s) => s.id));
-            const uniqueNewScans = newScans.filter((s) => !existingIds.has(s.id));
-            return { scans: [...uniqueNewScans, ...state.scans] };
+            const uniqueNewScans = distinctScans.filter((s) => !existingIds.has(s.id));
+            return { scans: [...uniqueNewScans, ...state.scans].slice(0, MAX_SCAN_HISTORY) };
           });
         }
       },

@@ -1,8 +1,6 @@
-import homeFeedEn from '../data/homeFeed.json';
-import homeFeedTl from '../data/homeFeed_tl.json';
 import { getAllSymptoms, getAllPreparationGroups } from './localLibrary';
-import { HomeFeedData, TriviaItem } from '../types/homeFeed';
-import { useSettingsStore } from '../store/useSettingsStore';
+import { HomeFeedData, TriviaItem } from '@/src/types/homeFeed';
+import type { AppLanguage } from '@/src/store/useSettingsStore';
 
 // Simple seeded random number generator for deterministic daily shuffling
 function mulberry32(a: number) {
@@ -14,9 +12,10 @@ function mulberry32(a: number) {
   }
 }
 
-export function getHomeFeed(): HomeFeedData {
-  const language = useSettingsStore.getState().language;
-  const homeFeedData = language === 'tl' ? homeFeedTl : homeFeedEn;
+export function getHomeFeed(language: AppLanguage): HomeFeedData {
+  const homeFeedData: { triviaPool: string[] } = language === 'tl'
+    ? require('../data/homeFeed_tl.json')
+    : require('../data/homeFeed.json');
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const diff = now.getTime() - start.getTime();
@@ -25,7 +24,11 @@ export function getHomeFeed(): HomeFeedData {
 
   // 1. Shuffle Trivia using date as seed (stays consistent all day, changes next day)
   const random = mulberry32(dayOfYear);
-  const shuffledTrivia = [...homeFeedData.triviaPool].sort(() => random() - 0.5);
+  const shuffledTrivia = [...homeFeedData.triviaPool];
+  for (let i = shuffledTrivia.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [shuffledTrivia[i], shuffledTrivia[j]] = [shuffledTrivia[j], shuffledTrivia[i]];
+  }
   
   const weeklyTrivia: TriviaItem[] = shuffledTrivia.slice(0, 7).map((text, i) => ({
     id: `t${dayOfYear}-${i}`,
@@ -41,8 +44,8 @@ export function getHomeFeed(): HomeFeedData {
   }
 
   // 5. Symptoms and Preparations
-  const symptoms = getAllSymptoms();
-  const preparationGroups = getAllPreparationGroups();
+  const symptoms = getAllSymptoms(language);
+  const preparationGroups = getAllPreparationGroups(language);
 
   return {
     weeklyTrivia,

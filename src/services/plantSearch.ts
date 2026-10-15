@@ -1,6 +1,5 @@
-import type { MedicinalPlant } from "../types";
-import plantsEn from "../data/plants_en.json";
-import plantsTl from "../data/plants_tl.json";
+import type { MedicinalPlant } from "@/src/types";
+import { getPlantCatalog } from "./plantCatalog";
 
 const normalize = (value: string) => value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 const aliases = [
@@ -15,6 +14,7 @@ const aliases = [
 ];
 const stopWords = new Set("a an the for to of and or with what which can help helps cure cures treat treats treating relief relieve relieves plant plants herb herbs medicinal i have my ako may para sa ang ng mga na at ay ano halamang halaman gamot pang".split(" "));
 const records = new Map<string, MedicinalPlant[]>();
+let recordsInitialized = false;
 const fieldCache = new WeakMap<MedicinalPlant, { names: string[]; uses: string; description: string; categories: string }>();
 function getFields(record: MedicinalPlant) {
   let fields = fieldCache.get(record);
@@ -29,10 +29,18 @@ function getFields(record: MedicinalPlant) {
   }
   return fields;
 }
-for (const plant of [...plantsEn, ...plantsTl]) {
-  const variants = records.get(plant.id) || [];
-  variants.push(plant as MedicinalPlant);
-  records.set(plant.id, variants);
+function initializeSearchRecords() {
+  if (recordsInitialized) return;
+  // Keep cross-language names and documented uses, but defer the inactive
+  // catalog until an actual search needs it. Reuse the shared catalog cache.
+  for (const language of ["en", "tl"] as const) {
+    for (const plant of getPlantCatalog(language)) {
+      const variants = records.get(plant.id) || [];
+      variants.push(plant);
+      records.set(plant.id, variants);
+    }
+  }
+  recordsInitialized = true;
 }
 
 function queryVariants(query: string): string[][] {
@@ -67,6 +75,7 @@ export interface PlantSearchGroup { key: string; label: string | null; plants: M
 
 export function groupPlantSearchResults(results: MedicinalPlant[], query: string, language: "en" | "tl"): PlantSearchGroup[] {
   if (!results.length) return [];
+  initializeSearchRecords();
   const normalized = normalize(query);
   const groups: PlantSearchGroup[] = [];
   const grouped = new Set<string>();
@@ -107,6 +116,7 @@ export function searchPlantNames(list: MedicinalPlant[], query: string): Medicin
 function searchRecords(list: MedicinalPlant[], query: string, namesOnly: boolean): MedicinalPlant[] {
   const normalized = normalize(query);
   if (!normalized) return list;
+  initializeSearchRecords();
   const variants = namesOnly ? [normalized.split(" ")] : queryVariants(normalized);
   if (!variants.length) return [];
   return list.map((plant, position) => {

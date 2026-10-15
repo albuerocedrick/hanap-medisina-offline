@@ -1,3 +1,4 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * components/comparison/PhysicalChecklist.tsx
  *
@@ -20,9 +21,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useColorScheme } from "nativewind";
-import { ComparisonTraits } from "../../services/localLibrary";
-import { useTranslation, type TranslationKey } from "../../i18n/useTranslation";
+import { ComparisonTraits } from "@/src/services/localLibrary";
+import { useTranslation, type TranslationKey } from "@/src/i18n/useTranslation";
 
 // ─────────────────────────────────────────────
 // CONSTANTS
@@ -75,8 +75,9 @@ export function PhysicalChecklistRow({
   isHighlighted = false,
   isLast = false,
 }: PhysicalChecklistRowProps) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   const safeA = valueA?.trim() || "—";
   const { t } = useTranslation();
@@ -94,24 +95,24 @@ export function PhysicalChecklistRow({
     <View
       style={{
         flexDirection: "row", alignItems: "stretch",
-        backgroundColor: isHighlighted ? (isDark ? "rgba(255,255,255,0.03)" : "rgba(34,69,28,0.03)") : "transparent",
+        backgroundColor: isHighlighted ? (theme.surfaceHighlight) : "transparent",
         borderBottomWidth: !isLast ? StyleSheet.hairlineWidth : 0,
-        borderBottomColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)"
+        borderBottomColor: theme.borderSubtle
       }}
     >
       <View
-        style={{ width: TRAIT_COL_WIDTH, borderRightWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)" }}
+        style={{ width: TRAIT_COL_WIDTH, borderRightWidth: StyleSheet.hairlineWidth, borderColor: theme.borderSubtle }}
         className="py-3 px-3 justify-center"
       >
         <View className="flex-row items-center">
           <Ionicons
             name={traitIcon}
             size={12}
-            color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"}
+            color={theme.textSecondary}
             style={{ marginRight: 5, flexShrink: 0 }}
           />
           <Text
-            style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 10, textTransform: "uppercase", letterSpacing: 0.5, flexShrink: 1 }}
+            style={{ fontFamily: "Quicksand_700Bold", color: theme.textSecondary, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.5, flexShrink: 1 }}
             numberOfLines={1}
           >
             {traitLabel}
@@ -120,19 +121,19 @@ export function PhysicalChecklistRow({
 
         {areSame && (
           <View className="mt-1 flex-row items-center">
-            <Ionicons name="checkmark-circle" size={10} color={isDark ? "#A2CFA3" : "#4D8035"} />
-            <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#A2CFA3" : "#4D8035", fontSize: 10, marginLeft: 2 }}>
+            <Ionicons name="checkmark-circle" size={10} color={theme.accent} />
+            <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.accent, fontSize: 10, marginLeft: 2 }}>
               {t('compare_same')}
             </Text>
           </View>
         )}
       </View>
 
-      <View style={{ flex: 1, borderRightWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)" }} className="py-3 px-3 justify-center">
+      <View style={{ flex: 1, borderRightWidth: StyleSheet.hairlineWidth, borderColor: theme.borderSubtle }} className="py-3 px-3 justify-center">
         <Text
           style={{
             fontFamily: "Quicksand_500Medium", fontSize: 14, lineHeight: 20,
-            color: missingA ? (isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.3)") : (isDark ? "#F8FAFC" : "#22451C"),
+            color: missingA ? (theme.textSecondary) : (theme.textPrimary),
             fontStyle: missingA ? "italic" : "normal"
           }}
         >
@@ -144,7 +145,7 @@ export function PhysicalChecklistRow({
         <Text
           style={{
             fontFamily: "Quicksand_500Medium", fontSize: 14, lineHeight: 20,
-            color: missingB ? (isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.3)") : (isDark ? "#F8FAFC" : "#22451C"),
+            color: missingB ? (theme.textSecondary) : (theme.textPrimary),
             fontStyle: missingB ? "italic" : "normal"
           }}
         >
@@ -176,16 +177,17 @@ export function PhysicalChecklistTable({
   plantNameA,
   plantNameB,
 }: PhysicalChecklistTableProps) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
   const { t } = useTranslation();
 
   // ── Guard ─────────────────────────────────────────────────────────────────
   if (!traitsA && !traitsB) {
     return (
-      <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(34,69,28,0.02)", borderRadius: 16, padding: 32, alignItems: "center" }}>
-        <Ionicons name="clipboard-outline" size={28} color={isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.3)"} />
-        <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 14, textAlign: "center", marginTop: 8 }}>
+      <View style={{ backgroundColor: theme.surfaceHighlight, borderRadius: 16, padding: 32, alignItems: "center" }}>
+        <Ionicons name="clipboard-outline" size={28} color={theme.textSecondary} />
+        <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 14, textAlign: "center", marginTop: 8 }}>
           {t('compare_no_traits')}
         </Text>
       </View>
@@ -210,25 +212,25 @@ export function PhysicalChecklistTable({
   );
 
   return (
-    <View style={{ borderRadius: 16, overflow: "hidden", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}>
+    <View style={{ borderRadius: 16, overflow: "hidden", borderWidth: StyleSheet.hairlineWidth, borderColor: theme.border }}>
       {/* ── Header row ────────────────────────────────────────────────────── */}
       <View
-        style={{ flexDirection: "row", alignItems: "stretch", backgroundColor: isDark ? "rgba(162,207,163,0.1)" : "rgba(77,128,53,0.1)", minHeight: 44 }}
+        style={{ flexDirection: "row", alignItems: "stretch", backgroundColor: theme.accentSubtle, minHeight: 44 }}
       >
         <View
-          style={{ width: TRAIT_COL_WIDTH, borderRightWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }}
+          style={{ width: TRAIT_COL_WIDTH, borderRightWidth: StyleSheet.hairlineWidth, borderColor: theme.border }}
           className="items-center justify-center px-3"
         >
           <Ionicons
             name="git-compare-outline"
             size={16}
-            color={isDark ? "rgba(248,250,252,0.7)" : "#22451C"}
+            color={theme.textPrimary}
           />
         </View>
 
-        <View style={{ flex: 1, borderRightWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }} className="items-center justify-center px-3 py-2">
+        <View style={{ flex: 1, borderRightWidth: StyleSheet.hairlineWidth, borderColor: theme.border }} className="items-center justify-center px-3 py-2">
           <Text
-            style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 13, fontWeight: "600", color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}
+            style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 13, fontWeight: "600", color: theme.textPrimary, textAlign: "center" }}
             numberOfLines={2}
           >
             {plantNameA?.trim() || t('compare_plant_a')}
@@ -237,7 +239,7 @@ export function PhysicalChecklistTable({
 
         <View style={{ flex: 1 }} className="items-center justify-center px-3 py-2">
           <Text
-            style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 13, fontWeight: "600", color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}
+            style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 13, fontWeight: "600", color: theme.textPrimary, textAlign: "center" }}
             numberOfLines={2}
           >
             {plantNameB?.trim() || t('compare_plant_b')}
@@ -247,8 +249,8 @@ export function PhysicalChecklistTable({
 
       {/* ── Data rows ─────────────────────────────────────────────────────── */}
       {visibleTraits.length === 0 ? (
-        <View style={{ paddingHorizontal: 16, paddingVertical: 24, alignItems: "center", backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
-          <Text style={{ fontFamily: "Quicksand_500Medium", fontStyle: "italic", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.4)", fontSize: 14 }}>
+        <View style={{ paddingHorizontal: 16, paddingVertical: 24, alignItems: "center", backgroundColor: theme.bg }}>
+          <Text style={{ fontFamily: "Quicksand_500Medium", fontStyle: "italic", color: theme.textSecondary, fontSize: 14 }}>
             {t('compare_no_traits')}
           </Text>
         </View>

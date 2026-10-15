@@ -1,3 +1,4 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * components/library/SearchBar.tsx
  *
@@ -7,7 +8,6 @@
  */
 
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { useColorScheme } from "nativewind";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Animated, { FadeIn, FadeInDown, FadeOut } from "react-native-reanimated";
@@ -46,8 +46,9 @@ export function SearchBar({
   onFocusChange,
   showSuggestions = true,
 }: SearchBarProps) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+  const isDark = theme.isDark;
   const { t } = useTranslation();
 
   const committedQuery = useLibraryStore(selectSearchQuery);
@@ -91,7 +92,7 @@ export function SearchBar({
           setSearchQuery(text);
           onSearch?.(text);
         } catch (err) {
-          console.error("[SearchBar] Failed to commit search query:", err);
+          if (__DEV__) console.error("[SearchBar] Failed to commit search query:", err);
         } finally {
           setIsBusy(false);
         }
@@ -128,7 +129,7 @@ export function SearchBar({
       setSearchQuery("");
       onSearch?.("");
     } catch (err) {
-      console.error("[SearchBar] Failed to clear search query:", err);
+      if (__DEV__) console.error("[SearchBar] Failed to clear search query:", err);
     }
     inputRef.current?.focus();
   };
@@ -144,7 +145,7 @@ export function SearchBar({
       setSearchQuery("");
       onSearch?.("");
     } catch (err) {
-      console.error("[SearchBar] Failed to cancel search:", err);
+      if (__DEV__) console.error("[SearchBar] Failed to cancel search:", err);
     }
     inputRef.current?.blur();
   };
@@ -161,20 +162,20 @@ export function SearchBar({
           // Was transparent, so the input read as a floating outline with no
           // sense of being a field. A tinted fill makes it feel tappable.
           backgroundColor: isFocused || hasValue
-            ? (isDark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.9)")
-            : (isDark ? "rgba(255,255,255,0.04)" : "rgba(162,207,163,0.12)"),
+            ? (theme.surface)
+            : (theme.surfaceHighlight),
           borderRadius: 20, paddingHorizontal: 16, paddingVertical: 12,
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: hasValue || isFocused
-            ? (isDark ? "rgba(162,207,163,0.8)" : "#A2CFA3") 
-            : (isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.5)")
+            ? (theme.accentSoftBorder)
+            : (theme.border)
         }}
       >
 
         <Ionicons
           name="search-outline"
           size={18}
-          color={hasValue ? (isDark ? "#A2CFA3" : "#22451C") : (isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)")}
+          color={hasValue ? (theme.accent) : (theme.textSecondary)}
           style={{ marginRight: 8 }}
         />
 
@@ -182,14 +183,14 @@ export function SearchBar({
           ref={inputRef}
           style={{
             flex: 1, fontFamily: "Quicksand_600SemiBold", fontSize: 14,
-            color: isDark ? "#F8FAFC" : "#22451C"
+            color: theme.textPrimary
           }}
           value={localValue}
           onChangeText={handleChangeText}
           onFocus={() => { setIsFocused(true); onFocusChange?.(true); }}
           onBlur={() => { setIsFocused(false); onFocusChange?.(false); }}
           placeholder={placeholder ?? t('library_search')}
-          placeholderTextColor={isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)"}
+          placeholderTextColor={theme.textSecondary}
           returnKeyType="search"
           onSubmitEditing={handleSubmit}
           accessibilityLabel={placeholder ?? t('library_search')}
@@ -201,18 +202,18 @@ export function SearchBar({
         {isBusy && hasValue ? (
           <ActivityIndicator
             size="small"
-            color={isDark ? "#A2CFA3" : "#22451C"}
+            color={theme.accent}
             style={{ marginLeft: 8 }}
           />
         ) : hasValue ? (
           <TouchableOpacity onPress={handleClear} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-            <View 
+            <View
               style={{
-                backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)",
+                backgroundColor: theme.surfaceTint,
                 width: 20, height: 20, borderRadius: 10, alignItems: "center", justifyContent: "center"
               }}
             >
-              <Ionicons name="close" size={12} color={isDark ? "#F8FAFC" : "#22451C"} />
+              <Ionicons name="close" size={12} color={theme.textPrimary} />
             </View>
           </TouchableOpacity>
         ) : null}
@@ -231,7 +232,7 @@ export function SearchBar({
               style={{
                 fontFamily: "Quicksand_700Bold",
                 fontSize: 15,
-                color: isDark ? "#A2CFA3" : "#4D8035",
+                color: theme.accent,
               }}
             >
               {t("lib_cancel")}
@@ -243,21 +244,21 @@ export function SearchBar({
       {/* Suggestions dropdown */}
 
       {showSuggestions && isFocused && hasValue && suggestions.length > 0 && (
-        <Animated.View 
+        <Animated.View
           entering={FadeInDown.duration(280).springify().damping(24)}
           exiting={FadeOut.duration(160)}
           style={{
             position: "absolute", top: 56, left: 0, right: 0,
-            backgroundColor: isDark ? "#111C11" : "#F4FAE8",
+            backgroundColor: theme.surface,
             borderRadius: 18, overflow: "hidden",
-            borderWidth: 1, borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(34,69,28,0.1)",
-            shadowColor: "#000", shadowOpacity: isDark ? 0.35 : 0.1, shadowRadius: 28, shadowOffset: { width: 0, height: 16 },
+            borderWidth: 1, borderColor: theme.border,
+            shadowColor: theme.shadow, shadowOpacity: isDark ? 0.35 : 0.1, shadowRadius: 28, shadowOffset: { width: 0, height: 16 },
             elevation: 12, zIndex: 100
           }}
         >
           {/* Header */}
-          <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(34,69,28,0.07)" }}>
-            <Text style={{ fontSize: 10, fontFamily: "Quicksand_700Bold", letterSpacing: 1.4, textTransform: "uppercase", color: isDark ? "rgba(226,232,240,0.75)" : "#4D8035" }}>
+          <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: theme.borderSubtle }}>
+            <Text style={{ fontSize: 10, fontFamily: "Quicksand_700Bold", letterSpacing: 1.4, textTransform: "uppercase", color: theme.textSecondary }}>
               {t('lib_suggestions')}
             </Text>
           </View>
@@ -283,25 +284,25 @@ export function SearchBar({
                 flexDirection: "row", alignItems: "center",
                 paddingHorizontal: 16, paddingVertical: 12,
                 borderBottomWidth: index === suggestions.length - 1 ? 0 : 1,
-                borderBottomColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.06)"
+                borderBottomColor: theme.borderSubtle
               }}
             >
               {/* Icon */}
-              <View style={{ width: 36, height: 36, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(77,128,53,0.08)", marginRight: 12 }}>
-                <Feather name="book-open" size={15} color={isDark ? "rgba(226,232,240,0.85)" : "#4D8035"} />
+              <View style={{ width: 36, height: 36, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: theme.surfaceTint, marginRight: 12 }}>
+                <Feather name="book-open" size={15} color={theme.textSecondary} />
               </View>
 
               {/* Text */}
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.92)" : "#1a3312", fontSize: 14, marginBottom: 1 }}>{s.name}</Text>
+                <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textPrimary, fontSize: 14, marginBottom: 1 }}>{s.name}</Text>
                 {s.scientificName ? (
-                  <Text style={{ fontFamily: "Quicksand_500Medium", fontStyle: "italic", color: isDark ? "rgba(226,232,240,0.55)" : "rgba(34,69,28,0.45)", fontSize: 11 }} numberOfLines={1}>
+                  <Text style={{ fontFamily: "Quicksand_500Medium", fontStyle: "italic", color: theme.textSecondary, fontSize: 11 }} numberOfLines={1}>
                     {s.scientificName}
                   </Text>
                 ) : null}
               </View>
 
-              <Feather name="chevron-right" size={14} color={isDark ? "rgba(226,232,240,0.45)" : "rgba(34,69,28,0.3)"} />
+              <Feather name="chevron-right" size={14} color={theme.textSecondary} />
             </TouchableOpacity>
           ))}
         </Animated.View>

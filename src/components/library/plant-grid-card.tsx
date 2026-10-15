@@ -1,6 +1,6 @@
+import { useTheme } from "@/src/theme/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React, { memo, useState } from "react";
 import {
   Image,
@@ -18,6 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { MedicinalPlant } from "@/src/services/localLibrary";
 import { useLibraryStore } from "@/src/store/useLibraryStore";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -34,9 +35,11 @@ export function PlantGridCardComponent({
   onPress,
   hideFavoriteIndicator = false,
 }: PlantGridCardProps) {
+  const theme = useTheme();
+  const { t } = useTranslation();
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
 
   const scale = useSharedValue(1);
   const animStyle = useAnimatedStyle(() => ({
@@ -63,7 +66,7 @@ export function PlantGridCardComponent({
         router.push(`/(tabs)/library/${plant.id}`);
       }
     } catch (err) {
-      console.error(`[PlantGridCard] Navigation failed for plant "${plant.id}":`, err);
+      if (__DEV__) console.error(`[PlantGridCard] Navigation failed for plant "${plant.id}":`, err);
     }
   };
 
@@ -88,18 +91,18 @@ export function PlantGridCardComponent({
           flex: 1,
           opacity: isUnavailableOffline ? 0.4 : 1,
           margin: 6,
-          backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "transparent",
+          backgroundColor: theme.surfaceHighlight,
           borderRadius: 20,
           overflow: "hidden",
           borderWidth: StyleSheet.hairlineWidth,
-          borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(162,207,163,0.6)",
+          borderColor: theme.border,
         },
       ]}
     >
-      <View style={{ width: "100%", aspectRatio: 1, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)" }}>
+      <View style={{ width: "100%", aspectRatio: 1, backgroundColor: theme.surfaceHighlight }}>
         {imageLoading && !imageError && (
           <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]}>
-            <Ionicons name="leaf-outline" size={24} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
+            <Ionicons name="leaf-outline" size={24} color={theme.border} />
           </View>
         )}
         {/* plant-placeholder.jpg is a dark photo (RGB 25,30,26) at 300x168. Used
@@ -121,25 +124,28 @@ export function PlantGridCardComponent({
               {
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: isDark ? "#162916" : "#F5FAED",
+                backgroundColor: theme.surfaceTint,
               },
             ]}
           >
             <Ionicons
               name="leaf-outline"
               size={28}
-              color={isDark ? "rgba(162,207,163,0.6)" : "rgba(34,69,28,0.55)"}
+              color={theme.accent}
             />
           </View>
         )}
 
         {isUnavailableOffline && (
           <View style={{ position: "absolute", top: 8, right: 8 }}>
-            <Ionicons name="cloud-offline-outline" size={16} color="rgba(255,255,255,0.8)" />
+            <Ionicons name="cloud-offline-outline" size={16} color={theme.onImage} />
           </View>
         )}
         {!hideFavoriteIndicator && (
           <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={t(isFavorite ? "a11y_remove_favorite" : "a11y_add_favorite")}
+            accessibilityState={{ selected: isFavorite }}
             onPress={() => toggleFavorite(plant)}
             style={{
               position: "absolute",
@@ -148,26 +154,26 @@ export function PlantGridCardComponent({
               width: 28,
               height: 28,
               borderRadius: 14,
-              backgroundColor: "rgba(0,0,0,0.4)",
+              backgroundColor: theme.scrim,
               justifyContent: "center",
               alignItems: "center",
             }}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Ionicons 
-              name={isFavorite ? "heart" : "heart-outline"} 
-              size={16} 
-              color={isFavorite ? "#ef4444" : "white"} 
+            <Ionicons
+              name={isFavorite ? "heart" : "heart-outline"}
+              size={16}
+              color={isFavorite ? theme.danger : theme.onImage}
             />
           </TouchableOpacity>
         )}
       </View>
 
       <View style={{ padding: 12 }}>
-        <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 14, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }} numberOfLines={1}>
+        <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 14, color: theme.textPrimary, textAlign: "center" }} numberOfLines={1}>
           {plant.name ?? "Unknown plant"}
         </Text>
-        <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 11, color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 2 }} numberOfLines={1}>
+        <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 11, color: theme.textSecondary, textAlign: "center", marginTop: 2 }} numberOfLines={1}>
           {plant.scientificName ?? ""}
         </Text>
       </View>

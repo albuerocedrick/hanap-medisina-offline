@@ -7,9 +7,8 @@
  * invented — this file only consolidates the palette that was previously spread
  * across ~53 inline hex literals and ~669 rgba() calls.
  *
- * This file is additive: adopting it is incremental. Migrate a component by
- * replacing its `const isDark = colorScheme === "dark"` ternaries with
- * `const t = useTheme()` and referencing `t.textPrimary`, `t.surface`, etc.
+ * Screens and components consume these semantic values through `useTheme()`.
+ * Keep theme-dependent colours here so every surface follows the same palette.
  *
  * Superseded (safe to delete once migration completes):
  *   - constants/Colors.ts  (dead Expo template — #2f95dc blue, imported nowhere)
@@ -17,7 +16,7 @@
  */
 
 // ─── Raw palette ──────────────────────────────────────────────────────────────
-// The eight colours the app actually uses. Prefer the semantic tokens below;
+// Prefer the semantic tokens below;
 // reach for these only when defining a new semantic token.
 export const palette = {
   forest: "#22451C", // deep green — primary text
@@ -64,6 +63,30 @@ export interface ThemeTokens {
   accentSubtle: string;
 
   danger: string;
+  dangerSubtle: string;
+  dangerBorder: string;
+  dangerAction: string;
+  onDangerAction: string;
+  warning: string;
+  warningSubtle: string;
+  warningBorder: string;
+  success: string;
+  successSubtle: string;
+  /** Filled controls keep a clear label contrast in both themes. */
+  accentStrong: string;
+  accentSoftBorder: string;
+  selectionSurface: string;
+  selectionText: string;
+  selectionBorder: string;
+  surfaceHighlight: string;
+  onImage: string;
+  imageBorder: string;
+  scrim: string;
+  scrimStrong: string;
+  shadow: string;
+  navigationGradient: [string, string, string];
+  navigationActiveGradient: [string, string, string];
+  imageGradient: [string, string, string];
   /** Non-text icon in an "off" state. WCAG needs only 3:1 for graphical objects. */
   iconInactive: string;
 }
@@ -97,7 +120,30 @@ export const lightTheme: ThemeTokens = {
   accent: palette.olive,
   accentSubtle: "rgba(77,128,53,0.12)",
 
-  danger: "#EF4444",
+  danger: "#A63328",
+  dangerSubtle: "#FBE9E5",
+  dangerBorder: "#EBCBC4",
+  dangerAction: "#B53C32",
+  onDangerAction: palette.white,
+  warning: "#B45309",
+  warningSubtle: "#FFFBEB",
+  warningBorder: "#FDE68A",
+  success: "#15803D",
+  successSubtle: "#F0FDF4",
+  accentStrong: palette.forest,
+  accentSoftBorder: "rgba(77,128,53,0.3)",
+  selectionSurface: palette.forest,
+  selectionText: palette.white,
+  selectionBorder: palette.forest,
+  surfaceHighlight: "rgba(34,69,28,0.03)",
+  onImage: palette.white,
+  imageBorder: "rgba(255,255,255,0.35)",
+  scrim: "rgba(11,18,11,0.72)",
+  scrimStrong: "rgba(0,0,0,0.95)",
+  shadow: palette.forest,
+  navigationGradient: ["#FDFFF6", "#EFF5E7", "#F8FCEE"],
+  navigationActiveGradient: ["#DCECCF", "#E8F3DB", "#D1E6BF"],
+  imageGradient: ["transparent", "rgba(15,35,15,0.6)", "rgba(10,25,10,0.95)"],
   iconInactive: "rgba(34,69,28,0.55)", // 3.04:1 on bg  ✅ (was 0.2 alpha ≈ 1.3:1)
 };
 
@@ -118,7 +164,30 @@ export const darkTheme: ThemeTokens = {
   accent: palette.sage,
   accentSubtle: "rgba(162,207,163,0.14)",
 
-  danger: "#EF4444",
+  danger: "#FFB4A9",
+  dangerSubtle: "#38201F",
+  dangerBorder: "#63312C",
+  dangerAction: "#F0ADA2",
+  onDangerAction: "#351713",
+  warning: "#FBBF24",
+  warningSubtle: "rgba(217,119,6,0.08)",
+  warningBorder: "rgba(217,119,6,0.2)",
+  success: "#4ADE80",
+  successSubtle: "rgba(34,197,94,0.2)",
+  accentStrong: palette.olive,
+  accentSoftBorder: "rgba(162,207,163,0.3)",
+  selectionSurface: "rgba(162,207,163,0.15)",
+  selectionText: palette.sage,
+  selectionBorder: "rgba(162,207,163,0.8)",
+  surfaceHighlight: "rgba(255,255,255,0.03)",
+  onImage: palette.white,
+  imageBorder: "rgba(255,255,255,0.35)",
+  scrim: "rgba(11,18,11,0.72)",
+  scrimStrong: "rgba(0,0,0,0.95)",
+  shadow: "#000000",
+  navigationGradient: ["#263330", "#131D1B", "#263137"],
+  navigationActiveGradient: ["#2B5741", "#183D2C", "#295740"],
+  imageGradient: ["transparent", "rgba(15,35,15,0.6)", "rgba(10,25,10,0.95)"],
   iconInactive: "rgba(255,255,255,0.40)", // 3.84:1 on bg  ✅ (0.30 was 2.67:1)
 };
 

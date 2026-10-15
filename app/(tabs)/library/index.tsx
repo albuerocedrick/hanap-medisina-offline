@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
-import { useColorScheme } from "nativewind";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -27,8 +26,9 @@ import { PlantGridCard } from "@/src/components/library/plant-grid-card";
 import { SearchBar } from "@/src/components/library/search-bar";
 
 // Stores
-import { useLibraryStore } from "@/src/store/useLibraryStore";
+import { selectDisplayedPlants, useLibraryStore } from "@/src/store/useLibraryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { useTheme } from "@/src/theme/useTheme";
 
 
 export default function LibraryFeed() {
@@ -36,8 +36,7 @@ export default function LibraryFeed() {
   const scanIdFromParams = params?.scanId as string | undefined;
   const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
 
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -49,8 +48,6 @@ export default function LibraryFeed() {
 
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  const plants = useLibraryStore((s) => s.plants);
-  const favorites = useLibraryStore((s) => s.favorites);
   const searchQuery = useLibraryStore((s) => s.searchQuery);
   const activeCategory = useLibraryStore((s) => s.activeCategory);
   const activeSymptom = useLibraryStore((s) => s.activeSymptom);
@@ -70,9 +67,14 @@ export default function LibraryFeed() {
     (s) => s.fetchPlantsByActiveCategory,
   );
   const clearErrors = useLibraryStore((s) => s.clearErrors);
-  const getDisplayedPlants = useLibraryStore((s) => s.getDisplayedPlants);
-
-  const displayedPlants = getDisplayedPlants();
+  const displayedPlants = useLibraryStore(selectDisplayedPlants);
+  // Keep a single list instance in both layouts. FlatList cannot change
+  // numColumns at runtime without remounting, so each virtualized item is a row.
+  const plantRows = useMemo(() => {
+    const columns = viewMode === "grid" ? 2 : 1;
+    return Array.from({ length: Math.ceil(displayedPlants.length / columns) }, (_, index) =>
+      displayedPlants.slice(index * columns, (index + 1) * columns));
+  }, [displayedPlants, viewMode]);
 
   useEffect(() => {
     // Refresh the complete bundled catalog even if an older cache was partial.
@@ -94,9 +96,9 @@ export default function LibraryFeed() {
     if (isLoadingPlants && displayedPlants.length === 0) {
       return (
         <View className="flex-1 items-center justify-center pt-20 px-6">
-          <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#22451C"} />
+          <ActivityIndicator size="large" color={theme.accent} />
           <Text 
-            style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_500Medium" }}
+            style={{ color: theme.textSecondary, fontFamily: "Quicksand_500Medium" }}
             className="mt-4 text-center"
           >
             {t('lib_loading')}
@@ -111,27 +113,27 @@ export default function LibraryFeed() {
           <View 
             style={{ 
               width: 56, height: 56, borderRadius: 28, 
-              backgroundColor: isDark ? "rgba(239,68,68,0.1)" : "rgba(239,68,68,0.05)",
-              borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(239,68,68,0.3)" : "rgba(239,68,68,0.2)",
+              backgroundColor: theme.dangerSubtle,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: theme.dangerBorder,
               alignItems: "center", justifyContent: "center", marginBottom: 16 
             }}
           >
-            <Ionicons name="alert-circle-outline" size={28} color="#ef4444" />
+            <Ionicons name="alert-circle-outline" size={28} color={theme.danger} />
           </View>
-          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: theme.textPrimary, textAlign: "center" }}>
             {t('lib_error_title')}
           </Text>
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, marginBottom: 24 }}>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, textAlign: "center", marginTop: 8, marginBottom: 24 }}>
             {plantsError.message}
           </Text>
           <TouchableOpacity
             onPress={handleRetry}
             style={{
-              backgroundColor: isDark ? "#22451C" : "#A2CFA3",
+              backgroundColor: theme.accent,
               paddingHorizontal: 24, paddingVertical: 12, borderRadius: 16
             }}
           >
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#F8FAFC" : "#22451C" }}>{t('lib_try_again')}</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textOnAccent }}>{t('lib_try_again')}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -145,17 +147,17 @@ export default function LibraryFeed() {
           <View 
             style={{ 
               width: 56, height: 56, borderRadius: 28, 
-              backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
-              borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(162,207,163,0.5)",
+              backgroundColor: theme.accentSubtle,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: theme.borderSubtle,
               alignItems: "center", justifyContent: "center", marginBottom: 16 
             }}
           >
-            <Ionicons name="search-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
+            <Ionicons name="search-outline" size={28} color={theme.iconInactive} />
           </View>
-          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: theme.textPrimary, textAlign: "center" }}>
             {t('lib_no_match_title')}
           </Text>
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, textAlign: "center", marginTop: 8, lineHeight: 20 }}>
             {t('lib_no_match_body').replace('{query}', searchQuery)}
           </Text>
         </View>
@@ -168,17 +170,17 @@ export default function LibraryFeed() {
           <View 
             style={{ 
               width: 56, height: 56, borderRadius: 28, 
-              backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
-              borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(162,207,163,0.5)",
+              backgroundColor: theme.accentSubtle,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: theme.borderSubtle,
               alignItems: "center", justifyContent: "center", marginBottom: 16 
             }}
           >
-            <Ionicons name="leaf-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
+            <Ionicons name="leaf-outline" size={28} color={theme.iconInactive} />
           </View>
-          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: theme.textPrimary, textAlign: "center" }}>
             {t('lib_cat_empty_title')}
           </Text>
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, textAlign: "center", marginTop: 8, lineHeight: 20 }}>
             {t('lib_cat_empty_body').replace('{category}', activeCategory)}
           </Text>
         </View>
@@ -191,17 +193,17 @@ export default function LibraryFeed() {
           <View 
             style={{ 
               width: 56, height: 56, borderRadius: 28, 
-              backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
-              borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(162,207,163,0.5)",
+              backgroundColor: theme.accentSubtle,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: theme.borderSubtle,
               alignItems: "center", justifyContent: "center", marginBottom: 16 
             }}
           >
-            <Ionicons name="medkit-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
+            <Ionicons name="medkit-outline" size={28} color={theme.iconInactive} />
           </View>
-          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: theme.textPrimary, textAlign: "center" }}>
             {t('lib_no_plants_title')}
           </Text>
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, textAlign: "center", marginTop: 8, lineHeight: 20 }}>
             {t('lib_no_plants_symptom')}
           </Text>
         </View>
@@ -214,17 +216,17 @@ export default function LibraryFeed() {
           <View 
             style={{ 
               width: 56, height: 56, borderRadius: 28, 
-              backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
-              borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(162,207,163,0.5)",
+              backgroundColor: theme.accentSubtle,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: theme.borderSubtle,
               alignItems: "center", justifyContent: "center", marginBottom: 16 
             }}
           >
-            <Ionicons name="flask-outline" size={28} color={isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)"} />
+            <Ionicons name="flask-outline" size={28} color={theme.iconInactive} />
           </View>
-          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: isDark ? "#F8FAFC" : "#22451C", textAlign: "center" }}>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 22, color: theme.textPrimary, textAlign: "center" }}>
             {t('lib_no_plants_title')}
           </Text>
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)", textAlign: "center", marginTop: 8, lineHeight: 20 }}>
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, textAlign: "center", marginTop: 8, lineHeight: 20 }}>
             {t('lib_no_plants_prep')}
           </Text>
         </View>
@@ -237,44 +239,49 @@ export default function LibraryFeed() {
   const renderHeader = () => (
     <View className="pb-2">
       {activeSymptom && (
-        <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}>
-          <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#F8FAFC" : "#22451C", flex: 1 }}>
+        <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: theme.accentSubtle }}>
+          <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textPrimary, flex: 1 }}>
             {t('lib_showing_symptom').replace('{symptom}', activeSymptom)}
           </Text>
           <TouchableOpacity onPress={() => setActiveSymptom(null)} style={{ padding: 4 }}>
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>{t('lib_clear')}</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.danger, fontSize: 14 }}>{t('lib_clear')}</Text>
           </TouchableOpacity>
         </View>
       )}
 
       {activePreparationMethod && (
-        <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}>
-          <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#F8FAFC" : "#22451C", flex: 1 }}>
+        <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: theme.accentSubtle }}>
+          <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textPrimary, flex: 1 }}>
             {t('lib_showing_prep').replace('{prep}', activePreparationMethod)}
           </Text>
           <TouchableOpacity onPress={() => setActivePreparationMethod(null)} style={{ padding: 4 }}>
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#ef4444" : "#dc2626", fontSize: 14 }}>{t('lib_clear')}</Text>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.danger, fontSize: 14 }}>{t('lib_clear')}</Text>
           </TouchableOpacity>
         </View>
       )}
 
       {(displayedPlants.length > 0 || showFavoritesOnly) && (
         <View className="mx-6 mt-4 mb-2 flex-row items-center justify-between">
-          <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)", fontSize: 12, letterSpacing: 0.5, textTransform: "uppercase" }}>
+          <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textMuted, fontSize: 12, letterSpacing: 0.5, textTransform: "uppercase" }}>
             {t('lib_plants_found').replace('{count}', displayedPlants.length.toString())}
           </Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <TouchableOpacity 
               onPress={() => setShowFavoritesOnly(!showFavoritesOnly)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: showFavoritesOnly }}
+              accessibilityLabel={t(showFavoritesOnly ? "a11y_show_all_plants" : "a11y_show_favorites")}
               style={{ padding: 4 }}
             >
-              <Ionicons name={showFavoritesOnly ? 'heart' : 'heart-outline'} size={20} color={showFavoritesOnly ? '#ef4444' : (isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)")} />
+              <Ionicons name={showFavoritesOnly ? 'heart' : 'heart-outline'} size={20} color={showFavoritesOnly ? theme.danger : (theme.textSecondary)} />
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
+              accessibilityRole="button"
+              accessibilityLabel={t(viewMode === "list" ? "a11y_grid_view" : "a11y_list_view")}
               style={{ padding: 4 }}
             >
-              <Ionicons name={viewMode === 'list' ? 'grid-outline' : 'list-outline'} size={20} color={isDark ? "rgba(248,250,252,0.7)" : "rgba(34,69,28,0.7)"} />
+              <Ionicons name={viewMode === 'list' ? 'grid-outline' : 'list-outline'} size={20} color={theme.textSecondary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -283,7 +290,7 @@ export default function LibraryFeed() {
   );
 
   return (
-    <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]">
+    <PageTransition className="flex-1">
       <SafeAreaView edges={["top"]} className="flex-1">
         {/* Search focus mode.
             The title and the filter pills are ~120pt of chrome that is useless
@@ -304,7 +311,7 @@ export default function LibraryFeed() {
                 fontStyle: "italic",
                 fontWeight: "500",
                 letterSpacing: 0.3,
-                color: isDark ? "#F8FAFC" : "#22451C",
+                color: theme.textPrimary,
               }}
             >
               {t('lib_title')}
@@ -326,24 +333,26 @@ export default function LibraryFeed() {
 
         <View className="flex-1 relative">
           <FlatList
-            key={viewMode}
-            numColumns={viewMode === 'grid' ? 2 : 1}
             keyboardShouldPersistTaps="handled"
             onScrollBeginDrag={() => Keyboard.dismiss()}
-            data={displayedPlants}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => viewMode === 'grid' ? <PlantGridCard plant={item} /> : <PlantCard plant={item} />}
+            data={plantRows}
+            keyExtractor={(row) => row[0].id}
+            renderItem={({ item: row }) => viewMode === 'grid' ? (
+              <View style={{ flexDirection: "row", paddingHorizontal: 18 }}>
+                {row.map(plant => <View key={plant.id} style={{ flex: 1 }}><PlantGridCard plant={plant} /></View>)}
+                {row.length === 1 && <View style={{ flex: 1 }} />}
+              </View>
+            ) : <PlantCard plant={row[0]} />}
             ListHeaderComponent={renderHeader}
             ListEmptyComponent={renderEmptyState}
             contentContainerStyle={{ flexGrow: 1, paddingBottom: 140 }}
-            columnWrapperStyle={viewMode === 'grid' ? { paddingHorizontal: 18 } : undefined}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
                 refreshing={isLoadingPlants && displayedPlants.length > 0}
                 onRefresh={handleRefresh}
-                colors={["#A2CFA3"]}
-                tintColor={isDark ? "#A2CFA3" : "#22451C"}
+                colors={[theme.accent]}
+                tintColor={theme.accent}
               />
             }
           />

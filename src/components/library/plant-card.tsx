@@ -83,7 +83,7 @@ export function PlantCardComponent({
 }: PlantCardProps) {
   const router = useRouter();
   const t = useTheme();
-  const { language } = useTranslation();
+  const { language, t: translate } = useTranslation();
 
   // Respect the OS "reduce motion" setting — skip the press-scale spring entirely.
   const reduceMotion = useReducedMotion();
@@ -100,7 +100,7 @@ export function PlantCardComponent({
   const [imageLoading, setImageLoading] = useState<boolean>(true);
 
   if (!plant?.id) {
-    console.warn("[PlantCard] Received plant with no ID — skipping render.");
+    if (__DEV__) console.warn("[PlantCard] Received plant with no ID — skipping render.");
     return null;
   }
 
@@ -112,7 +112,7 @@ export function PlantCardComponent({
         router.push(`/(tabs)/library/${plant.id}`);
       }
     } catch (err) {
-      console.error(`[PlantCard] Navigation failed for plant "${plant.id}":`, err);
+      if (__DEV__) console.error(`[PlantCard] Navigation failed for plant "${plant.id}":`, err);
     }
   };
 
@@ -143,8 +143,8 @@ export function PlantCardComponent({
       onPress={handlePress}
       activeOpacity={1}
       accessibilityRole="button"
-      accessibilityLabel={plant.name ?? "Unknown plant"}
-      accessibilityHint="Opens plant details"
+      accessibilityLabel={plant.name ?? translate("a11y_unknown_plant")}
+      accessibilityHint={translate("a11y_open_plant_details")}
       style={[animStyle, { marginHorizontal: spacing.xl, marginBottom: spacing.md }]}
     >
       {/* Outer surface carries background, border and shadow.
@@ -272,8 +272,8 @@ export function PlantCardComponent({
                   accessibilityState={{ selected: isFavorite }}
                   accessibilityLabel={
                     isFavorite
-                      ? `Remove ${plant.name ?? "plant"} from favorites`
-                      : `Add ${plant.name ?? "plant"} to favorites`
+                      ? `${translate("a11y_remove_favorite")}: ${plant.name}`
+                      : `${translate("a11y_add_favorite")}: ${plant.name}`
                   }
                 >
                   <Ionicons

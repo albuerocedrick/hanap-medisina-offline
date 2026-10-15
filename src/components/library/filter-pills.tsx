@@ -1,3 +1,4 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * components/library/FilterPills.tsx
  *
@@ -8,7 +9,6 @@
  * "All" is always the first pill and represents null (no filter).
  */
 
-import { useColorScheme } from "nativewind";
 import React, { useEffect, useRef } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {
@@ -29,14 +29,15 @@ interface FilterPillsProps {
 }
 
 function SkeletonPill({ width }: { width: number }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   return (
     <View
       style={{
         width, height: 36, borderRadius: 18,
-        backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
+        backgroundColor: theme.surfaceHighlight,
         marginRight: 8,
       }}
       accessibilityElementsHidden
@@ -52,8 +53,10 @@ interface PillProps {
 }
 
 function Pill({ label, isActive, isDisabled, onPress }: PillProps) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+  const { t } = useTranslation();
+
+
 
   return (
     <TouchableOpacity
@@ -62,29 +65,29 @@ function Pill({ label, isActive, isDisabled, onPress }: PillProps) {
       activeOpacity={0.75}
       accessibilityRole="button"
       accessibilityState={{ selected: isActive, disabled: isDisabled }}
-      accessibilityLabel={`Filter by ${label}`}
+      accessibilityLabel={t("a11y_filter").replace("{label}", label)}
       style={{ marginRight: 8, opacity: isDisabled ? 0.5 : 1 }}
     >
       <View
         style={{
           height: 36, paddingHorizontal: 16, borderRadius: 18,
           alignItems: "center", justifyContent: "center",
-          backgroundColor: isActive 
-            ? (isDark ? "rgba(162,207,163,0.15)" : "#22451C")
-            : (isDark ? "rgba(255,255,255,0.04)" : "transparent"),
+          backgroundColor: isActive
+            ? (theme.selectionSurface)
+            : (theme.surfaceHighlight),
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: isActive
-            ? (isDark ? "rgba(162,207,163,0.8)" : "#22451C")
-            : (isDark ? "rgba(255,255,255,0.12)" : "rgba(162,207,163,0.8)"),
+            ? (theme.selectionBorder)
+            : (theme.border),
         }}
       >
         <Text
           style={{
             fontFamily: "Quicksand_600SemiBold",
             fontSize: 13,
-            color: isActive 
-              ? (isDark ? "#A2CFA3" : "#FAFEEF")
-              : (isDark ? "rgba(248,250,252,0.7)" : "#22451C")
+            color: isActive
+              ? (theme.selectionText)
+              : (theme.textPrimary)
           }}
           numberOfLines={1}
         >
@@ -120,7 +123,7 @@ export function FilterPills({ onCategoryChange }: FilterPillsProps) {
         scrollRef.current?.scrollTo({ x: 0, animated: true });
       }
     } catch (err) {
-      console.error("[FilterPills] handleSelect failed:", err);
+      if (__DEV__) console.error("[FilterPills] handleSelect failed:", err);
     }
   };
 

@@ -1,4 +1,4 @@
-import { useSettingsStore } from '../store/useSettingsStore';
+import { useSettingsStore } from '@/src/store/useSettingsStore';
 import en from './en';
 import tl from './tl';
 

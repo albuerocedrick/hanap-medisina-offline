@@ -1,970 +1,151 @@
-import { CaptureGuide } from "@/src/components/onboarding/CaptureGuide";
-import { useOnboardingStore } from "@/src/store/useOnboardingStore";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImageManipulator from "expo-image-manipulator";
-import { useColorScheme } from "nativewind";
 import { useIsFocused } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Animated,
-  AppState,
-  AppStateStatus,
-  Dimensions,
-  Image,
-  Modal,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, AppState, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, useWindowDimensions, type GestureResponderEvent } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission } from "react-native-vision-camera";
-import { useTFLite } from "../../src/hooks/useTFLite";
-
-import { Buffer } from "buffer";
-import * as FileSystem from "expo-file-system";
-import * as jpeg from "jpeg-js";
-
-import { useRouter } from "expo-router";
-import { getAllPlants } from "../../src/services/localLibrary";
-import { getPlantIdForModelLabel } from "../../src/services/modelLabels";
-import { useCameraStore } from "../../src/store/useCameraStore";
-import { useHistoryStore } from "../../src/store/useHistoryStore";
+import { CaptureGuide } from "@/src/components/onboarding/CaptureGuide";
+import { PermissionGate } from "@/src/components/scan/PermissionGate";
+import { ScanBottomSheet } from "@/src/components/scan/ScanBottomSheet";
+import { ScanReticle } from "@/src/components/scan/ScanReticle";
+import { scanStyles as styles } from "@/src/components/scan/scan.styles";
+import { useScanController } from "@/src/hooks/useScanController";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { useOnboardingStore } from "@/src/store/useOnboardingStore";
+import { useTheme } from "@/src/theme/useTheme";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
-// Portrait reticle: 82% of screen width, 1.35x taller — guides user for long leaves
-const RETICLE_W = Math.round(SCREEN_WIDTH * 0.82);
-const RETICLE_H = Math.round(RETICLE_W * 1.35);
-
-// Sheet snaps: between 50% and 66% of screen height
-const SHEET_HEIGHT = Math.round(SCREEN_HEIGHT * 0.62);
-
-// Minimum confidence threshold (below this → "Unknown" rejection)
-const MIN_CONFIDENCE = 0.35;
-
-// ─── Design tokens (kept in sync with existing codebase) ─────────────────────
-const tokens = {
-  green:      "#10b981",
-  greenDark:  "#2E4A3D",
-  greenTint:  "rgba(16,185,129,0.10)",
-  ink:        "#0f172a",
-  muted:      "#64748b",
-  mutedLight: "#94A3B8",
-  border:     "#E2E8F0",
-  surface:    "#FFFFFF",
-  bgCanvas:   "#F4F6F5",
-  amber:      "#f59e0b",
-  amberTint:  "rgba(245,158,11,0.08)",
-  red:        "#ef4444",
-  redTint:    "rgba(239,68,68,0.08)",
-};
-
-// ─── Sheet state machine ──────────────────────────────────────────────────────
-type SheetState = "hidden" | "loading" | "success" | "error";
-
-// ─── Corner bracket reticle ───────────────────────────────────────────────────
-const CornerMark = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
-  const W = 32, T = StyleSheet.hairlineWidth * 3 || 1.5, C = "rgba(255,255,255,0.75)";
-  const isTop  = pos === "tl" || pos === "tr";
-  const isLeft = pos === "tl" || pos === "bl";
-  return (
-    <View style={{
-      position: "absolute", width: W, height: W,
-      top: isTop ? 0 : undefined, bottom: isTop ? undefined : 0,
-      left: isLeft ? 0 : undefined, right: isLeft ? undefined : 0,
-    }}>
-      <View style={{
-        position: "absolute", width: W, height: T, backgroundColor: C, borderRadius: 2,
-        top: isTop ? 0 : undefined, bottom: isTop ? undefined : 0,
-      }} />
-      <View style={{
-        position: "absolute", width: T, height: W, backgroundColor: C, borderRadius: 2,
-        left: isLeft ? 0 : undefined, right: isLeft ? undefined : 0,
-      }} />
-    </View>
-  );
-};
-
-// ─── Permission gate ──────────────────────────────────────────────────────────
-function PermissionGate({ onRequest }: { onRequest: () => void }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const { t } = useTranslation();
-
-  return (
-    <View style={[styles.permissionContainer, { backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }]}>
-      {/* Icon circle */}
-      <View style={[styles.permissionIcon, { backgroundColor: isDark ? "rgba(162,207,163,0.12)" : "rgba(162,207,163,0.25)" }]}>
-        <Ionicons name="camera-outline" size={34} color={isDark ? "rgba(162,207,163,0.9)" : "#22451C"} />
-      </View>
-
-      {/* Title */}
-      <Text style={[styles.permissionTitle, {
-        color: isDark ? "#F8FAFC" : "#22451C",
-        fontFamily: "serif",
-        fontStyle: "italic",
-        fontWeight: "600",
-      }]}>
-        {t('scan_perm_title')}
-      </Text>
-
-      {/* Body */}
-      <Text style={[styles.permissionBody, {
-        color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.65)",
-        fontFamily: "Quicksand_500Medium",
-      }]}>
-        {t('scan_perm_body')}
-      </Text>
-
-      {/* Button */}
-      <TouchableOpacity
-        onPress={onRequest}
-        activeOpacity={0.8}
-        style={[styles.permissionButton, {
-          backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.85)",
-          borderWidth: 1,
-          borderColor: isDark ? "rgba(162,207,163,0.3)" : "transparent",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 8,
-        }]}
-      >
-        <Ionicons name="camera" size={16} color={isDark ? "rgba(162,207,163,0.9)" : "#ffffff"} />
-        <Text style={[styles.permissionButtonText, {
-          color: isDark ? "rgba(162,207,163,0.9)" : "#ffffff",
-          fontFamily: "Quicksand_700Bold",
-        }]}>
-          {t('scan_perm_btn')}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Small hint */}
-      <Text style={{
-        marginTop: 16,
-        fontSize: 12,
-        textAlign: "center",
-        color: isDark ? "rgba(248,250,252,0.3)" : "rgba(34,69,28,0.4)",
-        fontFamily: "Quicksand_500Medium",
-      }}>
-        {t('scan_perm_hint')}
-      </Text>
-    </View>
-  );
-}
-
-// ─── Content sub-components ───────────────────────────────────────────────────
-
-/** Skeleton shimmer while AI is running */
-function LoadingState() {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const { t } = useTranslation();
-  const shimmer = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(shimmer, { toValue: 1, duration: 900, useNativeDriver: true }),
-        Animated.timing(shimmer, { toValue: 0, duration: 900, useNativeDriver: true }),
-      ])
-    ).start();
-  }, []);
-
-  const opacity = shimmer.interpolate({ inputRange: [0, 1], outputRange: [0.4, 0.85] });
-
-  return (
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="small" color={isDark ? "#A2CFA3" : "#22451C"} style={{ marginBottom: 14 }} />
-      <Animated.View style={[styles.shimmerLine, styles.shimmerWide, { opacity, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }]} />
-      <Animated.View style={[styles.shimmerLine, styles.shimmerNarrow, { opacity, backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }]} />
-      <Text style={[styles.loadingHint, { color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_500Medium" }]}>{t('scan_analyzing')}</Text>
-    </View>
-  );
-}
-
-/** Success result content */
-function SuccessState({
-  label,
-  confidence,
-  saveStatus,
-  onViewDetails,
-}: {
-  label: string;
-  confidence: number;
-  saveStatus: string | null;
-  onViewDetails: () => void;
-}) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const { t } = useTranslation();
-
-  const isHigh = confidence >= 0.70;
-  
-  // Use light green to dark green instead of traffic-light colors
-  const tierColor = isHigh ? (isDark ? "#A2CFA3" : "#22451C") : (isDark ? "#7AAB62" : "#4D8035");
-  const tierBorder = isDark ? "rgba(162,207,163,0.3)" : "rgba(34,69,28,0.3)";
-
-  return (
-    <View style={styles.resultContainer}>
-      <Text style={[styles.overline, { color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_700Bold" }]}>{t('scan_identified')}</Text>
-
-      <Text style={[styles.plantName, { color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "serif", fontStyle: "italic", fontWeight: "600" }]} numberOfLines={1} adjustsFontSizeToFit>
-        {label}
-      </Text>
-
-      <View style={styles.metaRow}>
-        <View style={[styles.confidencePill, { backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: tierBorder }]}>
-          <View style={[styles.dot, { backgroundColor: tierColor }]} />
-          <Text style={[styles.confidenceText, { color: tierColor, fontFamily: "Quicksand_700Bold" }]}>
-            {(confidence * 100).toFixed(2)}{t('scan_match')}
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.progressTrack, { backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)" }]}>
-        <View style={[styles.progressFill, {
-          width: `${Math.min(confidence * 100, 100)}%` as any,
-          backgroundColor: tierColor,
-        }]} />
-      </View>
-
-      <TouchableOpacity
-        onPress={onViewDetails}
-        activeOpacity={0.85}
-        style={[
-          styles.ctaButton,
-          {
-            backgroundColor: isDark ? "#4D8035" : "#22451C",
-            borderWidth: 0,
-            elevation: 0,
-            shadowColor: isDark ? "transparent" : "#22451C",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: isDark ? 0 : 0.2,
-            shadowRadius: 8,
-          },
-        ]}
-      >
-        <Text style={[styles.ctaText, { color: "#FFFFFF", fontFamily: "Quicksand_700Bold", fontSize: 15 }]}>
-          {t('scan_view_details')}
-        </Text>
-        <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-/** Rejection content */
-function ErrorState({ onRetry }: { onRetry: () => void }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const { t } = useTranslation();
-  return (
-    <View style={[styles.resultContainer, { justifyContent: "flex-start", paddingTop: 16 }]}>
-      <Text style={[styles.errorTitle, { color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "serif", fontStyle: "italic", fontWeight: "600", marginTop: 12 }]}>{t('scan_not_recognized')}</Text>
-      <Text style={[styles.errorBody, { color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.7)", fontFamily: "Quicksand_500Medium" }]}>
-        {t('scan_error_body')}
-      </Text>
-      <TouchableOpacity onPress={onRetry} activeOpacity={0.85} style={[styles.retryButton, { marginBottom: 32, backgroundColor: "transparent", borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)" }]}>
-        <Ionicons name="camera-outline" size={16} color={isDark ? "rgba(248,250,252,0.8)" : "#22451C"} style={{ marginRight: 6 }} />
-        <Text style={[styles.retryText, { color: isDark ? "rgba(248,250,252,0.8)" : "#22451C", fontFamily: "Quicksand_700Bold" }]}>{t('scan_try_again')}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-// ─── Bottom Sheet ─────────────────────────────────────────────────────────────
-function ScanBottomSheet({
-  sheetState,
-  photoUri,
-  result,
-  saveStatus,
-  onDismiss,
-  onViewDetails,
-}: {
-  sheetState: SheetState;
-  photoUri: string | null;
-  result: { label: string; confidence: number } | null;
-  saveStatus: string | null;
-  onDismiss: () => void;
-  onViewDetails: () => void;
-}) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
-  const backdropOpacity = useRef(new Animated.Value(0)).current;
-
-  // Keeps the sheet in the React tree during the exit animation so the
-  // spring has something to run against. Flips to false only once the
-  // animation callback fires — no private Animated internals needed.
-  const [isRendered, setIsRendered] = useState(sheetState !== "hidden");
-
-  const isVisible = sheetState !== "hidden";
-
-  useEffect(() => {
-    if (isVisible) {
-      setIsRendered(true);
-      Animated.parallel([
-        Animated.spring(translateY, {
-          toValue: 0,
-          useNativeDriver: true,
-          damping: 26,
-          stiffness: 280,
-          mass: 0.9,
-        }),
-        Animated.timing(backdropOpacity, {
-          toValue: 1,
-          duration: 260,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.spring(translateY, {
-          toValue: SHEET_HEIGHT,
-          useNativeDriver: true,
-          damping: 30,
-          stiffness: 320,
-        }),
-        Animated.timing(backdropOpacity, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start(({ finished }) => {
-        if (finished) setIsRendered(false);
-      });
-    }
-  }, [isVisible]);
-
-  if (!isRendered) return null;
-
-  return (
-    <Modal transparent visible={true} animationType="none">
-      {/* Backdrop */}
-      <Animated.View
-        style={[styles.backdrop, { opacity: backdropOpacity }]}
-        pointerEvents={isVisible ? "auto" : "none"}
-      >
-        <TouchableOpacity style={StyleSheet.absoluteFill} onPress={sheetState !== "loading" ? onDismiss : undefined} />
-      </Animated.View>
-
-      {/* Sheet */}
-      <Animated.View
-        style={[
-          styles.sheet,
-          { height: SHEET_HEIGHT, transform: [{ translateY }], backgroundColor: isDark ? "#0B120B" : "#FAFEEF", borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(34,69,28,0.15)" },
-        ]}
-      >
-        {/* Handle pill */}
-        <View style={styles.handleRow}>
-          <View style={[styles.handle, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(34,69,28,0.15)" }]} />
-        </View>
-
-        {/* Photo preview strip */}
-        {photoUri && (
-          <View style={[styles.imageWrap, { backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(34,69,28,0.05)", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(34,69,28,0.1)" }]}>
-            <Image source={{ uri: photoUri }} style={styles.previewImage} resizeMode="cover" />
-          </View>
-        )}
-
-        {/* Content area — crossfade between states */}
-        <View style={styles.sheetContent}>
-          {sheetState === "loading" && <LoadingState />}
-
-          {sheetState === "success" && result && (
-            <SuccessState
-              label={result.label}
-              confidence={result.confidence}
-              saveStatus={saveStatus}
-              onViewDetails={onViewDetails}
-            />
-          )}
-
-          {sheetState === "error" && (
-            <ErrorState onRetry={onDismiss} />
-          )}
-        </View>
-      </Animated.View>
-    </Modal>
-  );
-}
-
-// ─── Main screen ──────────────────────────────────────────────────────────────
 export default function ScanScreen() {
-  const router = useRouter();
+  const theme = useTheme();
+  const { t } = useTranslation();
+  const { width, height } = useWindowDimensions();
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
   const camera = useRef<Camera>(null);
-  const { model, labels } = useTFLite();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const { t } = useTranslation();
-
-  const { captureTrigger, setIsProcessing, isProcessing } = useCameraStore();
-  const addScan = useHistoryStore((s) => s.addScan);
-
-  // Lifecycle & focus handling (Vision Camera needs active session sync)
   const isFocused = useIsFocused();
-  const safeInsets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
   const guideSeen = useOnboardingStore(s => s.cameraGuideSeen);
   const [showGuide, setShowGuide] = useState(false);
   const guideOpen = isFocused && (!guideSeen || showGuide);
-  const closeGuide = () => { useOnboardingStore.getState().markCameraGuideSeen(); setShowGuide(false); };
-  const guide = <CaptureGuide visible={guideOpen} onClose={closeGuide} />;
-  const [isAppForeground, setIsAppForeground] = useState(AppState.currentState === "active");
-
+  const [foreground, setForeground] = useState(AppState.currentState === "active");
+  const [flash, setFlash] = useState<"on" | "off" | "auto">("off");
+  const [cameraError, setCameraError] = useState(false);
+  const [cameraGeneration, setCameraGeneration] = useState(0);
+  const active = isFocused && foreground && !guideOpen && hasPermission && !!device && !cameraError;
+  const scan = useScanController(camera, active, flash);
+  const [focusPoint, setFocusPoint] = useState<{ x: number; y: number } | null>(null);
+  const focusTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    const sub = AppState.addEventListener("change", (status: AppStateStatus) => {
-      setIsAppForeground(status === "active");
-    });
-    return () => sub.remove();
+    const subscription = AppState.addEventListener("change", status => setForeground(status === "active"));
+    return () => {
+      subscription.remove();
+      if (focusTimeout.current) clearTimeout(focusTimeout.current);
+    };
   }, []);
-
-  // Sheet state
-  const [sheetState, setSheetState] = useState<SheetState>("hidden");
-  const [photoUri,   setPhotoUri]   = useState<string | null>(null);
-  const [result,     setResult]     = useState<{ label: string; confidence: number } | null>(null);
-  const [saveStatus, setSaveStatus] = useState<string | null>(null);
-  const [flashMode,  setFlashMode]  = useState<"on" | "off" | "auto">("off");
-
-  // Guard against double-fires
-  const isCapturing = useRef(false);
-
-  // Reset capturing state when screen loses focus
   useEffect(() => {
     if (!isFocused) {
-      isCapturing.current = false;
-      setIsProcessing(false);
+      if (focusTimeout.current) clearTimeout(focusTimeout.current);
+      setFocusPoint(null);
     }
-  }, [isFocused, setIsProcessing]);
+  }, [isFocused]);
 
-  const isCameraActive = isFocused && isAppForeground && !guideOpen && sheetState === "hidden";
-
-  // Focus state
-  const [focusPoint, setFocusPoint] = useState<{ x: number; y: number } | null>(null);
-  const focusTimeout = useRef<NodeJS.Timeout | null>(null);
-
-  const handleFocus = async (event: any) => {
-    if (!camera.current || !device?.supportsFocus) return;
-    const { locationX, locationY } = event.nativeEvent;
-    
-    setFocusPoint({ x: locationX, y: locationY });
+  const handleFocus = useCallback(async (event: GestureResponderEvent) => {
+    if (!active || scan.sheetState !== "hidden" || !camera.current || !device?.supportsFocus) return;
+    const { locationX: x, locationY: y } = event.nativeEvent;
+    setFocusPoint({ x, y });
     if (focusTimeout.current) clearTimeout(focusTimeout.current);
     focusTimeout.current = setTimeout(() => setFocusPoint(null), 2000);
-    
-    try {
-      await camera.current.focus({ x: locationX, y: locationY });
-    } catch (e) {
-      console.log("Focus error:", e);
-    }
+    try { await camera.current.focus({ x, y }); }
+    catch (error) { if (__DEV__) console.warn("Camera focus failed:", error); }
+  }, [active, device?.supportsFocus, scan.sheetState]);
+
+  const closeGuide = () => {
+    useOnboardingStore.getState().markCameraGuideSeen();
+    setShowGuide(false);
+  };
+  const guide = <CaptureGuide visible={guideOpen} onClose={closeGuide} />;
+  const retryCamera = () => {
+    setCameraGeneration(value => value + 1);
+    setCameraError(false);
+    setFocusPoint(null);
   };
 
-  // ── Listen for Tab Bar capture trigger ─────────────────────────────────────
-  useEffect(() => {
-    if (captureTrigger > 0) handleCapture();
-  }, [captureTrigger]);
-
-  const handleDismiss = useCallback(() => {
-    setSheetState("hidden");
-    // Clean up state after exit animation finishes
-    setTimeout(() => {
-      setPhotoUri(null);
-      setResult(null);
-      setSaveStatus(null);
-    }, 350);
-  }, []);
-
-  const handleViewDetails = useCallback(async () => {
-    if (!result) return;
-    
-    setIsProcessing(true); // Re-use the existing loading overlay
-    try {
-      const allPlants = await Promise.race([
-        getAllPlants(),
-        new Promise<any[]>((_, reject) => setTimeout(() => reject(new Error("Timeout fetching library data")), 10000))
-      ]);
-      const matchedPlant = allPlants.find(
-        (p) => p.name.toLowerCase() === result.label.toLowerCase()
-      );
-
-      handleDismiss();
-
-      setTimeout(() => {
-        setIsProcessing(false);
-        if (matchedPlant) {
-          router.push(`/(tabs)/library/${matchedPlant.id}`);
-        } else {
-          Alert.alert(
-            t('scan_not_found_title'),
-            t('scan_not_found_body')
-          );
-        }
-      }, 300);
-    } catch (err) {
-      console.error(err);
-      setIsProcessing(false);
-      handleDismiss();
-      Alert.alert("Error", "Could not connect to the library database.");
-    }
-  }, [result, router, handleDismiss, setIsProcessing]);
-
-  const handleCapture = async () => {
-    if (!isFocused || guideOpen || !camera.current || !model || isCapturing.current) return;
-    isCapturing.current = true;
-
-    try {
-      setIsProcessing(true);
-
-      // ── 1. Take photo & open sheet immediately in loading state ────────────
-      const photo = await Promise.race([
-        camera.current.takePhoto({ flash: flashMode }),
-        new Promise<any>((_, reject) => setTimeout(() => reject(new Error("Camera capture timeout")), 8000))
-      ]);
-      
-      const localUri = photo.path.startsWith("file://") ? photo.path : `file://${photo.path}`;
-      setPhotoUri(localUri);
-      setSheetState("loading");
-      setResult(null);
-      setSaveStatus(null);
-
-      // ── 2. Resize & pad for TFLite (3:4 ratio perfectly matches training) ────────
-      // Step 2a: Apply EXIF rotation so dimensions are correct for portrait.
-      const uprightPhoto = await ImageManipulator.manipulateAsync(localUri, [], { format: ImageManipulator.SaveFormat.JPEG });
-
-      // Step 2b: Scale longest edge to 224 (mirrors tf.image.resize_with_pad).
-      // Since the photo is 3:4, the width will become 168 and height 224, 
-      // adding very thin black bars on the left/right, exactly like the training data.
-      const scale   = 224 / Math.max(uprightPhoto.width, uprightPhoto.height);
-      const scaledW = Math.round(uprightPhoto.width * scale);
-      const scaledH = Math.round(uprightPhoto.height * scale);
-
-      const resized = await ImageManipulator.manipulateAsync(
-        uprightPhoto.uri,
-        [{ resize: { width: scaledW, height: scaledH } }],
-        { format: ImageManipulator.SaveFormat.JPEG, compress: 1.0, base64: true }
-      );
-      if (!resized.base64) throw new Error("Image resize failed");
-
-      // Step 2d: Decode and centre-pad to exactly 224×224 (black fill = 0).
-      const imgBuffer    = Buffer.from(resized.base64, "base64");
-      const rawImageData = jpeg.decode(imgBuffer, { useTArray: true });
-
-      const inputDataType = model.inputs[0].dataType;
-      let inputBuffer: Float32Array | Uint8Array | Int8Array;
-      if (inputDataType === 'uint8') {
-        inputBuffer = new Uint8Array(224 * 224 * 3);
-      } else if (inputDataType === 'int8') {
-        inputBuffer = new Int8Array(224 * 224 * 3);
-      } else {
-        inputBuffer = new Float32Array(224 * 224 * 3);
-      }
-
-      const actualW = rawImageData.width;
-      const actualH = rawImageData.height;
-      const padX = Math.floor((224 - actualW) / 2);
-      const padY = Math.floor((224 - actualH) / 2);
-
-      for (let y = 0; y < actualH; y++) {
-        for (let x = 0; x < actualW; x++) {
-          const srcIdx  = (y * actualW + x) * 4;
-          const destIdx = ((y + padY) * 224 + (x + padX)) * 3;
-
-          let r = rawImageData.data[srcIdx];
-          let g = rawImageData.data[srcIdx + 1];
-          let b = rawImageData.data[srcIdx + 2];
-
-          if (inputDataType === 'int8') {
-            r -= 128; g -= 128; b -= 128;
-          }
-
-          inputBuffer[destIdx]     = r;
-          inputBuffer[destIdx + 1] = g;
-          inputBuffer[destIdx + 2] = b;
-        }
-      }
-
-      // ── 3. Run inference ───────────────────────────────────────────────────
-      const output = model.runSync([inputBuffer]);
-      const rawOutput = output[0]; // TypedArray
-      const outputDataType = model.outputs[0].dataType;
-      
-      let maxConf = -Infinity;
-      let maxIdx = 0;
-      
-      for (let i = 0; i < rawOutput.length; i++) {
-        let val = Number(rawOutput[i]);
-        // Dequantize integer probabilities back to 0.0 - 1.0 floats
-        if (outputDataType === 'uint8') {
-          val = val / 255.0;
-        } else if (outputDataType === 'int8') {
-          val = (val + 128) / 255.0;
-        }
-        
-        if (val > maxConf) { 
-          maxConf = val; 
-          maxIdx = i; 
-        }
-      }
-
-      // Model class names may use a different local name from the Library.
-      const rawLabel = labels[maxIdx] || "unknown";
-      const identifiedId = getPlantIdForModelLabel(rawLabel);
-      
-      const localPlant = getAllPlants().find(p => p.id === identifiedId);
-      const identifiedLabel = localPlant ? localPlant.name : (rawLabel === "Unknown" ? "Unknown" : rawLabel);
-
-      // ── 4. Validation gate ─────────────────────────────────────────────────
-      // Case-insensitive unknown check + confidence floor.
-      // Any of these conditions means we cannot reliably identify the MedicinalPlant.
-      const isUnknownLabel = !identifiedId;
-
-      const isRejected = isUnknownLabel || maxConf < MIN_CONFIDENCE;
-
-      if (isRejected) {
-        // Do NOT save or queue anything — just show the error UI.
-        setSheetState("error");
-        return;
-      }
-
-      // ── 5. Accepted — show result immediately, then handle storage ────────
-      const scanId = `scan_${Date.now()}`;
-      setResult({ label: identifiedLabel, confidence: maxConf });
-      setSheetState("success");
-      setSaveStatus("Saved locally");
-
-      // Run storage logic asynchronously so it doesn't block the UI
-      (async () => {
-        try {
-          const offlineDirUri = `${FileSystem.documentDirectory}scans`;
-          await FileSystem.makeDirectoryAsync(offlineDirUri, { intermediates: true });
-          const permanentFileUri = `${offlineDirUri}/${scanId}.jpg`;
-          await FileSystem.copyAsync({ from: localUri, to: permanentFileUri });
-          
-          addScan({
-            plantName: identifiedLabel,
-            plantId: localPlant ? localPlant.id : "", // Link to library ID
-            confidence: maxConf,
-            imageUri: permanentFileUri,
-            scannedAt: new Date().toISOString()
-          });
-        } catch (error) {
-          console.error("Storage failed in ScanScreen:", error);
-        } finally {
-          setTimeout(() => setSaveStatus(null), 3500);
-        }
-      })();
-
-    } catch (err) {
-      console.error("Inference Error:", err);
-      setSheetState("hidden");
-      Alert.alert("Error", "Failed to analyze plant. Please try again.");
-    } finally {
-      setIsProcessing(false);
-      isCapturing.current = false;
-    }
-  };
-
-  // ── Guards ─────────────────────────────────────────────────────────────────
-  if (!hasPermission) return <><PermissionGate onRequest={requestPermission} />{guide}</>;
-  if (!device) return (
-    <><View style={styles.loadingScreen}>
-      <ActivityIndicator size="large" color={tokens.green} />
-    </View>{guide}</>
-  );
-
+  const viewportWidth = Math.min(width, height * 3 / 4);
+  const viewportHeight = viewportWidth * 4 / 3;
+  const reticleWidth = Math.round(viewportWidth * 0.82);
+  const disabled = !scan.modelReady || scan.isProcessing || scan.isDismissing || !active;
+  const flashLabel = t(flash === "on" ? "scan_flash_on" : flash === "auto" ? "scan_flash_auto" : "scan_flash_off");
   return (
-    <View style={{ flex: 1, backgroundColor: "#000", justifyContent: "center" }}>
-      {/* Tap-to-focus Wrapper */}
-      <TouchableWithoutFeedback onPress={handleFocus}>
-        {/* Strictly 3:4 Portrait Box (Width to Height = 3:4 -> Height = Width * 4/3) */}
-        <View style={{ width: SCREEN_WIDTH, height: SCREEN_WIDTH * (4 / 3), overflow: 'hidden' }}>
-          {/* Camera feed */}
-          <Camera
-            ref={camera}
-            style={StyleSheet.absoluteFill}
-            device={device}
-            isActive={isCameraActive}
-            photo={true}
-            enableZoomGesture={true}
-          />
-          
-          {/* Focus Indicator */}
-          {focusPoint && (
-            <Animated.View style={{
-              position: "absolute",
-              left: focusPoint.x - 30,
-              top: focusPoint.y - 30,
-              width: 60,
-              height: 60,
-              borderWidth: 1.5,
-              borderColor: "#FBBF24", // Yellow/Gold color
-              borderRadius: 8,
-              backgroundColor: "transparent",
-            }} />
-          )}
+    <View style={[styles.screen, { backgroundColor: theme.scrimStrong }]}>
+      {!hasPermission ? <PermissionGate onRequest={() => { void requestPermission(); }} /> : !device || cameraError ?
+        <View style={[styles.centered, { backgroundColor: theme.bg, alignSelf: "stretch" }]}>
+          <Ionicons name="camera-outline" size={34} color={theme.accent} />
+          <Text accessibilityRole="alert" style={[styles.body, { color: theme.textPrimary, marginTop: 16 }]}>{t("scan_camera_unavailable")}</Text>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("scan_try_again")}
+            onPress={retryCamera} style={[styles.permissionButton, { backgroundColor: theme.accent }]}>
+            <Text style={[styles.buttonText, { color: theme.textOnAccent }]}>{t("scan_try_again")}</Text>
+          </TouchableOpacity>
+        </View> : <>
+      <TouchableWithoutFeedback onPress={handleFocus} accessible={false}>
+        <View style={{ width: viewportWidth, height: viewportHeight, overflow: "hidden" }}>
+          <Camera key={cameraGeneration} ref={camera} style={StyleSheet.absoluteFill} device={device} photo enableZoomGesture
+            isActive={active && scan.sheetState === "hidden" && !scan.isDismissing}
+            onError={error => { if (__DEV__) console.error("Camera failed:", error); setCameraError(true); }} />
+          {focusPoint && <View pointerEvents="none" style={{ position: "absolute", left: focusPoint.x - 30,
+            top: focusPoint.y - 30, width: 60, height: 60, borderWidth: 1.5, borderRadius: 8, borderColor: theme.warning }} />}
+          <ScanReticle width={reticleWidth} height={Math.min(reticleWidth * 1.35, viewportHeight * 0.9)} />
         </View>
       </TouchableWithoutFeedback>
-
-      {/* Flash toggle */}
-      {device.hasFlash && (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[styles.flashButton, { top: safeInsets.top + 12, backgroundColor: isDark ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.2)", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.2)" }]}
-          onPress={() => setFlashMode(m => m === "off" ? "on" : m === "on" ? "auto" : "off")}
-        >
-          <Ionicons 
-            name={flashMode === "off" ? "flash-off" : "flash"} 
-            size={16} 
-            color={flashMode === "on" ? "#FBBF24" : "white"} 
-          />
-          <Text style={[styles.flashText, { fontFamily: "Quicksand_600SemiBold", color: "white" }]}>
-            {flashMode === "auto" ? "AUTO" : flashMode === "on" ? "ON" : "OFF"}
-          </Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Network badge removed in offline version */}
-
-      {sheetState === "hidden" && <>
-        <View pointerEvents="box-none" style={{ position: "absolute", bottom: Math.max(safeInsets.bottom, 12) + 76, left: 20, right: 20, alignItems: "center" }}>
-          <TouchableOpacity
-            accessibilityRole="button"
-            accessibilityLabel={t("capture_photo")}
-            accessibilityState={{ disabled: !model || isProcessing || guideOpen, busy: isProcessing }}
-            disabled={!model || isProcessing || guideOpen}
-            onPress={handleCapture}
-            activeOpacity={0.8}
-            style={{ minHeight: 52, minWidth: 148, paddingHorizontal: 22, borderRadius: 16, backgroundColor: "#C5FFDE", opacity: !model || isProcessing ? 0.55 : 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, borderWidth: 1, borderColor: "rgba(255,255,255,0.35)" }}
-          >
-            {isProcessing ? <ActivityIndicator size="small" color="#173B28" /> : <Ionicons name="camera-outline" size={24} color="#173B28" />}
-            <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 14, color: "#173B28" }}>{t("capture_photo")}</Text>
+      {device.hasFlash && <TouchableOpacity accessibilityRole="button" accessibilityLabel={flashLabel}
+        disabled={scan.isProcessing} onPress={() => setFlash(value => value === "off" ? "on" : value === "on" ? "auto" : "off")}
+        style={[styles.flashButton, { top: insets.top + 12, backgroundColor: theme.scrimStrong }]}>
+        <Ionicons name={flash === "off" ? "flash-off" : "flash"} size={16} color={flash === "on" ? theme.warning : theme.onImage} />
+        <Text style={[styles.helpText, { color: theme.onImage }]}>{flashLabel}</Text>
+      </TouchableOpacity>}
+      {scan.sheetState === "hidden" && !scan.isDismissing && <>
+        <View pointerEvents="box-none" style={{ position: "absolute", bottom: Math.max(insets.bottom, 12) + 76, left: 20, right: 20, alignItems: "center" }}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_photo")}
+            accessibilityState={{ disabled, busy: scan.isProcessing || scan.loading }} disabled={disabled} onPress={scan.capture}
+            activeOpacity={0.8} style={[styles.captureButton, { backgroundColor: theme.accent,
+              borderColor: theme.border, opacity: disabled ? 0.55 : 1 }]}>
+            {scan.isProcessing || scan.loading ? <ActivityIndicator size="small" color={theme.textOnAccent} />
+              : <Ionicons name="camera-outline" size={24} color={theme.textOnAccent} />}
+            <Text style={[styles.captureText, { color: theme.textOnAccent }]}>{t("capture_photo")}</Text>
           </TouchableOpacity>
+          {scan.modelError && (
+            <View style={{ alignItems: "center", marginTop: 8 }}>
+              <Text accessibilityRole="alert" style={[styles.hint, { color: theme.onImage, backgroundColor: theme.scrimStrong, padding: 8, borderRadius: 8 }]}>
+                {t("scan_model_error")}
+              </Text>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={t("scan_retry_model")}
+                onPress={scan.retryModel}
+                style={{ marginTop: 6, paddingHorizontal: 14, paddingVertical: 6, borderRadius: 8, backgroundColor: theme.accent, flexDirection: "row", alignItems: "center" }}
+              >
+                <Ionicons name="refresh-outline" size={15} color={theme.textOnAccent} style={{ marginRight: 6 }} />
+                <Text style={{ color: theme.textOnAccent, fontWeight: "600", fontSize: 13 }}>
+                  {t("scan_retry_model")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_help")} onPress={() => setShowGuide(true)} style={{ position: "absolute", right: 20, top: safeInsets.top + 12, minHeight: 44, paddingHorizontal: 14, borderRadius: 14, backgroundColor: "rgba(14,29,19,0.85)", flexDirection: "row", gap: 8, alignItems: "center" }}>
-          <Ionicons name="help-circle-outline" size={20} color="#C5FFDE" /><Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: "#FAFEEF" }}>{t("capture_help")}</Text>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_help")} onPress={() => setShowGuide(true)}
+          style={[styles.overlayButton, { position: "absolute", right: 20, top: insets.top + 12, backgroundColor: theme.scrimStrong }]}>
+          <Ionicons name="help-circle-outline" size={20} color={theme.onImage} />
+          <Text style={[styles.helpText, { color: theme.onImage }]}>{t("capture_help")}</Text>
         </TouchableOpacity>
-        <View pointerEvents="none" style={{ position: "absolute", bottom: Math.max(safeInsets.bottom, 12) + 140, left: 20, right: 20, padding: 14, borderRadius: 16, backgroundColor: "rgba(14,29,19,0.90)" }}>
-          <Text style={{ fontFamily: "Quicksand_700Bold", color: "#C5FFDE", fontSize: 12, textAlign: "center" }}>{t("capture_reminder")}</Text>
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: "#FAFEEF", fontSize: 12, lineHeight: 18, textAlign: "center", marginTop: 5 }}>{t("capture_hold")}</Text>
+        <View pointerEvents="none" style={[styles.reminder, { bottom: Math.max(insets.bottom, 12) + 140, backgroundColor: theme.scrimStrong }]}>
+          <Text style={[styles.captureText, { color: theme.onImage, fontSize: 12, textAlign: "center" }]}>{t("capture_reminder")}</Text>
+          <Text style={[styles.body, { color: theme.onImage, fontSize: 12, lineHeight: 18, marginTop: 5 }]}>{t("capture_hold")}</Text>
         </View>
       </>}
+      </>}
       {guide}
-      {/* Reticle */}
-      <View style={styles.reticleContainer} pointerEvents="none">
-        <View style={styles.reticle}>
-          {(["tl", "tr", "bl", "br"] as const).map((p) => (
-            <CornerMark key={p} pos={p} />
-          ))}
-        </View>
-      </View>
-
-      {/* Bottom Sheet */}
-      <ScanBottomSheet
-        sheetState={sheetState}
-        photoUri={photoUri}
-        result={result}
-        saveStatus={saveStatus}
-        onDismiss={handleDismiss}
-        onViewDetails={handleViewDetails}
-      />
+      {/* Keep the sheet mounted across camera/permission failures so its exit
+          callback always releases the session's dismissal lock. */}
+      <ScanBottomSheet sheetState={scan.sheetState} photoUri={scan.photoUri} result={scan.result} saveStatus={scan.saveStatus}
+        failed={scan.failed} busy={scan.isProcessing} onDismiss={scan.dismiss} onClosed={scan.onClosed} onViewDetails={scan.viewDetails} />
     </View>
   );
 }
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
-const IMAGE_HEIGHT = 160;
-
-const styles = StyleSheet.create({
-  // ── Permission gate
-  permissionContainer: {
-    flex: 1, justifyContent: "center", alignItems: "center",
-    paddingHorizontal: 32,
-  },
-  permissionIcon: {
-    width: 72, height: 72, borderRadius: 36,
-    alignItems: "center", justifyContent: "center", marginBottom: 28,
-  },
-  permissionTitle: {
-    fontSize: 26, textAlign: "center", marginBottom: 12, letterSpacing: 0.2,
-  },
-  permissionBody: {
-    fontSize: 14, textAlign: "center", lineHeight: 22, marginBottom: 36,
-  },
-  permissionButton: {
-    paddingHorizontal: 36, paddingVertical: 14, borderRadius: 999,
-  },
-  permissionButtonText: { fontWeight: "700", fontSize: 15, letterSpacing: 0.3 },
-
-  // ── Loading screen
-  loadingScreen: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#000" },
-
-  // ── Network badge
-  networkBadge: {
-    position: "absolute", right: 20,
-    flexDirection: "row", alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    paddingHorizontal: 12, paddingVertical: 6,
-    borderRadius: 999, gap: 8,
-  },
-  networkText: { color: tokens.surface, fontSize: 12, fontWeight: "600", letterSpacing: 0.3 },
-
-  // ── Reticle
-  reticleContainer: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center", justifyContent: "center",
-  },
-  reticle: { width: RETICLE_W, height: RETICLE_H, position: "relative" },
-
-  // ── Backdrop
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.45)",
-    zIndex: 10,
-  },
-
-  // ── Bottom sheet shell
-  sheet: {
-    position: "absolute", bottom: 0, left: 0, right: 0,
-    backgroundColor: tokens.surface,
-    borderTopLeftRadius: 32, borderTopRightRadius: 32,
-    zIndex: 20,
-    // Subtle shadow lifting it off the camera
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.10,
-    shadowRadius: 20,
-    elevation: 16,
-    overflow: "hidden",
-  },
-  handleRow: {
-    alignItems: "center", paddingTop: 14, paddingBottom: 4,
-  },
-  handle: {
-    width: 40, height: 4, borderRadius: 99,
-    backgroundColor: tokens.border,
-  },
-
-  // ── Image preview
-  imageWrap: {
-    marginHorizontal: 20,
-    marginTop: 8,
-    height: IMAGE_HEIGHT,
-    borderRadius: 20,
-    overflow: "hidden",
-    backgroundColor: tokens.bgCanvas,
-  },
-  previewImage: {
-    width: "100%", height: "100%",
-  },
-  imageFade: {
-    position: "absolute", bottom: 0, left: 0, right: 0, height: 40,
-    // Subtle gradient-like fade using opacity on a white view
-    backgroundColor: "rgba(255,255,255,0.15)",
-  },
-
-  // ── Sheet content area
-  sheetContent: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingBottom: Platform.OS === "ios" ? 32 : 24,
-    paddingTop: 16,
-  },
-
-  // ── Loading state
-  loadingContainer: {
-    flex: 1, alignItems: "center", justifyContent: "center", gap: 10,
-  },
-  shimmerLine: {
-    height: 14, borderRadius: 8, backgroundColor: tokens.border,
-  },
-  shimmerWide:   { width: "60%" },
-  shimmerNarrow: { width: "40%" },
-  loadingHint: {
-    marginTop: 4, fontSize: 13, color: tokens.mutedLight, fontWeight: "500",
-  },
-
-  // ── Result (shared)
-  resultContainer: { flex: 1, justifyContent: "center" },
-  overline: {
-    fontSize: 11, fontWeight: "700", letterSpacing: 1.2,
-    textTransform: "uppercase", color: tokens.mutedLight,
-    marginBottom: 6,
-  },
-  plantName: {
-    fontSize: 30, fontWeight: "800", color: tokens.greenDark,
-    letterSpacing: -0.8, textTransform: "capitalize",
-    marginBottom: 16,
-  },
-  metaRow: {
-    flexDirection: "row", alignItems: "center",
-    justifyContent: "space-between", marginBottom: 14,
-  },
-  confidencePill: {
-    flexDirection: "row", alignItems: "center", gap: 6,
-    borderRadius: 999, paddingHorizontal: 12, paddingVertical: 6,
-  },
-  confidenceText: { fontSize: 13, fontWeight: "700" },
-  syncRow: { flexDirection: "row", alignItems: "center", gap: 6 },
-  syncText: { fontSize: 12, fontWeight: "600", color: tokens.mutedLight },
-  dot: { width: 6, height: 6, borderRadius: 3 },
-
-  // Progress bar
-  progressTrack: {
-    height: 4, backgroundColor: tokens.bgCanvas,
-    borderRadius: 99, overflow: "hidden", marginBottom: 22,
-  },
-  progressFill: { height: "100%", borderRadius: 99 },
-
-  // CTA button (success)
-  ctaButton: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 8, backgroundColor: tokens.green,
-    paddingVertical: 15, borderRadius: 16,
-    shadowColor: tokens.greenDark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15, shadowRadius: 10,
-    elevation: 0,
-  },
-  ctaText: { color: "#fff", fontWeight: "700", fontSize: 15, letterSpacing: 0.2 },
-
-  // Error state
-  errorIconWrap: {
-    width: 56, height: 56, borderRadius: 16,
-    backgroundColor: tokens.amberTint,
-    alignItems: "center", justifyContent: "center",
-    marginBottom: 16, alignSelf: "center",
-  },
-  errorTitle: {
-    fontSize: 20, fontWeight: "700", color: tokens.ink,
-    textAlign: "center", letterSpacing: -0.4, marginBottom: 10,
-  },
-  errorBody: {
-    fontSize: 14, color: tokens.muted, textAlign: "center",
-    lineHeight: 21, marginBottom: 24, paddingHorizontal: 8,
-  },
-
-  // Retry button (error)
-  retryButton: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 6, backgroundColor: tokens.bgCanvas,
-    borderWidth: 1.5, borderColor: tokens.border,
-    paddingVertical: 14, borderRadius: 16,
-  },
-  retryText: { color: tokens.greenDark, fontWeight: "700", fontSize: 15, letterSpacing: 0.2 },
-
-  // Flash button
-  flashButton: {
-    position: "absolute", left: 20,
-    flexDirection: "row", alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    paddingHorizontal: 12, paddingVertical: 6,
-    borderRadius: 999, gap: 6,
-  },
-  flashText: { color: tokens.surface, fontSize: 12, fontWeight: "600", letterSpacing: 0.3 },
-});

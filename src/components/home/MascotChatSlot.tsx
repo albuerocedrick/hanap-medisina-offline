@@ -1,6 +1,6 @@
+import { useTheme } from "@/src/theme/useTheme";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AppState, Image, ImageResolvedAssetSource, Pressable, Text, View } from "react-native";
-import { useColorScheme } from "nativewind";
 import { useIsFocused } from "@react-navigation/native";
 import Animated, {
   FadeIn,
@@ -68,9 +68,11 @@ const MAX_SLEEP_DOT_TICKS = 8;
 /** How long a non-looping pose stays up when animations are suppressed. */
 const STATIC_POSE_MS = 1200;
 
+/** The home screen's Herbi mascot: bounded sprite playback and contextual tips. */
 export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   const [mode, setMode] = useState<MascotMode>("idle");
   const [exprIdx, setExprIdx] = useState(0);
@@ -225,7 +227,7 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
 
   // Scale by HEIGHT — Herbi is always TARGET_HEIGHT px tall regardless of which sheet.
   // MAX_SCALE caps short-frame sheets (sleep-idle fh=223) from scaling up too large.
-  const MAX_SCALE = TARGET_HEIGHT / 285;
+  const MAX_SCALE = TARGET_HEIGHT / (142.5 * (sh / 1052));
   const scale = Math.min(TARGET_HEIGHT / fh, MAX_SCALE);
   const displayWidth = fw * scale;
   // Use actual scaled frame height (not TARGET_HEIGHT) as viewport height —
@@ -251,7 +253,7 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
       <Text
         style={{
           marginBottom: 8,
-          color: isDark ? "rgba(248,250,252,0.84)" : "#22451C",
+          color: theme.textPrimary,
           fontSize: 18,
           // Was fontFamily: "serif" — a different platform default on Android vs
           // iOS, clashing with Quicksand.
@@ -297,9 +299,9 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
             borderRadius: 18,
             paddingVertical: 12,
             paddingHorizontal: 14,
-            backgroundColor: isDark ? "#141d14" : "#FAFEEF",
+            backgroundColor: theme.surface,
             borderWidth: 1,
-            borderColor: isDark ? "rgba(255,255,255,0.10)" : "rgba(162,207,163,0.55)",
+            borderColor: theme.border,
           }}
         >
           <Animated.Text
@@ -307,7 +309,7 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
             entering={FadeIn.duration(200)}
             exiting={FadeOut.duration(150)}
             style={{
-              color: isDark ? "rgba(248,250,252,0.80)" : "#22451C",
+              color: theme.textPrimary,
               fontSize: 13,
               lineHeight: 18,
               fontFamily: "Quicksand_500Medium",
@@ -324,10 +326,10 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
               bottom: 12,
               width: 12,
               height: 12,
-              backgroundColor: isDark ? "#141d14" : "#FAFEEF",
+              backgroundColor: theme.surface,
               borderLeftWidth: 1,
               borderBottomWidth: 1,
-              borderColor: isDark ? "rgba(255,255,255,0.10)" : "rgba(162,207,163,0.55)",
+              borderColor: theme.border,
               transform: [{ rotate: "45deg" }],
             }}
           />
@@ -335,7 +337,7 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
           <Text
             style={{
               marginTop: 8,
-              color: isDark ? "rgba(248,250,252,0.45)" : "rgba(34,69,28,0.55)",
+              color: theme.textSecondary,
               fontSize: 11,
               fontFamily: "Quicksand_500Medium",
             }}

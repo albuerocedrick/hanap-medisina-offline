@@ -1,14 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
-const path = require("node:path");
-const { createRequire } = require("node:module");
-const ts = require("typescript");
-const filename = path.resolve(__dirname, "../src/services/plantSearch.ts");
-const compiled = ts.transpileModule(fs.readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true } }).outputText;
-const loaded = { exports: {} };
-new Function("require", "module", "exports", compiled)(createRequire(filename), loaded, loaded.exports);
-const { searchPlantRecords: search, searchPlantNames: searchNames, groupPlantSearchResults: group } = loaded.exports;
+const { createLoader } = require('./helpers/loadTypeScript.cjs');
+const { searchPlantRecords: search, searchPlantNames: searchNames, groupPlantSearchResults: group } = createLoader().load('src/services/plantSearch.ts');
 const en = require("../src/data/plants_en.json");
 const tl = require("../src/data/plants_tl.json");
 const ids = (list, query) => search(list, query).map(plant => plant.id);

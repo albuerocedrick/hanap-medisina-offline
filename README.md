@@ -91,6 +91,28 @@ npx expo run:ios
 
 > **Note:** This app requires native modules (TFLite, Vision Camera) and cannot run in Expo Go. Use a development build.
 
+### Validation
+
+Run `npm test` for the Node regression suite and `npm run typecheck` for the
+application and Expo config plugin. The `.cjs` tests use Node's built-in test
+runner and transpile TypeScript modules with explicit native-module mocks;
+CommonJS is intentional so the tests do not need a React Native runtime.
+
+After changing native dependencies, rebuild the development app with
+`npx expo run:android` or `npx expo run:ios`. Camera capture, worklet execution,
+and the TFLite native interpreter also need a smoke test on a physical device.
+
+### Models and local artifacts
+
+This repository ships the inference model and labels under `assets/model/`.
+It does not contain a reproducible training pipeline. A local `training/`
+directory or Python bytecode cache is ignored and is not a source of training
+scripts. Keep model training sources and datasets in their training project.
+
+Generated bundles, APKs, screenshots, release backups, and build directories are
+ignored; distribute release binaries through release storage. The historical
+HTML design prototype lives at `docs/prototypes/home.html`, outside Expo Router.
+
 ## Project Structure
 
 ```
@@ -107,8 +129,7 @@ hanap-medisina-offline/
 │   └── +not-found.tsx          # 404 fallback
 ├── src/
 │   ├── components/             # UI components by feature
-│   │   ├── Herbi.tsx           # Mascot component
-│   │   ├── home/               # Home tab sections
+│   │   ├── home/               # Home sections, including the active MascotChatSlot
 │   │   ├── library/            # Plant cards, filters
 │   │   ├── plant-details/      # Detail tabs (details, compare, research)
 │   │   ├── history/            # Scan history cards

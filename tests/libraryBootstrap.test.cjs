@@ -18,6 +18,10 @@ function load(filename) {
     if (name === '@react-native-async-storage/async-storage') return storage;
     if (name === 'react-native') return { Image: { resolveAssetSource: asset => ({ uri: `asset://${asset}` }) } };
     if (/\.(jpg|png)$/.test(name)) return name;
+    if (name.startsWith('@/')) {
+      const candidate = path.resolve(__dirname, '..', name.slice(2));
+      return load(fs.existsSync(`${candidate}.ts`) ? `${candidate}.ts` : path.join(candidate, 'index.ts'));
+    }
     if (name.startsWith('.') && !name.endsWith('.json')) {
       const candidate = path.resolve(path.dirname(filename), name);
       return load(fs.existsSync(`${candidate}.ts`) ? `${candidate}.ts` : path.join(candidate, 'index.ts'));
@@ -90,6 +94,7 @@ test('Library results do not match symptom queries', () => {
 });
 
 test('switching language refreshes Library data and saved plants while preserving favorites', async () => {
+  const stopSync = load('src/store/dataLanguageSync.ts').initializeDataLanguageSync();
   const { useSettingsStore: settings } = load('src/store/useSettingsStore.ts');
   const mango = catalog.find(plant => plant.id === 'mango');
   await store.getState().toggleFavorite(mango);
@@ -104,4 +109,5 @@ test('switching language refreshes Library data and saved plants while preservin
   assert.deepEqual(ids(store.getState().getDisplayedPlants()), ids(catalog));
   settings.getState().setLanguage('en');
   assert.equal(store.getState().favorites.find(plant => plant.id === 'mango').name, 'Mango');
+  stopSync();
 });

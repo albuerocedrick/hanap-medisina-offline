@@ -6,6 +6,8 @@ import {
   View,
   ViewProps,
 } from "react-native";
+import { useTheme } from "@/src/theme/useTheme";
+import { cn } from "@/src/lib/utils";
 
 interface ScreenWrapperProps extends ViewProps {
   children: React.ReactNode;
@@ -19,12 +21,15 @@ export function ScreenWrapper({
   scroll = false,
   padded = true,
   avoidKeyboard = false,
+  style,
+  className,
   ...props
 }: ScreenWrapperProps) {
+  const theme = useTheme();
   const content = (
     <View
-      // 🌟 Added dark:bg-[#0B120B]
-      className={`flex-1 bg-[#FAFEEF] dark:bg-[#0B120B] ${padded ? "px-6 pt-6 pb-8" : ""}`}
+      className={cn("flex-1", padded && "px-6 pt-6 pb-8", className)}
+      style={[{ backgroundColor: theme.bg }, style]}
       {...props}
     >
       {children}
@@ -33,8 +38,8 @@ export function ScreenWrapper({
 
   const scrollable = scroll ? (
     <ScrollView
-      // 🌟 Added dark:bg-[#0B120B]
-      className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]"
+      className="flex-1"
+      style={{ backgroundColor: theme.bg }}
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
@@ -46,8 +51,8 @@ export function ScreenWrapper({
   if (avoidKeyboard) {
     return (
       <KeyboardAvoidingView
-        // 🌟 Added dark:bg-[#0B120B]
-        className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]"
+        className="flex-1"
+        style={{ backgroundColor: theme.bg }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         {scrollable}

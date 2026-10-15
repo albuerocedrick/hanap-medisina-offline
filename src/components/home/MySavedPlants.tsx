@@ -1,18 +1,19 @@
+import { useTheme } from "@/src/theme/useTheme";
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useColorScheme } from 'nativewind';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeIn, useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated';
-import { useLibraryStore } from '../../store/useLibraryStore';
-import { MedicinalPlant } from '../../types';
+import { useLibraryStore } from '@/src/store/useLibraryStore';
+import { MedicinalPlant } from '@/src/types';
 import { useTranslation } from '@/src/i18n/useTranslation';
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 const PlantCard = ({ plant, index, onPress }: { plant: MedicinalPlant; index: number; onPress: () => void }) => {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const theme = useTheme();
+
+
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -36,10 +37,10 @@ const PlantCard = ({ plant, index, onPress }: { plant: MedicinalPlant; index: nu
         style={{
           borderRadius: 18,
           overflow: 'hidden',
-          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FAFEEF',
+          backgroundColor: theme.surface,
           borderWidth: 1,
-          borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(162,207,163,0.5)',
-          shadowColor: '#22451C',
+          borderColor: theme.border,
+          shadowColor: theme.shadow,
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.06,
           shadowRadius: 6,
@@ -58,7 +59,7 @@ const PlantCard = ({ plant, index, onPress }: { plant: MedicinalPlant; index: nu
             style={{
               fontFamily: 'Quicksand_600SemiBold',
               fontSize: 13,
-              color: isDark ? '#F8FAFC' : '#22451C',
+              color: theme.textPrimary,
             }}
           >
             {plant.name}
@@ -69,7 +70,7 @@ const PlantCard = ({ plant, index, onPress }: { plant: MedicinalPlant; index: nu
               fontFamily: 'Quicksand_500Medium',
               fontSize: 11,
               marginTop: 2,
-              color: isDark ? 'rgba(162,207,163,0.8)' : '#4D8035',
+              color: theme.accent,
             }}
           >
             {plant.details?.localName || ' '}
@@ -81,9 +82,10 @@ const PlantCard = ({ plant, index, onPress }: { plant: MedicinalPlant; index: nu
 };
 
 export default function MySavedPlants() {
+  const theme = useTheme();
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
+
+
   const favorites = useLibraryStore((state) => state.favorites);
   const { t } = useTranslation();
 
@@ -100,7 +102,7 @@ export default function MySavedPlants() {
             fontStyle: 'italic',
             fontWeight: '500',
             letterSpacing: 0.4,
-            color: isDark ? '#EAF3D5' : '#22451C',
+            color: theme.textPrimary,
           }}
         >
           {t('home_saved_title')}{favorites.length > 0 ? ` (${favorites.length})` : ''}
@@ -115,7 +117,7 @@ export default function MySavedPlants() {
               style={{
                 fontFamily: 'Quicksand_600SemiBold',
                 fontSize: 13,
-                color: isDark ? 'rgba(162,207,163,0.9)' : '#4D8035',
+                color: theme.accent,
               }}
             >
               {t('home_see_all')} →
@@ -133,9 +135,9 @@ export default function MySavedPlants() {
               padding: 20,
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FAFEEF',
+              backgroundColor: theme.surface,
               borderWidth: 1,
-              borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(162,207,163,0.5)',
+              borderColor: theme.border,
             }}
           >
             <View
@@ -146,13 +148,13 @@ export default function MySavedPlants() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: 12,
-                backgroundColor: isDark ? 'rgba(162,207,163,0.12)' : 'rgba(162,207,163,0.25)',
+                backgroundColor: theme.accentSubtle,
               }}
             >
               <Ionicons
                 name="star-outline"
                 size={24}
-                color={isDark ? 'rgba(162,207,163,0.9)' : '#4D8035'}
+                color={theme.accent}
               />
             </View>
             <Text
@@ -161,7 +163,7 @@ export default function MySavedPlants() {
                 fontSize: 13,
                 textAlign: 'center',
                 marginBottom: 16,
-                color: isDark ? 'rgba(248,250,252,0.6)' : 'rgba(34,69,28,0.6)',
+                color: theme.textSecondary,
               }}
             >
               Save plants from the Library to see them here for quick access
@@ -174,7 +176,7 @@ export default function MySavedPlants() {
                 paddingVertical: 10,
                 paddingHorizontal: 20,
                 borderRadius: 20,
-                backgroundColor: isDark ? 'rgba(162,207,163,0.15)' : 'rgba(162,207,163,0.3)',
+                backgroundColor: theme.accentSubtle,
                 gap: 6,
               }}
             >
@@ -182,7 +184,7 @@ export default function MySavedPlants() {
                 style={{
                   fontFamily: 'Quicksand_600SemiBold',
                   fontSize: 13,
-                  color: isDark ? 'rgba(162,207,163,0.9)' : '#22451C',
+                  color: theme.accent,
                 }}
               >
                 Explore Library
@@ -190,7 +192,7 @@ export default function MySavedPlants() {
               <Ionicons
                 name="arrow-forward"
                 size={14}
-                color={isDark ? 'rgba(162,207,163,0.9)' : '#22451C'}
+                color={theme.accent}
               />
             </TouchableOpacity>
           </View>

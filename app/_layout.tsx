@@ -5,6 +5,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { Onboarding } from '@/src/components/onboarding/Onboarding';
 import { useOnboardingStore } from '@/src/store/useOnboardingStore';
+import { AppErrorBoundary, AppErrorFallback } from '@/src/components/ui/AppErrorBoundary';
+import { initializeDataLanguageSync } from '@/src/store/dataLanguageSync';
+import { useLibraryStore } from '@/src/store/useLibraryStore';
 import {
   Quicksand_400Regular,
   Quicksand_500Medium,
@@ -16,9 +19,24 @@ import {
 import "../global.css"; 
 
 // Prevent the splash screen from auto-hiding before fonts are loaded
-SplashScreen.preventAutoHideAsync();
+void SplashScreen.preventAutoHideAsync().catch(error => {
+  if (__DEV__) console.warn('[SplashScreen] Could not retain splash screen:', error);
+});
+
+// Expo Router can also recover from errors thrown by route layouts themselves.
+export function ErrorBoundary({ retry }: { error: Error; retry: () => void }) {
+  return <AppErrorFallback retry={retry} />;
+}
 
 export default function RootLayout() {
+  return <AppErrorBoundary><AppContent /></AppErrorBoundary>;
+}
+
+function AppContent() {
+  useEffect(() => {
+    void useLibraryStore.getState().loadFavorites();
+    return initializeDataLanguageSync();
+  }, []);
   const completed = useOnboardingStore(s => s.completed);
   const [hydrated, setHydrated] = useState(useOnboardingStore.persist.hasHydrated());
   useEffect(() => {
@@ -33,20 +51,22 @@ export default function RootLayout() {
     'Quicksand_700Bold': Quicksand_700Bold,
   });
 
-  // Catch and throw any font loading errors
+  // A font failure can use native fallback fonts while the app remains usable.
   useEffect(() => {
-    if (error) throw error;
+    if (error && __DEV__) console.warn('[Fonts] Using fallback fonts:', error);
   }, [error]);
 
   // Hide the splash screen once fonts are fully ready
   useEffect(() => {
-    if (fontsLoaded && hydrated) {
-      SplashScreen.hideAsync();
+    if ((fontsLoaded || error) && hydrated) {
+      void SplashScreen.hideAsync().catch(splashError => {
+        if (__DEV__) console.warn('[SplashScreen] Could not hide splash screen:', splashError);
+      });
     }
-  }, [fontsLoaded, hydrated]);
+  }, [fontsLoaded, error, hydrated]);
 
   // Do not render the app until fonts are loaded
-  if (!fontsLoaded || !hydrated) {
+  if ((!fontsLoaded && !error) || !hydrated) {
     return null;
   }
 

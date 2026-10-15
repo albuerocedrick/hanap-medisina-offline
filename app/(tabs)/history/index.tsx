@@ -1,7 +1,8 @@
+import { useTheme } from "@/src/theme/useTheme";
 import { useLocalSearchParams } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, StatusBar, View } from "react-native";
+import { Alert, FlatList, StatusBar, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PageTransition } from "@/src/components/ui/PageTransition";
@@ -13,15 +14,18 @@ import { ScanDetailSheet } from "@/src/components/history/scan-detail-sheet";
 import { DeleteConfirmationModal } from "@/src/components/ui/DeleteConfirmationModal";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { LocalScanRecord } from "@/src/types";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 export default function HistoryScreen() {
+  const theme = useTheme();
+  const { t } = useTranslation();
   const params = useLocalSearchParams();
   const incomingScanId = params?.scanId as string | undefined;
   const incomingOpenAt = params?.openAt as string | undefined;
   const insets = useSafeAreaInsets();
-  
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
+  const isDark = theme.isDark;
 
   // Navigation / Sheet state
   const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
@@ -54,7 +58,7 @@ export default function HistoryScreen() {
 
   // Derived filtered & sorted data
   const filteredScans = useMemo(() => activeTab === "favorites"
-    ? scans.filter(s => s.isFavorite) 
+    ? scans.filter(s => s.isFavorite)
     : scans, [activeTab, scans]);
 
   const sortedScans = useMemo(() => [...filteredScans].sort((a, b) => {
@@ -98,14 +102,23 @@ export default function HistoryScreen() {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    if (deleteTarget.type === "single") {
-      await deleteScan(deleteTarget.id);
-    } else if (deleteTarget.type === "batch") {
-      await deleteMultipleScans(Array.from(selectedIds));
+    try {
+      if (deleteTarget.type === "single") {
+        await deleteScan(deleteTarget.id);
+      } else {
+        await deleteMultipleScans(Array.from(selectedIds));
+      }
       setIsSelecting(false);
       setSelectedIds(new Set());
+    } catch {
+      // Successful deletes have already left the store; keep failed selections
+      // available so the user can retry without selecting everything again.
+      const remainingIds = new Set(useHistoryStore.getState().scans.map(scan => scan.id));
+      setSelectedIds(previous => new Set([...previous].filter(id => remainingIds.has(id))));
+      Alert.alert(t("history_delete"), t("history_delete_failed"));
+    } finally {
+      setDeleteTarget(null);
     }
-    setDeleteTarget(null);
   };
 
   const cancelSelection = () => {
@@ -126,14 +139,14 @@ export default function HistoryScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]" style={{ paddingTop: insets.top }}>
+      <PageTransition className="flex-1" style={[{ backgroundColor: theme.bg }, { paddingTop: insets.top }]}>
         <StatusBar
           barStyle={isDark ? "light-content" : "dark-content"}
           backgroundColor="transparent"
           translucent
         />
 
-        <View className="bg-[#FAFEEF] dark:bg-[#0B120B] z-10">
+        <View className="z-10" style={{ backgroundColor: theme.bg }}>
           <HistoryHeader
             totalCount={totalCount}
             favoriteCount={favoriteCount}
@@ -149,6 +162,14 @@ export default function HistoryScreen() {
             onCancelSelection={cancelSelection}
           />
         </View>
+        {totalCount >= 450 && (
+          <View style={{ marginHorizontal: 16, marginTop: 8, marginBottom: 4, padding: 12, borderRadius: 12, backgroundColor: theme.warningSubtle, borderColor: theme.warning, borderWidth: 1, flexDirection: "row", alignItems: "center" }}>
+            <Ionicons name="warning-outline" size={18} color={theme.warning} style={{ marginRight: 8 }} />
+            <Text style={{ flex: 1, color: theme.textPrimary, fontSize: 13, lineHeight: 18 }}>
+              {t("history_storage_warning").replace("{count}", String(totalCount)).replace("{max}", "500")}
+            </Text>
+          </View>
+        )}
 
         <FlatList
           key={viewMode} // Force re-render on layout change

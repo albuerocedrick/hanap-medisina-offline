@@ -74,7 +74,7 @@ function SheetFrame({ request }: { request: Request | null }) {
   });
   if (!mounted) return null;
   return <View style={[StyleSheet.absoluteFillObject, { zIndex: 100, elevation: 40 }]} accessibilityViewIsModal>
-    <Animated.View style={[StyleSheet.absoluteFillObject, dimStyle, { backgroundColor: "rgba(6,18,9,0.55)" }]}>
+    <Animated.View style={[StyleSheet.absoluteFillObject, dimStyle, { backgroundColor: theme.scrim }]}>
       <Pressable onPress={close} accessibilityLabel={t("cancel")} style={StyleSheet.absoluteFillObject} />
     </Animated.View>
     <KeyboardAvoidingView pointerEvents="box-none" behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1, justifyContent: "flex-end" }}>

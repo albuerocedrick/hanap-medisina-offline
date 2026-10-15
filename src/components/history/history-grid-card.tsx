@@ -1,5 +1,5 @@
+import { useTheme } from "@/src/theme/useTheme";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -7,7 +7,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { LocalScanRecord } from "../../types";
+import { LocalScanRecord } from "@/src/types";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 const { width } = Dimensions.get("window");
@@ -35,8 +35,9 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
   isSelected,
   onToggleSelect,
 }: Props) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   const scale = useSharedValue(1);
   const animStyle = useAnimatedStyle(() => ({
@@ -47,9 +48,9 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
   const displayConf = Number((item.confidence * 100).toFixed(0));
 
   const getConfColor = (val: number) => {
-    if (val >= 70) return isDark ? "#4ade80" : "#16a34a";
-    if (val >= 35) return isDark ? "#fbbf24" : "#d97706";
-    return isDark ? "#fca5a5" : "#dc2626";
+    if (val >= 70) return theme.success;
+    if (val >= 35) return theme.warning;
+    return theme.danger;
   };
 
   const relativeTime = (isoString: string) => {
@@ -88,14 +89,10 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
       style={[
         {
           width: CARD_WIDTH,
-          backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "#FAFEEF",
+          backgroundColor: theme.surface,
           borderColor: isSelected
-            ? isDark
-              ? "rgba(162,207,163,0.8)"
-              : "#4D8035"
-            : isDark
-            ? "rgba(255,255,255,0.1)"
-            : "rgba(162,207,163,0.4)",
+            ? theme.accentSoftBorder
+            : theme.border,
           borderWidth: isSelected ? 2 : 1,
           opacity: isSelecting && !isSelected ? 0.75 : 1,
           borderRadius: 20,
@@ -120,7 +117,7 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
             width: 28,
             height: 28,
             borderRadius: 14,
-            backgroundColor: "rgba(0,0,0,0.4)",
+            backgroundColor: theme.scrim,
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -129,7 +126,7 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
           <Ionicons
             name={item.isFavorite ? "heart" : "heart-outline"}
             size={16}
-            color={item.isFavorite ? "#ef4444" : "white"}
+            color={item.isFavorite ? theme.danger : "white"}
           />
         </TouchableOpacity>
 
@@ -142,10 +139,8 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
               left: 8,
               zIndex: 10,
               backgroundColor: isSelected
-                ? isDark
-                  ? "#A2CFA3"
-                  : "#4D8035"
-                : "rgba(0,0,0,0.3)",
+                ? theme.accentSubtle
+                : theme.scrim,
               borderRadius: 12,
               width: 24,
               height: 24,
@@ -155,7 +150,7 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
               borderColor: "white",
             }}
           >
-            {isSelected && <Feather name="check" size={14} color={isDark ? "#0B120B" : "white"} />}
+            {isSelected && <Feather name="check" size={14} color={theme.textOnAccent} />}
           </View>
         )}
       </View>
@@ -164,7 +159,7 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
       <View className="p-3">
         <Text
           style={{
-            color: isDark ? "rgba(248,250,252,0.9)" : "#22451C",
+            color: theme.textPrimary,
             fontFamily: "Quicksand_700Bold",
             fontSize: 15,
             marginBottom: 4,
@@ -186,7 +181,7 @@ export const HistoryGridCard = React.memo(function HistoryGridCard({
           </Text>
           <Text
             style={{
-              color: isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)",
+              color: theme.textSecondary,
               fontFamily: "Quicksand_500Medium",
               fontSize: 11,
             }}

@@ -1,3 +1,4 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * components/plant-details/DetailsTab.tsx
  *
@@ -14,9 +15,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { ScrollView, Text, View } from "react-native";
-import { PlantDetails } from "../../types/index";
+import { PlantDetails } from "@/src/types/index";
 
-import { useColorScheme } from "nativewind";
 import { StyleSheet } from "react-native";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { getPlantFactLabel } from "@/src/i18n/plantLabels";
@@ -41,15 +41,16 @@ function SectionHeader({
   icon: keyof typeof Ionicons.glyphMap;
   title: string;
 }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   return (
     <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12, marginTop: 24 }}>
-      <View style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.2)", borderRadius: 8, padding: 6, marginRight: 8 }}>
-        <Ionicons name={icon} size={16} color={isDark ? "#A2CFA3" : "#22451C"} />
+      <View style={{ backgroundColor: theme.accentSubtle, borderRadius: 8, padding: 6, marginRight: 8 }}>
+        <Ionicons name={icon} size={16} color={theme.accent} />
       </View>
-      <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
+      <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textPrimary, fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
         {title}
       </Text>
     </View>
@@ -86,13 +87,14 @@ function getWarningSeverity(warning: string): WarningSeverity {
 }
 
 function EmptySection({ message }: { message: string }) {
+  const theme = useTheme();
 
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
 
   return (
-    <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "rgba(34,69,28,0.03)", borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12 }}>
-      <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 13, fontStyle: "italic" }}>
+    <View style={{ backgroundColor: theme.surfaceHighlight, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12 }}>
+      <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 13, fontStyle: "italic" }}>
         {message}
       </Text>
     </View>
@@ -104,16 +106,17 @@ function EmptySection({ message }: { message: string }) {
 // ─────────────────────────────────────────────
 
 export function DetailsTab({ localName, details }: DetailsTabProps) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
   const { t, language } = useTranslation();
 
   // ── Guard: graceful degradation if details is undefined/null ─────────────
   if (!details) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 64 }}>
-        <Ionicons name="leaf-outline" size={40} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
-        <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 14, marginTop: 12 }}>
+        <Ionicons name="leaf-outline" size={40} color={theme.border} />
+        <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 14, marginTop: 12 }}>
           {t('details_no_details')}
         </Text>
       </View>
@@ -142,11 +145,11 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
       {/* ── Local Name ─────────────────────────────────────────────────────── */}
       {!!localName?.trim() && (
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12, paddingHorizontal: 4 }}>
-          <Ionicons name="pricetag-outline" size={13} color={isDark ? "rgba(248,250,252,0.4)" : "rgba(34,69,28,0.5)"} style={{ marginRight: 6 }} />
-          <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontSize: 13, marginRight: 6 }}>
+          <Ionicons name="pricetag-outline" size={13} color={theme.textSecondary} style={{ marginRight: 6 }} />
+          <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 13, marginRight: 6 }}>
             {t('details_known_locally')}
           </Text>
-          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontWeight: "500", color: isDark ? "#F8FAFC" : "#22451C", fontSize: 15, marginTop: -2 }}>
+          <Text style={{ fontFamily: "serif", fontStyle: "italic", fontWeight: "500", color: theme.textPrimary, fontSize: 15, marginTop: -2 }}>
             {localName}
           </Text>
         </View>
@@ -159,19 +162,19 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
           {preparation.map((prep: any, index: number) => (
             <View
               key={index}
-              style={{ backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)", borderRadius: 16, padding: 16 }}
+              style={{ backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: theme.border, borderRadius: 16, padding: 16 }}
             >
-              <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#22451C", fontSize: 15, marginBottom: 6 }}>
+              <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.accent, fontSize: 15, marginBottom: 6 }}>
                 {prep.method}
               </Text>
-              <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.85)" : "#334155", fontSize: 14, lineHeight: 22, marginBottom: 12 }}>
+              <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textPrimary, fontSize: 14, lineHeight: 22, marginBottom: 12 }}>
                 {prep.description}
               </Text>
               {prep.uses && prep.uses.length > 0 && (
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
                   {prep.uses.map((use: string, uIdx: number) => (
-                    <View key={uIdx} style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.2)", borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 }}>
-                      <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "#A2CFA3" : "#22451C", fontSize: 11 }}>
+                    <View key={uIdx} style={{ backgroundColor: theme.accentSubtle, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 }}>
+                      <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.accent, fontSize: 11 }}>
                         {use}
                       </Text>
                     </View>
@@ -188,18 +191,18 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
       {/* ── Identification Facts ────────────────────────────────────────────── */}
       <SectionHeader icon="eye-outline" title={t('details_identification')} />
       {factsEntries.length > 0 ? (
-        <View style={{ backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)", borderRadius: 16, overflow: "hidden" }}>
+        <View style={{ backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: theme.border, borderRadius: 16, overflow: "hidden" }}>
           {factsEntries.map(([key, value], index) => {
             const isLast = index === factsEntries.length - 1;
             return (
               <View
                 key={key}
-                style={{ flexDirection: "row", paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start", borderBottomWidth: !isLast ? StyleSheet.hairlineWidth : 0, borderBottomColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}
+                style={{ flexDirection: "row", paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start", borderBottomWidth: !isLast ? StyleSheet.hairlineWidth : 0, borderBottomColor: theme.borderSubtle }}
               >
-                <Text style={{ width: 110, fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontSize: 13, marginTop: 2 }}>
+                <Text style={{ width: 110, fontFamily: "Quicksand_600SemiBold", color: theme.textSecondary, fontSize: 13, marginTop: 2 }}>
                   {getPlantFactLabel(key, language)}
                 </Text>
-                <Text style={{ flex: 1, fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 14, lineHeight: 20 }}>
+                <Text style={{ flex: 1, fontFamily: "Quicksand_600SemiBold", color: theme.textPrimary, fontSize: 14, lineHeight: 20 }}>
                   {value}
                 </Text>
               </View>
@@ -231,16 +234,16 @@ export function DetailsTab({ localName, details }: DetailsTabProps) {
               const critical = severity === "critical";
               const palette = critical
                 ? {
-                    bg: isDark ? "rgba(220,38,38,0.10)" : "#FEF2F2",
-                    border: isDark ? "rgba(248,113,113,0.28)" : "#FECACA",
-                    icon: isDark ? "#F87171" : "#DC2626",
-                    text: isDark ? "#FECACA" : "#B91C1C",
+                    bg: theme.dangerBorder,
+                    border: theme.dangerBorder,
+                    icon: theme.danger,
+                    text: theme.danger,
                   }
                 : {
-                    bg: isDark ? "rgba(217,119,6,0.08)" : "#FFFBEB",
-                    border: isDark ? "rgba(217,119,6,0.2)" : "#FDE68A",
-                    icon: isDark ? "#FBBF24" : "#D97706",
-                    text: isDark ? "#FDE68A" : "#B45309",
+                    bg: theme.warningSubtle,
+                    border: theme.warningBorder,
+                    icon: theme.warning,
+                    text: theme.warning,
                   };
 
               return (

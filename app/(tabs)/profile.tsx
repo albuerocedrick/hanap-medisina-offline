@@ -6,8 +6,7 @@
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import { useColorScheme } from "nativewind";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Alert, Pressable, ScrollView, StatusBar, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -32,13 +31,13 @@ import { LanguageSheet } from "@/src/components/ui/LanguageSheet";
 export default function ProfileScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  
+
   const { firstName, lastName, avatarUri, setAvatar, setFirstName, setLastName, resetProfile } = useProfileStore();
   const { language, setLanguage } = useSettingsStore();
   const { t } = useTranslation();
 
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+  const isDark = theme.isDark;
 
   const [editProfileVisible, setEditProfileVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
@@ -46,10 +45,14 @@ export default function ProfileScreen() {
   const [resetVisible, setResetVisible] = useState(false);
 
 
-  const totalScans = useHistoryStore((s) => s.scans.length); 
+  const totalScans = useHistoryStore((s) => s.scans.length);
 
 
+  const pickingAvatar = useRef(false);
   const handlePickImage = useCallback(async () => {
+    if (pickingAvatar.current) return;
+    pickingAvatar.current = true;
+    try {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert("Permission Required", "Please allow access to your photo library to update your avatar.");
@@ -67,7 +70,6 @@ export default function ProfileScreen() {
 
     const asset = result.assets[0];
 
-    try {
       // Ensure the profile directory exists
       const profileDir = `${FileSystem.documentDirectory}profile/`;
       const dirInfo = await FileSystem.getInfoAsync(profileDir);
@@ -86,8 +88,10 @@ export default function ProfileScreen() {
       setAvatar(newUri);
       Alert.alert("Success", "Your profile photo has been updated!");
     } catch (err: any) {
-      console.error("[ProfileScreen] Avatar save failed:", err);
+      if (__DEV__) console.error("[ProfileScreen] Avatar save failed:", err);
       Alert.alert("Error", "Could not save your avatar. Please try again.");
+    } finally {
+      pickingAvatar.current = false;
     }
   }, [setAvatar]);
 
@@ -131,9 +135,9 @@ export default function ProfileScreen() {
     <LanguageSheet visible={languageSheetVisible} current={language} onSelect={setLanguage} onClose={() => setLanguageSheetVisible(false)} />
     <PhotoCreditsSheet visible={photoCreditsVisible} onClose={() => setPhotoCreditsVisible(false)} />
     <AppSheet visible={resetVisible} title={t("profile_reset")} onClose={() => setResetVisible(false)}>
-      <View style={{ width: 48, height: 48, backgroundColor: "rgba(239,68,68,0.10)", borderRadius: 14, alignItems: "center", justifyContent: "center", marginBottom: 16 }}><Feather name="refresh-cw" size={23} color={theme.danger} /></View>
+      <View style={{ width: 48, height: 48, backgroundColor: theme.dangerSubtle, borderRadius: 14, alignItems: "center", justifyContent: "center", marginBottom: 16 }}><Feather name="refresh-cw" size={23} color={theme.danger} /></View>
       <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 15, lineHeight: 23, color: theme.textSecondary, marginBottom: 24 }}>{t("profile_reset_description")}</Text>
-      <Pressable accessibilityRole="button" onPress={() => { setResetVisible(false); resetProfile(); }} style={{ minHeight: 54, borderRadius: 14, backgroundColor: theme.danger, alignItems: "center", justifyContent: "center" }}><Text style={{ fontFamily: "Quicksand_700Bold", color: "#FFFFFF", fontSize: 15 }}>{t("profile_reset_confirm")}</Text></Pressable>
+      <Pressable accessibilityRole="button" onPress={() => { setResetVisible(false); resetProfile(); }} style={{ minHeight: 54, borderRadius: 14, backgroundColor: theme.dangerAction, alignItems: "center", justifyContent: "center" }}><Text style={{ fontFamily: "Quicksand_700Bold", color: theme.onDangerAction, fontSize: 15 }}>{t("profile_reset_confirm")}</Text></Pressable>
       <Pressable accessibilityRole="button" onPress={() => setResetVisible(false)} style={{ minHeight: 48, alignItems: "center", justifyContent: "center", marginTop: 8 }}><Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textSecondary }}>{t("cancel")}</Text></Pressable>
     </AppSheet>
   </>;

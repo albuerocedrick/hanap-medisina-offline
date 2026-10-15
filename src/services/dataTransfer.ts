@@ -17,11 +17,11 @@
  */
 
 import * as FileSystem from "expo-file-system";
-import { ExportData, ExportedScan, LocalScanRecord } from "../types";
-import { useHistoryStore } from "../store/useHistoryStore";
-import { useProfileStore } from "../store/useProfileStore";
-import { useLibraryStore } from "../store/useLibraryStore";
-import { getPlantsByIds } from "./localLibrary";
+import { randomUUID } from "expo-crypto";
+import { ExportData, ExportedScan, LocalScanRecord } from "@/src/types";
+import { useHistoryStore } from "@/src/store/useHistoryStore";
+import { useProfileStore } from "@/src/store/useProfileStore";
+import { useLibraryStore } from "@/src/store/useLibraryStore";
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -36,6 +36,9 @@ export interface ImportResult {
   error?: string;
 }
 
+// JSON parsing and base64 decoding require additional heap beyond file size.
+export const MAX_IMPORT_BYTES = 25 * 1024 * 1024;
+
 // ─────────────────────────────────────────────
 // VALIDATION
 // ─────────────────────────────────────────────
@@ -46,7 +49,7 @@ export interface ImportResult {
  */
 export function validateImportData(data: unknown): data is ExportData {
   if (typeof data !== "object" || data === null) {
-    console.warn("[dataTransfer] validateImportData: data is not an object");
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: data is not an object");
     return false;
   }
 
@@ -54,54 +57,57 @@ export function validateImportData(data: unknown): data is ExportData {
 
   // version
   if (d.version !== 1) {
-    console.warn("[dataTransfer] validateImportData: unsupported version", d.version);
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: unsupported version", d.version);
     return false;
   }
 
   // exportedAt
-  if (typeof d.exportedAt !== "string" || d.exportedAt.length === 0) {
-    console.warn("[dataTransfer] validateImportData: missing or invalid exportedAt");
+  if (typeof d.exportedAt !== "string" || !Number.isFinite(Date.parse(d.exportedAt))) {
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: missing or invalid exportedAt");
     return false;
   }
 
   // profile
   if (typeof d.profile !== "object" || d.profile === null) {
-    console.warn("[dataTransfer] validateImportData: missing profile");
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: missing profile");
     return false;
   }
   const profile = d.profile as Record<string, unknown>;
   if (typeof profile.firstName !== "string") {
-    console.warn("[dataTransfer] validateImportData: profile.firstName is not a string");
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: profile.firstName is not a string");
     return false;
   }
   if (typeof profile.lastName !== "string") {
-    console.warn("[dataTransfer] validateImportData: profile.lastName is not a string");
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: profile.lastName is not a string");
     return false;
   }
   if (profile.avatarBase64 !== undefined && typeof profile.avatarBase64 !== "string") {
-    console.warn("[dataTransfer] validateImportData: profile.avatarBase64 is not a string");
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: profile.avatarBase64 is not a string");
     return false;
   }
 
   // scans
   if (!Array.isArray(d.scans)) {
-    console.warn("[dataTransfer] validateImportData: scans is not an array");
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: scans is not an array");
     return false;
   }
   for (const scan of d.scans) {
     if (typeof scan !== "object" || scan === null) return false;
     const s = scan as Record<string, unknown>;
-    if (typeof s.id !== "string") return false;
+    // IDs become local filenames during restore.
+    if (typeof s.id !== "string" || !/^[a-zA-Z0-9_-]+$/.test(s.id)) return false;
     if (typeof s.plantName !== "string") return false;
     if (typeof s.plantId !== "string") return false;
-    if (typeof s.confidence !== "number") return false;
-    if (typeof s.scannedAt !== "string") return false;
+    if (typeof s.confidence !== "number" || !Number.isFinite(s.confidence) || s.confidence < 0 || s.confidence > 1) return false;
+    if (typeof s.scannedAt !== "string" || !Number.isFinite(Date.parse(s.scannedAt))) return false;
     if (typeof s.isFavorite !== "boolean") return false;
+    if (s.imageBase64 !== undefined && typeof s.imageBase64 !== "string") return false;
+    if (s.notes !== undefined && typeof s.notes !== "string") return false;
   }
 
   // favorites
   if (!Array.isArray(d.favorites)) {
-    console.warn("[dataTransfer] validateImportData: favorites is not an array");
+    if (__DEV__) console.warn("[dataTransfer] validateImportData: favorites is not an array");
     return false;
   }
   for (const fav of d.favorites) {
@@ -122,14 +128,14 @@ async function readFileAsBase64(uri: string): Promise<string | undefined> {
     const fileUri = uri.startsWith("file://") || uri.startsWith("/") ? uri : `file://${uri}`;
     const info = await FileSystem.getInfoAsync(fileUri);
     if (!info.exists) {
-      console.warn("[dataTransfer] File not found, skipping:", uri);
+      if (__DEV__) console.warn("[dataTransfer] File not found, skipping:", uri);
       return undefined;
     }
     return await FileSystem.readAsStringAsync(fileUri, {
       encoding: FileSystem.EncodingType.Base64,
     });
   } catch (err) {
-    console.warn("[dataTransfer] Failed to read file as base64:", uri, err);
+    if (__DEV__) console.warn("[dataTransfer] Failed to read file as base64:", uri, err);
     return undefined;
   }
 }
@@ -143,7 +149,8 @@ async function ensureDir(dirPath: string): Promise<void> {
       await FileSystem.makeDirectoryAsync(dirPath, { intermediates: true });
     }
   } catch (e) {
-    console.warn("[dataTransfer] ensureDir warning:", dirPath, e);
+    if (__DEV__) console.warn("[dataTransfer] ensureDir warning:", dirPath, e);
+    throw e;
   }
 }
 
@@ -166,7 +173,7 @@ export async function exportData(): Promise<string> {
     try {
       avatarBase64 = await readFileAsBase64(profileState.avatarUri);
     } catch (e) {
-      console.warn("[dataTransfer] Avatar read failed:", e);
+      if (__DEV__) console.warn("[dataTransfer] Avatar read failed:", e);
     }
   }
 
@@ -180,7 +187,7 @@ export async function exportData(): Promise<string> {
         try {
           imageBase64 = await readFileAsBase64(imageUri);
         } catch (e) {
-          console.warn("[dataTransfer] Scan image read failed:", scan.id, e);
+          if (__DEV__) console.warn("[dataTransfer] Scan image read failed:", scan.id, e);
         }
       }
       return {
@@ -190,6 +197,7 @@ export async function exportData(): Promise<string> {
         confidence: typeof scan.confidence === "number" ? scan.confidence : 0,
         scannedAt: scan.scannedAt || new Date().toISOString(),
         isFavorite: Boolean(scan.isFavorite),
+        ...(typeof scan.notes === "string" ? { notes: scan.notes } : {}),
         imageBase64,
       };
     })
@@ -221,7 +229,7 @@ export async function exportData(): Promise<string> {
   const filePath = `${cacheDir}hanapmedisina-backup-${timestamp}.json`;
   await FileSystem.writeAsStringAsync(filePath, JSON.stringify(payload, null, 2));
 
-  console.log("[dataTransfer] Export written to:", filePath);
+  if (__DEV__) console.log("[dataTransfer] Export written to:", filePath);
   return filePath;
 }
 
@@ -237,9 +245,19 @@ export async function exportData(): Promise<string> {
 export async function importData(fileUri: string): Promise<ImportResult> {
   let raw: string;
   try {
+    const info = await FileSystem.getInfoAsync(fileUri);
+    if (!info.exists || info.isDirectory || !("size" in info) || !Number.isFinite(info.size) || info.size < 0) {
+      return { success: false, scansCount: 0, profileName: "", favoritesCount: 0, error: "Could not determine the selected file's size." };
+    }
+    if (info.size > MAX_IMPORT_BYTES) {
+      return { success: false, scansCount: 0, profileName: "", favoritesCount: 0, error: "Backup file is too large (max 25MB)." };
+    }
     raw = await FileSystem.readAsStringAsync(fileUri);
+    if (raw.length > MAX_IMPORT_BYTES) {
+      return { success: false, scansCount: 0, profileName: "", favoritesCount: 0, error: "Backup file is too large (max 25MB)." };
+    }
   } catch (err) {
-    console.warn("[dataTransfer] Failed to read import file:", err);
+    if (__DEV__) console.warn("[dataTransfer] Failed to read import file:", err);
     return { success: false, scansCount: 0, profileName: "", favoritesCount: 0, error: "Could not read the selected file." };
   }
 
@@ -289,78 +307,63 @@ export async function applyImport(
   data: ExportData,
   mode: "merge" | "replace"
 ): Promise<void> {
+  if (!validateImportData(data) || (mode !== "merge" && mode !== "replace")) {
+    throw new Error("Invalid backup data or import mode.");
+  }
+  if (!FileSystem.documentDirectory) throw new Error("Local storage is unavailable.");
   const scansDir = `${FileSystem.documentDirectory}scans/`;
   const profileDir = `${FileSystem.documentDirectory}profile/`;
-
-  await ensureDir(scansDir);
-
-  // 1. Restore scan images from base64 and rebuild LocalScanRecord[]
-  const restoredScans: LocalScanRecord[] = await Promise.all(
-    data.scans.map(async (scan: ExportedScan) => {
+  const previousScans = useHistoryStore.getState().scans;
+  const previousAvatar = useProfileStore.getState().avatarUri;
+  const seen = new Set(mode === "merge" ? previousScans.map(scan => scan.id) : []);
+  const incoming = data.scans.filter(scan => {
+    if (seen.has(scan.id)) return false;
+    seen.add(scan.id);
+    return true;
+  });
+  const stagedFiles: string[] = [];
+  const restoredScans: LocalScanRecord[] = [];
+  let avatarUri: string | null = null;
+  try {
+    // Stage complete files under unique names before changing saved records.
+    // Sequential writes prevent late writes from recreating rolled-back files.
+    if (incoming.some(scan => scan.imageBase64)) await ensureDir(scansDir);
+    for (const scan of incoming) {
       const { imageBase64, ...rest } = scan;
       let imageUri = "";
-
       if (imageBase64) {
-        const localPath = `${scansDir}${scan.id}.jpg`;
-        try {
-          await FileSystem.writeAsStringAsync(localPath, imageBase64, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-          imageUri = localPath;
-        } catch (err) {
-          console.warn("[dataTransfer] Failed to restore image for scan:", scan.id, err);
-        }
+        imageUri = `${scansDir}restore_${randomUUID()}.jpg`;
+        stagedFiles.push(imageUri);
+        await FileSystem.writeAsStringAsync(imageUri, imageBase64, { encoding: FileSystem.EncodingType.Base64 });
       }
-
-      return { ...rest, imageUri };
-    })
-  );
-
-  // 2. Apply scan history
+      restoredScans.push({ ...rest, imageUri });
+    }
+    if (mode === "replace" && data.profile.avatarBase64) {
+      await ensureDir(profileDir);
+      avatarUri = `${profileDir}restore_${randomUUID()}.jpg`;
+      stagedFiles.push(avatarUri);
+      await FileSystem.writeAsStringAsync(avatarUri, data.profile.avatarBase64, { encoding: FileSystem.EncodingType.Base64 });
+    }
+    // Finish the fallible favorite write before committing history/profile.
+    await useLibraryStore.getState().replaceFavorites(data.favorites, mode);
+  } catch (error) {
+    await Promise.allSettled(stagedFiles.map(uri => FileSystem.deleteAsync(uri, { idempotent: true })));
+    throw error;
+  }
   useHistoryStore.getState().importScans(restoredScans, mode);
-
-  // 3. Apply profile data (only in replace mode; merge keeps current profile)
   if (mode === "replace") {
     useProfileStore.getState().updateProfile({
-      firstName: data.profile.firstName,
-      lastName: data.profile.lastName,
+      firstName: data.profile.firstName, lastName: data.profile.lastName, avatarUri,
     });
-
-    // Restore avatar if present
-    if (data.profile.avatarBase64) {
-      try {
-        await ensureDir(profileDir);
-        const avatarPath = `${profileDir}avatar.jpg`;
-        await FileSystem.writeAsStringAsync(avatarPath, data.profile.avatarBase64, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        useProfileStore.getState().setAvatar(avatarPath);
-      } catch (err) {
-        console.warn("[dataTransfer] Failed to restore avatar:", err);
-      }
-    }
+    const activeFiles = new Set(useHistoryStore.getState().scans.map(scan => scan.imageUri));
+    if (avatarUri) activeFiles.add(avatarUri);
+    const obsolete = [...previousScans.map(scan => scan.imageUri), previousAvatar]
+      .filter((uri): uri is string => !!uri && (uri.startsWith(scansDir) || uri.startsWith(profileDir)) && !activeFiles.has(uri));
+    await Promise.allSettled([...new Set(obsolete)].map(uri => FileSystem.deleteAsync(uri, { idempotent: true })));
+  } else {
+    // A matching ID may have arrived while images were being restored.
+    const activeFiles = new Set(useHistoryStore.getState().scans.map(scan => scan.imageUri));
+    await Promise.allSettled(stagedFiles.filter(uri => !activeFiles.has(uri)).map(uri => FileSystem.deleteAsync(uri, { idempotent: true })));
   }
-
-  // 4. Restore library favorites
-  // Look up full MedicinalPlant objects from local library (skip unknown IDs gracefully)
-  if (data.favorites.length > 0) {
-    const plantsToFavorite = getPlantsByIds(data.favorites);
-    const libraryStore = useLibraryStore.getState();
-
-    if (mode === "replace") {
-      // Clear existing favorites first, then add imported ones
-      for (const existingFav of libraryStore.favorites) {
-        await libraryStore.toggleFavorite(existingFav);
-      }
-    }
-
-    // Add each plant from the backup that isn't already favorited
-    for (const plant of plantsToFavorite) {
-      if (!libraryStore.isFavorite(plant.id)) {
-        await libraryStore.toggleFavorite(plant);
-      }
-    }
-  }
-
-  console.log("[dataTransfer] Import applied successfully. Mode:", mode, "Scans:", restoredScans.length);
+  if (__DEV__) console.log("[dataTransfer] Import applied successfully. Mode:", mode, "Scans:", restoredScans.length);
 }

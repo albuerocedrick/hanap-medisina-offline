@@ -1,5 +1,7 @@
 import React from "react";
 import { Text, TextProps } from "react-native";
+import { useTheme } from "@/src/theme/useTheme";
+import { cn } from "@/src/lib/utils";
 
 interface TypographyProps extends TextProps {
   variant?: "heading" | "subheading" | "body" | "caption" | "label";
@@ -25,24 +27,22 @@ const variantStyles: Record<string, string> = {
  * so there is no room for a third, paler text tier here — express "muted"
  * through size and weight instead of colour.
  *
- * Each variant also carries a `dark:` value. Without them this component
- * rendered dark-green text on the near-black dark background.
+ * Semantic tokens supply the matching light and dark values for every variant.
  */
-const colorStyles: Record<string, string> = {
-  primary:   "text-[#22451C] dark:text-[#F8FAFC]", // 12.4:1 / 15.8:1
-  secondary: "text-[#4D8035] dark:text-[#A2CFA3]", //  4.6:1 /  9.7:1
-  muted:     "text-[#4D8035] dark:text-[#A2CFA3]", //  4.6:1 /  9.7:1
-};
-
 export function Typography({
   variant = "body",
   color = "primary",
   children,
+  className,
+  style,
   ...props
 }: TypographyProps) {
+  const theme = useTheme();
+  const colors = { primary: theme.textPrimary, secondary: theme.textSecondary, muted: theme.textMuted };
   return (
     <Text
-      className={`${variantStyles[variant]} ${colorStyles[color]}`}
+      className={cn(variantStyles[variant], className)}
+      style={[{ color: colors[color] }, style]}
       {...props}
     >
       {children}

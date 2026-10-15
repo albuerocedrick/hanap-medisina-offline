@@ -1,10 +1,10 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * src/components/history/history-header.tsx
  * Unified Scan History Header — HanapMedisina (Local Offline Edition)
  */
 
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -45,8 +45,9 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
   onDeleteSelected,
   onCancelSelection,
 }) => {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
   const { t } = useTranslation();
 
   // ── Reusable Pill Component ───────────────────────────────────────────────
@@ -61,6 +62,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
     badge?: number;
     icon?: keyof typeof Ionicons.glyphMap;
   }) => {
+  const theme = useTheme();
     const isActive = activeTab === tab;
     const scale = useSharedValue(1);
 
@@ -86,19 +88,11 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: isActive
-              ? isDark
-                ? "rgba(162,207,163,0.15)"
-                : "#22451C"
-              : isDark
-              ? "rgba(255,255,255,0.04)"
-              : "transparent",
+              ? theme.selectionSurface
+              : theme.surfaceHighlight,
             borderColor: isActive
-              ? isDark
-                ? "rgba(162,207,163,0.8)"
-                : "#22451C"
-              : isDark
-              ? "rgba(255,255,255,0.12)"
-              : "rgba(162,207,163,0.8)",
+              ? theme.selectionBorder
+              : theme.border,
             borderWidth: StyleSheet.hairlineWidth,
           },
           animStyle,
@@ -111,24 +105,16 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
             size={14}
             color={
               isActive
-                ? isDark
-                  ? "#A2CFA3"
-                  : "#FAFEEF"
-                : isDark
-                ? "rgba(248,250,252,0.7)"
-                : "#22451C"
+                ? theme.selectionText
+                : theme.textPrimary
             }
           />
         )}
         <Text
           style={{
             color: isActive
-              ? isDark
-                ? "#A2CFA3"
-                : "#FAFEEF"
-              : isDark
-              ? "rgba(248,250,252,0.7)"
-              : "#22451C",
+              ? theme.selectionText
+              : theme.textPrimary,
             fontFamily: "Quicksand_600SemiBold",
             fontSize: 13,
           }}
@@ -140,12 +126,8 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
           <View
             style={{
               backgroundColor: isActive
-                ? isDark
-                  ? "rgba(162,207,163,0.2)"
-                  : "#FAFEEF"
-                : isDark
-                ? "rgba(255,255,255,0.1)"
-                : "rgba(34,69,28,0.1)",
+                ? theme.selectionText
+                : theme.surfaceTint,
               paddingHorizontal: 6,
               paddingVertical: 2,
               borderRadius: 10,
@@ -154,12 +136,8 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
             <Text
               style={{
                 color: isActive
-                  ? isDark
-                    ? "#A2CFA3"
-                    : "#22451C"
-                  : isDark
-                  ? "rgba(248,250,252,0.8)"
-                  : "#22451C",
+                  ? theme.accent
+                  : theme.textPrimary,
                 fontFamily: "Quicksand_700Bold",
                 fontSize: 10,
               }}
@@ -176,7 +154,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
   if (isSelecting) {
     return (
       <View
-        style={{ backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}
+        style={{ backgroundColor: theme.bg }}
         className="px-5 pt-5 pb-3"
       >
         <View className="flex-row items-center justify-between mb-4">
@@ -185,14 +163,14 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
               <Feather
                 name="x"
                 size={24}
-                color={isDark ? "rgba(248,250,252,0.9)" : "#22451C"}
+                color={theme.textPrimary}
               />
             </TouchableOpacity>
             <Text
               style={{
                 fontSize: 20,
                 fontFamily: "Quicksand_700Bold",
-                color: isDark ? "#F8FAFC" : "#22451C",
+                color: theme.textPrimary,
               }}
             >
               {selectedCount} {t('history_selected')}
@@ -205,8 +183,8 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
             activeOpacity={0.7}
             style={{
               opacity: selectedCount === 0 ? 0.5 : 1,
-                backgroundColor: isDark ? "#38201F" : "#FBE9E5",
-                borderWidth: 1, borderColor: isDark ? "#63312C" : "#EBCBC4",
+                backgroundColor: theme.dangerSubtle,
+                borderWidth: 1, borderColor: theme.dangerBorder,
                 paddingHorizontal: 14, minHeight: 46, borderRadius: 14,
                 flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center",
             }}
@@ -216,11 +194,11 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
             <Feather
               name="trash-2"
               size={16}
-              color={isDark ? "#fca5a5" : "#dc2626"}
+              color={theme.danger}
             />
             <Text
               style={{
-                color: isDark ? "#fca5a5" : "#dc2626",
+                color: theme.danger,
                 fontFamily: "Quicksand_700Bold",
                 fontSize: 13,
               }}
@@ -235,7 +213,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
 
   // ── Standard Header ──────────────────────────────────────────────────────
   return (
-    <View style={{ backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }} className="px-5 pt-5 pb-3">
+    <View style={{ backgroundColor: theme.bg }} className="px-5 pt-5 pb-3">
       {/* ── Top Row: Title & Controls ──────────────────────────────────────── */}
       <View className="flex-row items-center justify-between mb-1">
           <Text
@@ -245,7 +223,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
               fontStyle: "italic",
               fontWeight: "500",
               letterSpacing: 0.3,
-              color: isDark ? "#F8FAFC" : "#22451C",
+              color: theme.textPrimary,
             }}
           >
             {t('history_title')}
@@ -262,15 +240,15 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
               borderRadius: 20,
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
+              backgroundColor: theme.surface,
               borderWidth: StyleSheet.hairlineWidth,
-              borderColor: isDark ? "rgba(255,255,255,0.14)" : "#A2CFA3",
+              borderColor: theme.border,
             }}
           >
             <Feather
               name={viewMode === "list" ? "grid" : "list"}
               size={18}
-              color={isDark ? "rgba(226,232,240,0.85)" : "#22451C"}
+              color={theme.textPrimary}
             />
           </TouchableOpacity>
 
@@ -284,22 +262,22 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
               borderRadius: 20,
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
+              backgroundColor: theme.surface,
               borderWidth: StyleSheet.hairlineWidth,
-              borderColor: isDark ? "rgba(255,255,255,0.14)" : "#A2CFA3",
+              borderColor: theme.border,
             }}
           >
             <Feather
               name="calendar"
               size={16}
-              color={isDark ? "rgba(226,232,240,0.85)" : "#22451C"}
+              color={theme.textPrimary}
             />
             <View
               style={{
                 position: "absolute",
                 bottom: 8,
                 right: 8,
-                backgroundColor: isDark ? "#0B120B" : "#FAFEEF",
+                backgroundColor: theme.bg,
                 borderRadius: 10,
                 padding: 1,
               }}
@@ -307,7 +285,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
               <Feather
                 name={sortBy === "newest" ? "arrow-down" : "arrow-up"}
                 size={10}
-                color={isDark ? "rgba(248,250,252,0.9)" : "#4D8035"}
+                color={theme.textSecondary}
               />
             </View>
           </TouchableOpacity>
@@ -317,7 +295,7 @@ export const HistoryHeader: React.FC<HistoryHeaderProps> = ({
       {/* ── Subtitle: Total Count ───────────────────────────────────────────── */}
       <Text
         style={{
-          color: isDark ? "rgba(248,250,252,0.45)" : "rgba(34,69,28,0.6)",
+          color: theme.textSecondary,
           fontFamily: "Quicksand_500Medium",
         }}
         className="text-sm mb-5"

@@ -1,8 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { ScrollView, Text, View, StyleSheet } from "react-native";
-import { useColorScheme } from "nativewind";
-import { CultivationGuide } from "../../types";
+import { CultivationGuide } from "@/src/types";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { useTheme } from "@/src/theme/useTheme";
 
@@ -12,19 +11,20 @@ interface CultivationTabProps {
 }
 
 function SectionItem({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; label: string; value: string }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   return (
-    <View style={{ flexDirection: "row", paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start", borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.2)" }}>
+    <View style={{ flexDirection: "row", paddingHorizontal: 16, paddingVertical: 12, alignItems: "flex-start", borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.borderSubtle }}>
       <View style={{ marginTop: 2, marginRight: 10 }}>
-        <Ionicons name={icon} size={18} color={isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.7)"} />
+        <Ionicons name={icon} size={18} color={theme.textSecondary} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontSize: 13, marginBottom: 2 }}>
+        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textSecondary, fontSize: 13, marginBottom: 2 }}>
           {label}
         </Text>
-        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 14, lineHeight: 20 }}>
+        <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textPrimary, fontSize: 14, lineHeight: 20 }}>
           {value}
         </Text>
       </View>
@@ -39,15 +39,16 @@ function SectionHeader({
   icon: keyof typeof Ionicons.glyphMap;
   title: string;
 }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   return (
     <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12, marginTop: 24 }}>
-      <View style={{ backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.2)", borderRadius: 8, padding: 6, marginRight: 8 }}>
-        <Ionicons name={icon} size={16} color={isDark ? "#A2CFA3" : "#22451C"} />
+      <View style={{ backgroundColor: theme.accentSubtle, borderRadius: 8, padding: 6, marginRight: 8 }}>
+        <Ionicons name={icon} size={16} color={theme.accent} />
       </View>
-      <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "rgba(248,250,252,0.9)" : "#22451C", fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
+      <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textPrimary, fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
         {title}
       </Text>
     </View>
@@ -55,12 +56,13 @@ function SectionHeader({
 }
 
 function EmptySection({ message }: { message: string }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
 
   return (
-    <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "rgba(34,69,28,0.03)", borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12 }}>
-      <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 13, fontStyle: "italic" }}>
+    <View style={{ backgroundColor: theme.surfaceHighlight, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12 }}>
+      <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 13, fontStyle: "italic" }}>
         {message}
       </Text>
     </View>
@@ -68,8 +70,6 @@ function EmptySection({ message }: { message: string }) {
 }
 
 export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -77,8 +77,8 @@ export function CultivationTab({ cultivationGuide }: CultivationTabProps) {
   if (!cultivationGuide) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 64 }}>
-        <Ionicons name="leaf-outline" size={40} color={isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"} />
-        <Text style={{ fontFamily: "Quicksand_500Medium", color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.5)", fontSize: 14, marginTop: 12 }}>
+        <Ionicons name="leaf-outline" size={40} color={theme.border} />
+        <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary, fontSize: 14, marginTop: 12 }}>
           {t('details_no_cultivation')}
         </Text>
       </View>

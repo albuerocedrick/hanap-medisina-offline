@@ -27,6 +27,7 @@ expo-env.d.ts
 
 # Local debug/verification artifacts
 bundle_test.js
+/site.js
 emulator_screen.png
 rebuild-home.png
 screen_*.png
@@ -34,6 +35,12 @@ verify_shots/
 *.apk
 training/
 training.zip
+__pycache__/
+*.py[cod]
+/release-backups/
+/release-builds/
+/.audit-build*/
+.audit-build*
 
 # Graphify machine-local runtime state
 .codex/hooks.json

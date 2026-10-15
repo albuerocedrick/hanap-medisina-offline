@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
 import { useTheme } from "@/src/theme/useTheme";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 /**
  * app/+not-found.tsx
@@ -19,6 +20,7 @@ import { useTheme } from "@/src/theme/useTheme";
  */
 export default function NotFoundScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const router = useRouter();
 
   return (
@@ -80,7 +82,7 @@ export default function NotFoundScreen() {
           <TouchableOpacity
             onPress={() => router.replace("/(tabs)")}
             accessibilityRole="button"
-            accessibilityLabel="Go to home screen"
+            accessibilityLabel={t("a11y_home")}
             style={{
               marginTop: 24,
               flexDirection: "row",

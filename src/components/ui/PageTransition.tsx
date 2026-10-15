@@ -1,10 +1,10 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { View, ViewStyle, StyleProp } from "react-native";
 import { useTheme } from "@/src/theme/useTheme";
 
 interface PageTransitionProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   className?: string;
 }
 

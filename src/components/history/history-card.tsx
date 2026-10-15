@@ -1,5 +1,5 @@
+import { useTheme } from "@/src/theme/useTheme";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useColorScheme } from "nativewind";
 import React, { useRef } from "react";
 import { Image, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { useTranslation } from "@/src/i18n/useTranslation";
@@ -12,19 +12,20 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
-import { LocalScanRecord } from "../../types";
+import { LocalScanRecord } from "@/src/types";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 function DeleteAction({ progress, onPress, label, plantName, isDark }: { progress: SharedValue<number>; onPress: () => void; label: string; plantName: string; isDark: boolean }) {
+  const theme = useTheme();
   const style = useAnimatedStyle(() => ({
     opacity: interpolate(progress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
     transform: [{ translateX: interpolate(progress.value, [0, 1], [18, 0], Extrapolation.CLAMP) }],
   }));
-  const color = isDark ? "#FFB4A9" : "#A63328";
+  const color = theme.danger;
   return <Animated.View style={[{ width: 92, paddingLeft: 10, justifyContent: "center" }, style]}>
     <TouchableOpacity activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${label}: ${plantName}`} onPress={onPress}
-      style={{ minHeight: 76, paddingVertical: 14, borderRadius: 16, borderWidth: 1, borderColor: isDark ? "#63312C" : "#EBCBC4", backgroundColor: isDark ? "#38201F" : "#FBE9E5", justifyContent: "center", alignItems: "center", gap: 7 }}>
+      style={{ minHeight: 76, paddingVertical: 14, borderRadius: 16, borderWidth: 1, borderColor: theme.dangerBorder, backgroundColor: theme.dangerSubtle, justifyContent: "center", alignItems: "center", gap: 7 }}>
       <Feather name="trash-2" size={20} color={color} /><Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 11, color }}>{label}</Text>
     </TouchableOpacity>
   </Animated.View>;
@@ -51,8 +52,9 @@ export const HistoryCard = React.memo(function HistoryCard({
   isSelected,
   onToggleSelect,
 }: Props) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+  const isDark = theme.isDark;
   const { t } = useTranslation();
   const swipeRef = useRef<SwipeableMethods>(null);
 
@@ -67,9 +69,9 @@ export const HistoryCard = React.memo(function HistoryCard({
 
   // Dynamic colors for confidence
   const getConfHex = (val: number) => {
-    if (val >= 70) return "#16a34a"; // green-600
-    if (val >= 35) return "#f59e0b"; // amber-500
-    return "#ef4444"; // red-500
+    if (val >= 70) return theme.success; // green-600
+    if (val >= 35) return theme.warning; // amber-500
+    return theme.danger; // red-500
   };
 
   // Accurate relative time handling
@@ -121,13 +123,13 @@ export const HistoryCard = React.memo(function HistoryCard({
         <View
           style={{
             flexDirection: "row",
-            backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "transparent",
+            backgroundColor: theme.surfaceHighlight,
             borderRadius: 24,
             overflow: "hidden",
             borderWidth: isSelected ? 2 : StyleSheet.hairlineWidth,
             borderColor: isSelected
-              ? (isDark ? "rgba(162,207,163,0.8)" : "#4D8035")
-              : (isDark ? "rgba(255,255,255,0.08)" : "rgba(162,207,163,0.6)"),
+              ? (theme.accentSoftBorder)
+              : (theme.border),
             minHeight: 100,
             opacity: isSelecting && !isSelected ? 0.75 : 1,
           }}
@@ -140,17 +142,17 @@ export const HistoryCard = React.memo(function HistoryCard({
                 top: 8,
                 left: 8,
                 zIndex: 10,
-                backgroundColor: isSelected ? (isDark ? "#A2CFA3" : "#4D8035") : (isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)"),
+                backgroundColor: isSelected ? (theme.accentSubtle) : (theme.surfaceTint),
                 borderRadius: 12,
                 width: 24,
                 height: 24,
                 justifyContent: "center",
                 alignItems: "center",
                 borderWidth: 2,
-                borderColor: isDark ? "#0B120B" : "#FAFEEF",
+                borderColor: theme.bg,
               }}
             >
-              {isSelected && <Feather name="check" size={14} color={isDark ? "#0B120B" : "white"} />}
+              {isSelected && <Feather name="check" size={14} color={theme.textOnAccent} />}
             </View>
           )}
 
@@ -171,7 +173,7 @@ export const HistoryCard = React.memo(function HistoryCard({
               <View style={{ flex: 1, paddingRight: 8 }}>
                 <Text
                   style={{
-                    color: isDark ? "#F8FAFC" : "#22451C",
+                    color: theme.textPrimary,
                     fontFamily: "Quicksand_700Bold",
                     fontSize: 16,
                   }}
@@ -179,12 +181,12 @@ export const HistoryCard = React.memo(function HistoryCard({
                 >
                   {item.plantName}
                 </Text>
-                
+
                 <Text
                   style={{
                     fontFamily: "Quicksand_500Medium",
                     fontSize: 12,
-                    color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)",
+                    color: theme.textSecondary,
                     marginTop: 4,
                   }}
                 >
@@ -200,7 +202,7 @@ export const HistoryCard = React.memo(function HistoryCard({
                 <Ionicons
                   name={item.isFavorite ? "heart" : "heart-outline"}
                   size={16}
-                  color={item.isFavorite ? "#ef4444" : isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)"}
+                  color={item.isFavorite ? theme.danger : theme.border}
                 />
               </TouchableOpacity>
             </View>
@@ -209,7 +211,7 @@ export const HistoryCard = React.memo(function HistoryCard({
               <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
                 <Text
                   style={{
-                    color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.55)",
+                    color: theme.textSecondary,
                     fontFamily: "Quicksand_600SemiBold",
                     fontSize: 10,
                   }}
@@ -227,7 +229,7 @@ export const HistoryCard = React.memo(function HistoryCard({
                 </Text>
               </View>
               <View
-                style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)", height: 4, borderRadius: 2, overflow: "hidden" }}
+                style={{ backgroundColor: theme.surfaceTint, height: 4, borderRadius: 2, overflow: "hidden" }}
               >
                 <View
                   style={{ width: `${barWidth}%`, backgroundColor: getConfHex(displayConf), height: "100%", borderRadius: 2 }}

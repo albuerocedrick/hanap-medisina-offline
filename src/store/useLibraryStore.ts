@@ -5,7 +5,7 @@
  * and the offline data gate.
  *
  *  - Local data from embedded JSON via localLibrary.ts.
- *  - Persists full MedicinalPlant objects as favorites to AsyncStorage.
+ *  - Persists favorite IDs; plant details always come from the bundled catalog.
  *  - The bundled catalog is available immediately, including on first launch.
  *  - Favorites and view mode are persisted; filtered catalog subsets are not.
  *  - Search and filter run client-side (zero extra reads).
@@ -14,15 +14,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { MedicinalPlant } from "../types";
+import { MedicinalPlant } from "@/src/types";
 import {
   getAllCategories,
   getAllPlants,
   getPlantsByIds,
-  getPlantsBySymptom,
-  getPlantsByPreparationMethod,
-} from "../services/localLibrary";
-import { searchPlantNames } from "../services/plantSearch";
+} from "@/src/services/localLibrary";
+import { searchPlantNames } from "@/src/services/plantSearch";
 
 
 // ─────────────────────────────────────────────
@@ -89,10 +87,7 @@ interface LibraryState {
   /** Show only favorited plants in the library. */
   showFavoritesOnly: boolean;
 
-  /**
-   * Full MedicinalPlant objects persisted to AsyncStorage.
-   * Storing full objects (not just IDs) ensures zero-network offline access.
-   */
+  /** Current-language bundled plant records, resolved from persisted IDs. */
   favorites: MedicinalPlant[];
 
   /**
@@ -160,9 +155,12 @@ interface LibraryActions {
 
   /**
    * Toggles a MedicinalPlant in/out of favorites and persists the new list.
-   * Accepts a full `MedicinalPlant` so the offline cache is always complete.
+   * Accepts a plant record; only its catalog ID is persisted.
    */
   toggleFavorite: (plant: MedicinalPlant) => Promise<void>;
+
+  /** Atomically persist a replacement or union of favorite IDs in one write. */
+  replaceFavorites: (ids: string[], mode?: "replace" | "merge") => Promise<void>;
 
   /** Returns true if the given MedicinalPlant ID is currently favorited. */
   isFavorite: (plantId: string) => boolean;
@@ -181,6 +179,100 @@ interface LibraryActions {
 
 type LibraryStore = LibraryState & LibraryActions;
 
+let favoritesLoaded = false;
+let favoritesChanged = false;
+let legacyFavoriteIds: string[] = [];
+let favoriteTasks: Promise<void> = Promise.resolve();
+let preferenceRead: Promise<void> = Promise.resolve();
+let preferenceWrites: Promise<void> = Promise.resolve();
+let preferredViewMode: "list" | "grid" = "list";
+let viewModeChanged = false;
+
+function enqueueFavorites<T>(action: () => Promise<T>): Promise<T> {
+  const task = favoriteTasks.then(action);
+  favoriteTasks = task.then(() => undefined, () => undefined);
+  return task;
+}
+
+function storedFavoriteIds(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(value.map(item => typeof item === "string" ? item : item?.id)
+    .filter((id): id is string => typeof id === "string" && id.length > 0))];
+}
+
+async function readFavorites(): Promise<MedicinalPlant[]> {
+  const [raw, legacy] = await Promise.all([
+    AsyncStorage.getItem(FAVORITES_STORAGE_KEY),
+    AsyncStorage.getItem("library-store"),
+  ]);
+  if (raw !== null) return getPlantsByIds(storedFavoriteIds(JSON.parse(raw)));
+  // Very old releases wrote objects to the Zustand preference key only.
+  const state = legacy ? JSON.parse(legacy)?.state : undefined;
+  return getPlantsByIds(state?.legacyFavoriteIds || state?.favoriteIds || state?.favorites
+    ? storedFavoriteIds(state.legacyFavoriteIds ?? state.favoriteIds ?? state.favorites) : legacyFavoriteIds);
+}
+
+// Initial data refreshes can happen before asynchronous preference hydration.
+// Wait for the preceding read before a write, retaining a tiny migration fallback
+// until the canonical ID key has been written successfully.
+const preferenceStorage = {
+  getItem: (name: string) => {
+    const read = preferenceWrites.then(() => AsyncStorage.getItem(name)).then(raw => {
+      if (raw) {
+        try {
+          const state = JSON.parse(raw)?.state;
+          const legacy = state?.legacyFavoriteIds ?? state?.favoriteIds ?? state?.favorites;
+          if (!favoritesLoaded && Array.isArray(legacy)) legacyFavoriteIds = storedFavoriteIds(legacy);
+          if (!viewModeChanged && (state?.viewMode === "grid" || state?.viewMode === "list")) {
+            preferredViewMode = state.viewMode;
+          }
+        } catch { /* Zustand reports malformed preference JSON during hydration. */ }
+      }
+      return raw;
+    });
+    preferenceRead = read.then(() => undefined, () => undefined);
+    return read;
+  },
+  setItem: (name: string, value: string) => {
+    const readBeforeWrite = preferenceRead;
+    const write = preferenceWrites.then(async () => {
+      await readBeforeWrite;
+      const payload = JSON.parse(value);
+      // Data refreshes queued before hydration must not write the default mode
+      // over a saved preference. User changes always supersede hydration.
+      payload.state.viewMode = preferredViewMode;
+      if (!favoritesLoaded && legacyFavoriteIds.length) payload.state.legacyFavoriteIds = legacyFavoriteIds;
+      await AsyncStorage.setItem(name, JSON.stringify(payload));
+    });
+    // Preference actions are synchronous. Prevent rejected background writes
+    // from becoming unhandled rejections; favorite writes report their own errors.
+    preferenceWrites = write.catch(cause => {
+      if (__DEV__) console.warn("[useLibraryStore] Could not save library preferences:", cause);
+    });
+    return preferenceWrites;
+  },
+  removeItem: (name: string) => AsyncStorage.removeItem(name),
+};
+
+/** Memoize by filter inputs so unrelated store updates keep the same array. */
+export const selectDisplayedPlants = (() => {
+  let previous: unknown[] = [];
+  let result: MedicinalPlant[] = [];
+  return (state: LibraryStore): MedicinalPlant[] => {
+    const { plants, activeCategory, activeSymptom, activePreparationMethod, searchQuery, showFavoritesOnly, favoriteIds } = state;
+    const inputs = [plants, activeCategory, activeSymptom, activePreparationMethod, searchQuery, showFavoritesOnly, showFavoritesOnly ? favoriteIds : null];
+    if (inputs.every((value, index) => value === previous[index])) return result;
+    previous = inputs;
+    let filtered = plants;
+    if (activeCategory) filtered = filtered.filter(plant => plant.categories.includes(activeCategory));
+    if (activeSymptom) filtered = filtered.filter(plant => plant.details?.preparation?.some(prep => prep.uses?.some(use => use.toLowerCase().includes(activeSymptom.toLowerCase()))));
+    if (activePreparationMethod) filtered = filtered.filter(plant => plant.details?.preparation?.some(prep => prep.method.toLowerCase().includes(activePreparationMethod.toLowerCase())));
+    if (showFavoritesOnly) filtered = filtered.filter(plant => favoriteIds.has(plant.id));
+    result = searchQuery ? searchPlantNames(filtered, searchQuery) : filtered;
+    return result;
+  };
+})();
+
 // ─────────────────────────────────────────────
 // INTERNAL HELPERS
 // ─────────────────────────────────────────────
@@ -197,8 +289,8 @@ function wrapError(
 // ─────────────────────────────────────────────
 // STORE
 // Persist is scoped to only the fields that must survive app restarts:
-// favorites and plants. Volatile state (categories, UI state)
-// is intentionally excluded and re-fetched fresh each session.
+// Only the view preference is persisted here. Favorites use their own ID-only
+// key; the complete catalog and translated records come from bundled data.
 // ─────────────────────────────────────────────
 
 export const useLibraryStore = create<LibraryStore>()(
@@ -238,7 +330,7 @@ export const useLibraryStore = create<LibraryStore>()(
             "Could not load the plant library.",
             err,
           );
-          console.error("[useLibraryStore] fetchPlants:", error.message, err);
+          if (__DEV__) console.error("[useLibraryStore] fetchPlants:", error.message, err);
           set({ isLoadingPlants: false, plantsError: error });
         }
       },
@@ -263,7 +355,7 @@ export const useLibraryStore = create<LibraryStore>()(
             "Could not load MedicinalPlant categories.",
             err,
           );
-          console.error(
+          if (__DEV__) console.error(
             "[useLibraryStore] fetchCategories:",
             error.message,
             err,
@@ -284,6 +376,8 @@ export const useLibraryStore = create<LibraryStore>()(
       },
 
       setViewMode: (mode) => {
+        viewModeChanged = true;
+        preferredViewMode = mode;
         set({ viewMode: mode });
       },
 
@@ -308,124 +402,67 @@ export const useLibraryStore = create<LibraryStore>()(
         get().fetchPlants();
       },
 
-      getDisplayedPlants: () => {
-        const { plants, activeCategory, activeSymptom, activePreparationMethod, searchQuery, showFavoritesOnly, favoriteIds } = get();
+      getDisplayedPlants: () => selectDisplayedPlants(get()),
 
-        let filtered = plants.length ? plants : getAllPlants();
-        if (activeCategory) filtered = filtered.filter(plant => plant.categories.includes(activeCategory));
-        if (activeSymptom) {
-          const ids = new Set(getPlantsBySymptom(activeSymptom).map(plant => plant.id));
-          filtered = filtered.filter(plant => ids.has(plant.id));
-        }
-        if (activePreparationMethod) {
-          const ids = new Set(getPlantsByPreparationMethod(activePreparationMethod).map(plant => plant.id));
-          filtered = filtered.filter(plant => ids.has(plant.id));
-        }
-
-        if (showFavoritesOnly) {
-           filtered = filtered.filter(p => favoriteIds.has(p.id));
-        }
-
-        if (!searchQuery) return filtered;
-        
-        return searchPlantNames(filtered, searchQuery);
-      },
-
-      // ── Favorites ──────────────────────────────────────────────────────────
-
-      toggleFavorite: async (plant: MedicinalPlant) => {
-        const { favorites } = get();
-        const isCurrentlyFavorited = get().isFavorite(plant.id);
-
-        let updatedFavorites: MedicinalPlant[];
-
-        if (isCurrentlyFavorited) {
-          updatedFavorites = favorites.filter((f) => f.id !== plant.id);
-        } else {
-          // Store the full MedicinalPlant object for complete offline access
-          updatedFavorites = [...favorites, plant];
-        }
-
-        const updatedIds = new Set(updatedFavorites.map((f) => f.id));
-
-        // Optimistic update — UI responds instantly
-        set({ favorites: updatedFavorites, favoriteIds: updatedIds });
-
-        // Persist to AsyncStorage in the background
+      // Serialize favorite reads/writes so rapid taps and imports cannot
+      // overwrite one another or roll back a newer successful operation.
+      toggleFavorite: (plant) => enqueueFavorites(async () => {
         try {
-          await AsyncStorage.setItem(
-            FAVORITES_STORAGE_KEY,
-            JSON.stringify(updatedFavorites),
-          );
-        } catch (err) {
-          // Rollback optimistic update on storage failure
-          const rollbackIds = new Set(favorites.map((f) => f.id));
-          set({ favorites, favoriteIds: rollbackIds });
-
-          const error = wrapError(
-            "FAVORITES_SAVE_FAILED",
-            `Could not save favorite for "${plant.name}". Please try again.`,
-            err,
-          );
-          console.error(
-            "[useLibraryStore] toggleFavorite:",
-            error.message,
-            err,
-          );
+          const favorites = favoritesLoaded ? get().favorites : await readFavorites();
+          const ids = new Set(favorites.map(item => item.id));
+          if (ids.has(plant.id)) ids.delete(plant.id);
+          else ids.add(plant.id);
+          const resolvedIds = getPlantsByIds([...ids]).map(item => item.id);
+          await AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(resolvedIds));
+          const resolved = getPlantsByIds(resolvedIds);
+          favoritesLoaded = true;
+          favoritesChanged = true;
+          set({ favorites: resolved, favoriteIds: new Set(resolved.map(item => item.id)), favoritesError: null });
+        } catch (cause) {
+          const error = wrapError("FAVORITES_SAVE_FAILED", `Could not save favorite for "${plant.name}". Please try again.`, cause);
+          if (__DEV__) console.error("[useLibraryStore] toggleFavorite:", error);
           set({ favoritesError: error });
         }
-      },
+      }),
 
-      isFavorite: (plantId: string) => {
-        return get().favoriteIds.has(plantId);
-      },
-
-      loadFavorites: async () => {
-        set({ isLoadingFavorites: true, favoritesError: null });
-
+      replaceFavorites: (ids, mode = "replace") => enqueueFavorites(async () => {
         try {
-          const raw = await AsyncStorage.getItem(FAVORITES_STORAGE_KEY);
-          const stored: MedicinalPlant[] = raw ? JSON.parse(raw) : [];
+          const current = mode === "merge"
+            ? (favoritesLoaded ? get().favorites : await readFavorites()).map(item => item.id)
+            : [];
+          const resolvedIds = getPlantsByIds([...new Set([...current, ...ids])]).map(item => item.id);
+          await AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(resolvedIds));
+          const favorites = getPlantsByIds(resolvedIds);
+          favoritesLoaded = true;
+          favoritesChanged = true;
+          set({ favorites, favoriteIds: new Set(favorites.map(item => item.id)), favoritesError: null });
+        } catch (cause) {
+          const error = wrapError("FAVORITES_SAVE_FAILED", "Could not restore saved plants. Please try again.", cause);
+          set({ favoritesError: error });
+          throw error;
+        }
+      }),
 
-          const favoriteIds = new Set(stored.map((f) => f.id));
-          set({ favorites: stored, favoriteIds, isLoadingFavorites: false });
+      isFavorite: (plantId) => get().favoriteIds.has(plantId),
 
-          // ── Refresh favorite data ──
-          // Refresh favorite data from local plant database to keep cached details current.
-          if (stored.length > 0) {
-            const ids = stored.map((f) => f.id);
-            try {
-              const freshPlants = getPlantsByIds(ids);
-              if (freshPlants.length > 0) {
-                const freshIds = new Set(freshPlants.map((p) => p.id));
-                set({ favorites: freshPlants, favoriteIds: freshIds });
-                AsyncStorage.setItem(
-                  FAVORITES_STORAGE_KEY,
-                  JSON.stringify(freshPlants),
-                ).catch((e) =>
-                  console.warn(
-                    "[useLibraryStore] Silent favorites refresh save failed:",
-                    e,
-                  ),
-                );
-              }
-            } catch (e) {
-              console.warn(
-                "[useLibraryStore] Silent favorites refresh failed:",
-                e,
-              );
-            }
-          }
-        } catch (err) {
-          const error = wrapError(
-            "FAVORITES_LOAD_FAILED",
-            "Could not load your saved plants. Offline access may be limited.",
-            err,
-          );
-          console.error("[useLibraryStore] loadFavorites:", error.message, err);
+      loadFavorites: () => enqueueFavorites(async () => {
+        if (favoritesLoaded) return;
+        const pendingFavorites = readFavorites();
+        set({ isLoadingFavorites: true, favoritesError: null });
+        try {
+          const resolvedIds = (await pendingFavorites).map(item => item.id);
+          // Migrate both former object formats to one ID-only source of truth.
+          await AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(resolvedIds));
+          const favorites = getPlantsByIds(resolvedIds);
+          favoritesLoaded = true;
+          favoritesChanged = true;
+          set({ favorites, favoriteIds: new Set(favorites.map(item => item.id)), isLoadingFavorites: false });
+        } catch (cause) {
+          const error = wrapError("FAVORITES_LOAD_FAILED", "Could not load your saved plants. Please try again.", cause);
+          if (__DEV__) console.error("[useLibraryStore] loadFavorites:", error);
           set({ isLoadingFavorites: false, favoritesError: error });
         }
-      },
+      }),
 
       // ── Error Management ───────────────────────────────────────────────────
 
@@ -439,58 +476,30 @@ export const useLibraryStore = create<LibraryStore>()(
     }),
 
     // ── Persist Config ─────────────────────────────────────────────────────
-    // Persists `favorites` (full MedicinalPlant objects for offline detail views) and
-    // `plants` (lightweight summaries for offline search — Phase 6).
-    // `categories` and UI state are always re-fetched fresh each session.
+    // Legacy favorite IDs are retained only until migration succeeds.
     {
       name: "library-store",
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => preferenceStorage),
 
-      partialize: (state) => ({
-        favorites: state.favorites,
-        viewMode: state.viewMode,
-      }),
-
-      // Older releases saved filtered `plants` arrays. Restore preferences only,
-      // so a cached single plant cannot replace the bundled catalog on launch.
+      // Favorites have one canonical ID-only key. Keep preferences separate.
+      partialize: (state) => ({ viewMode: state.viewMode }),
       merge: (persisted, current) => {
-        const saved = persisted as Partial<LibraryStore> | undefined;
+        const saved = persisted as { legacyFavoriteIds?: unknown; favorites?: unknown; favoriteIds?: unknown; viewMode?: string } | undefined;
+        if (!favoritesChanged && (saved?.legacyFavoriteIds || saved?.favoriteIds || saved?.favorites)) {
+          legacyFavoriteIds = storedFavoriteIds(saved.legacyFavoriteIds ?? saved.favoriteIds ?? saved.favorites);
+        }
+        const favorites = favoritesChanged ? current.favorites
+          : getPlantsByIds(storedFavoriteIds(saved?.legacyFavoriteIds ?? saved?.favoriteIds ?? saved?.favorites));
         return {
           ...current,
-          favorites: Array.isArray(saved?.favorites) ? saved.favorites.map(plant => getPlantsByIds([plant.id])[0] || plant) : current.favorites,
-          viewMode: saved?.viewMode === "grid" ? "grid" : "list",
+          favorites,
+          favoriteIds: new Set(favorites.map(plant => plant.id)),
+          viewMode: viewModeChanged ? current.viewMode : preferredViewMode,
         };
-      },
-
-      /**
-       * After rehydration from AsyncStorage, the `favoriteIds` Set must be
-       * rebuilt from the restored `favorites` array because Sets are not
-       * JSON-serializable and are stored as empty objects by default.
-       */
-      onRehydrateStorage: () => (state) => {
-        if (!state) return;
-        const restoredIds = new Set(state.favorites.map((f: MedicinalPlant) => f.id));
-        state.favoriteIds = restoredIds;
       },
     },
   ),
 );
-
-// Subscribe to language changes to instantly update data
-import { useSettingsStore } from './useSettingsStore';
-useSettingsStore.subscribe((state, prevState) => {
-  if (state.language !== prevState?.language) {
-    useLibraryStore.getState().fetchPlants();
-    useLibraryStore.getState().fetchCategories();
-    const catalog = getAllPlants();
-    useLibraryStore.setState(current => ({
-      favorites: current.favorites.map(saved => catalog.find(plant => plant.id === saved.id) ?? saved),
-      // These filter values are translated text rather than stable IDs.
-      activeSymptom: null,
-      activePreparationMethod: null,
-    }));
-  }
-});
 
 // ─────────────────────────────────────────────
 // SELECTOR HOOKS

@@ -1,3 +1,6 @@
+// @ts-check
+// Expo loads config plugins through CommonJS during prebuild. JSDoc keeps this
+// entry point type checked without requiring a TypeScript loader in the CLI.
 const { withMainActivity } = require("@expo/config-plugins");
 const { mergeContents } = require("@expo/config-plugins/build/utils/generateCode");
 
@@ -20,6 +23,7 @@ const HIGH_REFRESH_CODE = `
   }
 `;
 
+/** @param {string} contents */
 function addHighRefreshRate(contents) {
   return mergeContents({
     src: contents,
@@ -31,11 +35,13 @@ function addHighRefreshRate(contents) {
   }).contents;
 }
 
-module.exports = function withHighRefreshRate(config) {
+/** @type {import('@expo/config-plugins').ConfigPlugin} */
+function withHighRefreshRate(config) {
   return withMainActivity(config, config => {
     if (config.modResults.language !== "kt") throw new Error("High refresh support requires a Kotlin MainActivity.");
     config.modResults.contents = addHighRefreshRate(config.modResults.contents);
     return config;
   });
-};
+}
+module.exports = withHighRefreshRate;
 module.exports.addHighRefreshRate = addHighRefreshRate;

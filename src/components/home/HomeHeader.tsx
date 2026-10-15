@@ -10,7 +10,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { useProfileStore } from "../../store/useProfileStore";
+import { useProfileStore } from "@/src/store/useProfileStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { useTheme } from "@/src/theme/useTheme";
 import { MIN_TOUCH_TARGET, spacing } from "@/src/theme/tokens";
@@ -90,9 +90,9 @@ export function HomeHeader() {
   const { firstName } = useProfileStore();
   const { t } = useTranslation();
 
-  const { colorScheme, toggleColorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const { toggleColorScheme } = useColorScheme();
   const theme = useTheme();
+  const isDark = theme.isDark;
   const themeAnim = useSharedValue(isDark ? 1 : 0);
 
   useEffect(() => {
@@ -155,7 +155,7 @@ export function HomeHeader() {
       <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }}>
         <IconButton
           onPress={toggleColorScheme}
-          accessibilityLabel={isDark ? "Switch to light theme" : "Switch to dark theme"}
+          accessibilityLabel={t(isDark ? "a11y_light_theme" : "a11y_dark_theme")}
         >
           <Animated.View style={themeIconWrapStyle}>
             <Ionicons

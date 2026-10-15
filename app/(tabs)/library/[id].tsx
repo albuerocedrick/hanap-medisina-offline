@@ -5,27 +5,28 @@ import {
   ActivityIndicator,
   Image,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useColorScheme } from "nativewind";
+import { useTheme } from "@/src/theme/useTheme";
 
 // Components
-import { CompareTab } from "../../../src/components/plant-details/compare-tab";
-import { DetailsTab } from "../../../src/components/plant-details/details-tab";
-import { ResearchTab } from "../../../src/components/plant-details/research-tab";
-import { CultivationTab } from "../../../src/components/plant-details/cultivation-tab";
+import { CompareTab } from "@/src/components/plant-details/compare-tab";
+import { DetailsTab } from "@/src/components/plant-details/details-tab";
+import { ResearchTab } from "@/src/components/plant-details/research-tab";
+import { CultivationTab } from "@/src/components/plant-details/cultivation-tab";
 
 // Services & Store
-import { MedicinalPlant as Plant } from "../../../src/types";
+import { MedicinalPlant as Plant } from "@/src/types";
 import {
   getPlantById,
   getPlantsByIds,
-} from "../../../src/services/localLibrary";
+} from "@/src/services/localLibrary";
 type PlantSummary = Plant;
-import { useLibraryStore } from "../../../src/store/useLibraryStore";
+import { useLibraryStore } from "@/src/store/useLibraryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { getPlantCategoryLabel } from "@/src/i18n/plantLabels";
 import { BackButton } from "@/src/components/ui/BackButton";
@@ -45,17 +46,13 @@ export default function PlantDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
   const { t, language } = useTranslation();
 
   // ─── Global State ────────────────────────────────────────────────────────
 
   const isFavorite = useLibraryStore((s) => s.isFavorite(id as string));
   const toggleFavorite = useLibraryStore((s) => s.toggleFavorite);
-  const favorites = useLibraryStore((s) => s.favorites);
-  // Phase 6: persisted summary list for partial offline fallback
-  const cachedPlants = useLibraryStore((s) => s.plants);
 
   // ─── Local State ─────────────────────────────────────────────────────────
   const [plant, setPlant] = useState<Plant | null>(null);
@@ -111,7 +108,7 @@ export default function PlantDetailsScreen() {
             if (isMounted) setLookAlikes([]);
           }
         } catch (err) {
-          console.warn("[PlantDetailsScreen] Failed to load look-alikes:", err);
+          if (__DEV__) console.warn("[PlantDetailsScreen] Failed to load look-alikes:", err);
           if (isMounted) setLookAlikes([]);
         } finally {
           if (isMounted) setIsLoadingLookAlikes(false);
@@ -123,7 +120,7 @@ export default function PlantDetailsScreen() {
     return () => {
       isMounted = false;
     };
-  }, [id, favorites, language]);
+  }, [id, language]);
 
   // ─── Handlers ────────────────────────────────────────────────────────────
 
@@ -132,7 +129,7 @@ export default function PlantDetailsScreen() {
     try {
       await toggleFavorite(plant);
     } catch (err) {
-      console.error("[PlantDetailsScreen] toggleFavorite failed:", err);
+      if (__DEV__) console.error("[PlantDetailsScreen] toggleFavorite failed:", err);
     }
   };
 
@@ -144,18 +141,18 @@ export default function PlantDetailsScreen() {
   // first in both cases so an exit always exists before content resolves.
   if (isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
+      <View style={{ flex: 1, backgroundColor: theme.bg }}>
         <Stack.Screen options={{ headerShown: false }} />
         <View style={{ paddingTop: Math.max(insets.top, 20) }}>
           <ScreenHeader fallbackHref="/(tabs)/library" />
         </View>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#22451C"} />
+          <ActivityIndicator size="large" color={theme.accent} />
           <Text
             style={{
               marginTop: 16,
               fontFamily: "Quicksand_500Medium",
-              color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)",
+              color: theme.textSecondary,
             }}
           >
             {t('details_loading')}
@@ -167,7 +164,7 @@ export default function PlantDetailsScreen() {
 
   if (error || !plant) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
+      <View style={{ flex: 1, backgroundColor: theme.bg }}>
         <Stack.Screen options={{ headerShown: false }} />
         <View style={{ paddingTop: Math.max(insets.top, 20) }}>
           <ScreenHeader fallbackHref="/(tabs)/library" />
@@ -177,15 +174,15 @@ export default function PlantDetailsScreen() {
             style={{
               width: 64, height: 64, borderRadius: 32, alignItems: "center", justifyContent: "center",
               marginBottom: 16,
-              backgroundColor: isDark ? "rgba(239,68,68,0.12)" : "rgba(239,68,68,0.06)",
+              backgroundColor: theme.dangerSubtle,
             }}
           >
-            <Ionicons name="alert-circle-outline" size={32} color="#dc2626" />
+            <Ionicons name="alert-circle-outline" size={32} color={theme.danger} />
           </View>
           <Text
             style={{
               fontFamily: "serif", fontStyle: "italic", fontSize: 22, textAlign: "center",
-              color: isDark ? "#F8FAFC" : "#22451C",
+              color: theme.textPrimary,
             }}
           >
             {t('details_error_title')}
@@ -194,7 +191,7 @@ export default function PlantDetailsScreen() {
             style={{
               marginTop: 8, marginBottom: 24, textAlign: "center", lineHeight: 20,
               fontFamily: "Quicksand_500Medium",
-              color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.6)",
+              color: theme.textSecondary,
             }}
           >
             {error}
@@ -204,10 +201,10 @@ export default function PlantDetailsScreen() {
             accessibilityRole="button"
             style={{
               paddingHorizontal: 24, paddingVertical: 14, borderRadius: 16,
-              backgroundColor: isDark ? "rgba(162,207,163,0.15)" : "rgba(34,69,28,0.85)",
+              backgroundColor: theme.accent,
             }}
           >
-            <Text style={{ fontFamily: "Quicksand_700Bold", color: isDark ? "#A2CFA3" : "#FFFFFF" }}>
+            <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.textOnAccent }}>
               {t('details_go_back')}
             </Text>
           </TouchableOpacity>
@@ -220,7 +217,7 @@ export default function PlantDetailsScreen() {
   // ─── Main Render ─────────────────────────────────────────────────────────
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
+    <View style={{ flex: 1, backgroundColor: theme.bg }}>
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* ─── Fixed Header Nav (Floating over image) ───────────────────────── */}
@@ -237,20 +234,20 @@ export default function PlantDetailsScreen() {
           style={{
             width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center",
             // Matches BackButton: a 0.3 scrim vanished against pale plant photos.
-            backgroundColor: "rgba(11,18,11,0.72)", borderWidth: require("react-native").StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.35)"
+            backgroundColor: theme.scrimStrong, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.imageBorder
           }}
           hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
           accessibilityRole="button"
           accessibilityState={{ selected: isFavorite }}
           accessibilityLabel={
-            isFavorite ? "Remove from favorites" : "Add to favorites"
+            t(isFavorite ? "a11y_remove_favorite" : "a11y_add_favorite")
           }
         >
 
           <Ionicons
             name={isFavorite ? "heart" : "heart-outline"}
             size={20}
-            color={isFavorite ? "#A2CFA3" : "white"}
+            color={isFavorite ? theme.success : theme.onImage}
           />
         </TouchableOpacity>
       </View>
@@ -261,7 +258,7 @@ export default function PlantDetailsScreen() {
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
       >
         {/* ─── Image Hero Section ─────────────────────────────────────────── */}
-        <View style={{ width: "100%", height: 320, backgroundColor: isDark ? "#121A14" : "#EEF5E9" }}>
+        <View style={{ width: "100%", height: 320, backgroundColor: theme.surfacePressed }}>
           <Image
             source={
               !imageError && plant.imageUrl
@@ -275,11 +272,11 @@ export default function PlantDetailsScreen() {
         </View>
 
         {/* ─── Plant Header Info ───────────────────────────────────────── */}
-        <View style={{ paddingHorizontal: 24, paddingTop: 20, paddingBottom: 16, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
+        <View style={{ paddingHorizontal: 24, paddingTop: 20, paddingBottom: 16, backgroundColor: theme.bg }}>
           <Text 
             style={{
               fontSize: 32, fontFamily: "serif", fontStyle: "italic", fontWeight: "600",
-              color: isDark ? "#F8FAFC" : "#22451C", lineHeight: 38
+              color: theme.textPrimary, lineHeight: 38
             }}
           >
             {plant.name}
@@ -287,7 +284,7 @@ export default function PlantDetailsScreen() {
           <Text 
             style={{
               fontSize: 15, fontFamily: "serif", fontStyle: "italic",
-              color: isDark ? "rgba(248,250,252,0.6)" : "rgba(34,69,28,0.7)", marginTop: 4
+              color: theme.textSecondary, marginTop: 4
             }}
           >
             {plant.scientificName}
@@ -297,7 +294,7 @@ export default function PlantDetailsScreen() {
             <Text 
               style={{
                 fontSize: 14, fontFamily: "Quicksand_500Medium",
-                color: isDark ? "rgba(248,250,252,0.8)" : "#334155", marginTop: 8
+                color: theme.textSecondary, marginTop: 8
               }}
             >
               {plant.shortDescription}
@@ -307,12 +304,12 @@ export default function PlantDetailsScreen() {
           {/* Phase 6: Partial offline banner */}
           {isPartialOffline && (
             <View style={{
-              marginTop: 16, backgroundColor: isDark ? "rgba(217,119,6,0.1)" : "#FFFBEB",
-              borderWidth: require("react-native").StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(217,119,6,0.3)" : "#FDE68A",
+              marginTop: 16, backgroundColor: theme.warningSubtle,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: theme.warningBorder,
               borderRadius: 12, flexDirection: "row", alignItems: "center", padding: 12
             }}>
-              <Ionicons name="archive-outline" size={16} color={isDark ? "#FBBF24" : "#D97706"} />
-              <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 12, color: isDark ? "#FDE68A" : "#B45309", marginLeft: 8, flex: 1 }}>
+              <Ionicons name="archive-outline" size={16} color={theme.warning} />
+              <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 12, color: theme.warning, marginLeft: 8, flex: 1 }}>
                 {t('details_offline_banner')}
               </Text>
             </View>
@@ -326,11 +323,11 @@ export default function PlantDetailsScreen() {
                   key={cat}
                   style={{
                     backgroundColor: "transparent",
-                    borderWidth: require("react-native").StyleSheet.hairlineWidth, borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(162,207,163,0.8)",
+                    borderWidth: StyleSheet.hairlineWidth, borderColor: theme.border,
                     borderRadius: 16, paddingHorizontal: 12, paddingVertical: 4
                   }}
                 >
-                  <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 12, color: isDark ? "rgba(248,250,252,0.8)" : "#22451C" }}>
+                  <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 12, color: theme.textPrimary }}>
                     {getPlantCategoryLabel(cat, language)}
                   </Text>
                 </View>
@@ -340,7 +337,7 @@ export default function PlantDetailsScreen() {
         </View>
 
         {/* ─── Sub-Tabs Navigation ────────────────────────────────────────── */}
-        <View style={{ flexDirection: "row", paddingHorizontal: 16, borderBottomWidth: require("react-native").StyleSheet.hairlineWidth, borderBottomColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }}>
+        <View style={{ flexDirection: "row", paddingHorizontal: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.borderSubtle }}>
           {(isPartialOffline
             ? (["details"] as TabKey[])
             : (["details", "research", "cultivation", "compare"] as TabKey[])
@@ -352,7 +349,7 @@ export default function PlantDetailsScreen() {
                 onPress={() => setActiveTab(tab)}
                 style={{
                   flex: 1, paddingVertical: 14, alignItems: "center",
-                  borderBottomWidth: isActive ? 2 : 0, borderBottomColor: isActive ? (isDark ? "#A2CFA3" : "#22451C") : "transparent"
+                  borderBottomWidth: isActive ? 2 : 0, borderBottomColor: isActive ? (theme.accent) : "transparent"
                 }}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive }}
@@ -360,7 +357,7 @@ export default function PlantDetailsScreen() {
                 <Text
                   style={{
                     fontFamily: "Quicksand_700Bold", fontSize: 12, textAlign: "center",
-                    color: isActive ? (isDark ? "#A2CFA3" : "#22451C") : (isDark ? "rgba(255,255,255,0.4)" : "rgba(34,69,28,0.5)")
+                    color: isActive ? (theme.accent) : (theme.textMuted)
                   }}
                   numberOfLines={1}
                 >

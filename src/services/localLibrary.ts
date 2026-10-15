@@ -1,12 +1,10 @@
 import { Image } from 'react-native';
-import { MedicinalPlant, ComparisonTraits, ResearchEntry as ResearchItem } from '../types';
-import { SymptomItem, PreparationGroup } from '../types/homeFeed';
-import { useSettingsStore } from '../store/useSettingsStore';
+import { MedicinalPlant, ComparisonTraits, ResearchEntry as ResearchItem } from '@/src/types';
+import { SymptomItem, PreparationGroup } from '@/src/types/homeFeed';
+import { useSettingsStore } from '@/src/store/useSettingsStore';
+import type { AppLanguage } from '@/src/store/useSettingsStore';
 import { searchPlantRecords } from './plantSearch';
-
-// Load both datasets
-import plantsDataEn from '../data/plants_en.json';
-import plantsDataTl from '../data/plants_tl.json';
+import { getPlantCatalog } from './plantCatalog';
 
 export { MedicinalPlant, ComparisonTraits, ResearchItem };
 
@@ -46,32 +44,35 @@ const imageMap: Record<string, any> = {
 
 const processPlants = (data: any[]): MedicinalPlant[] => {
   return data.map(p => {
-    let resolvedUrl = '';
-    if (p.imageSource && imageMap[p.imageSource]) {
-      resolvedUrl = Image.resolveAssetSource(imageMap[p.imageSource]).uri;
-    }
+    let resolvedUrl: string | undefined;
     return {
       ...p,
-      imageUrl: resolvedUrl
+      get imageUrl() {
+        if (resolvedUrl === undefined) {
+          resolvedUrl = p.imageSource && imageMap[p.imageSource]
+            ? Image.resolveAssetSource(imageMap[p.imageSource])?.uri ?? ''
+            : '';
+        }
+        return resolvedUrl;
+      },
     };
   });
 };
 
-const plantsEn = processPlants(plantsDataEn);
-const plantsTl = processPlants(plantsDataTl);
+const processedCatalogs: Partial<Record<AppLanguage, MedicinalPlant[]>> = {};
 
-export function getActivePlants(): MedicinalPlant[] {
-  const language = useSettingsStore.getState().language;
-  return language === 'tl' ? plantsTl : plantsEn;
+export function getActivePlants(language: AppLanguage = useSettingsStore.getState().language): MedicinalPlant[] {
+  // Resolve native image assets on first use, rather than while importing this module.
+  return processedCatalogs[language] ??= processPlants(getPlantCatalog(language));
 }
 
-export function getAllPlants(): MedicinalPlant[] {
-  return getActivePlants();
+export function getAllPlants(language?: AppLanguage): MedicinalPlant[] {
+  return getActivePlants(language);
 }
 
-export function getAllCategories(): string[] {
+export function getAllCategories(language?: AppLanguage): string[] {
   const categories = new Set<string>();
-  getActivePlants().forEach(plant => {
+  getActivePlants(language).forEach(plant => {
     plant.categories.forEach(cat => categories.add(cat));
   });
   return Array.from(categories).sort();
@@ -210,18 +211,21 @@ function resolveMethodIcon(method: string): string {
 }
 
 
-export function getAllSymptoms(): SymptomItem[] {
-  const symptomCounts: Record<string, number> = {};
-  getActivePlants().forEach(plant => {
+export function getAllSymptoms(language?: AppLanguage): SymptomItem[] {
+  const symptomPlants = new Map<string, Set<string>>();
+  getActivePlants(language).forEach(plant => {
     plant.details?.preparation?.forEach(prep => {
       prep.uses?.forEach(use => {
         const key = use.trim();
-        symptomCounts[key] = (symptomCounts[key] || 0) + 1;
+        if (!key) return;
+        const plants = symptomPlants.get(key) ?? new Set<string>();
+        plants.add(plant.id);
+        symptomPlants.set(key, plants);
       });
     });
   });
   
-  return Object.entries(symptomCounts).map(([label, count]) => {
+  return [...symptomPlants].map(([label, plants]) => {
     const lowerLabel = label.toLowerCase();
     const id = lowerLabel.replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const icon = resolveSymptomIcon(label);
@@ -230,7 +234,7 @@ export function getAllSymptoms(): SymptomItem[] {
       id,
       label,
       icon,
-      plantCount: count
+      plantCount: plants.size
     };
   }).sort((a, b) => b.plantCount - a.plantCount);
 }
@@ -244,10 +248,10 @@ export function getPlantsBySymptom(symptom: string): MedicinalPlant[] {
   );
 }
 
-export function getAllPreparationGroups(): PreparationGroup[] {
+export function getAllPreparationGroups(language?: AppLanguage): PreparationGroup[] {
   const methodMap: Record<string, { count: number; plantIds: Set<string> }> = {};
   
-  getActivePlants().forEach(plant => {
+  getActivePlants(language).forEach(plant => {
     plant.details?.preparation?.forEach(prep => {
       const method = prep.method.trim();
       if (!methodMap[method]) {

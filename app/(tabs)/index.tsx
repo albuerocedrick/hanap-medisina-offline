@@ -1,42 +1,44 @@
+import { useTheme } from "@/src/theme/useTheme";
 /**
  * app/(tabs)/index.tsx  —  Home Tab
  */
 
-import { useColorScheme } from "nativewind"; 
+import { useColorScheme } from "nativewind";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshControl, ScrollView, StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // 🌟 Import your new transition wrapper
-import { PageTransition } from "../../src/components/ui/PageTransition"; 
+import { PageTransition } from "@/src/components/ui/PageTransition";
 
-import { SymptomGrid } from "../../src/components/home/SymptomGrid";
-import { DailyTrivia } from "../../src/components/home/DailyTrivia";
-import { QuickRemedies } from "../../src/components/home/QuickRemedies";
-import { HomeHeader } from "../../src/components/home/HomeHeader";
-import { HomeSearchBar } from "../../src/components/home/HomeSearchBar";
-import { MascotChatSlot } from "../../src/components/home/MascotChatSlot";
-import MySavedPlants from "../../src/components/home/MySavedPlants";
-import YourStats from "../../src/components/home/YourStats";
-import { RecentScans, RecentScansHandle } from "../../src/components/home/RecentScans";
-import { ScanNowBanner } from "../../src/components/home/ScanNowBanner";
-import { useFeedStore } from "../../src/store/useFeedStore";
-import { ScanDetailSheet } from "../../src/components/history/scan-detail-sheet";
+import { SymptomGrid } from "@/src/components/home/SymptomGrid";
+import { DailyTrivia } from "@/src/components/home/DailyTrivia";
+import { QuickRemedies } from "@/src/components/home/QuickRemedies";
+import { HomeHeader } from "@/src/components/home/HomeHeader";
+import { HomeSearchBar } from "@/src/components/home/HomeSearchBar";
+import { MascotChatSlot } from "@/src/components/home/MascotChatSlot";
+import MySavedPlants from "@/src/components/home/MySavedPlants";
+import YourStats from "@/src/components/home/YourStats";
+import { RecentScans, RecentScansHandle } from "@/src/components/home/RecentScans";
+import { ScanNowBanner } from "@/src/components/home/ScanNowBanner";
+import { useFeedStore } from "@/src/store/useFeedStore";
+import { ScanDetailSheet } from "@/src/components/history/scan-detail-sheet";
 
 export default function HomeScreen() {
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
-  
+
   const fetchHomeFeed = useFeedStore((s) => s.fetchHomeFeed);
 
   useEffect(() => {
     fetchHomeFeed();
   }, [fetchHomeFeed]);
-  
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
+  const isDark = theme.isDark;
 
   const recentScansRef = useRef<RecentScansHandle>(null);
 
@@ -51,9 +53,9 @@ export default function HomeScreen() {
 
   return (
     // 🌟 Wrap the whole screen in PageTransition
-    <PageTransition className="flex-1 bg-[#FAFEEF] dark:bg-[#0B120B]">
-      <View style={{ paddingTop: insets.top, flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
-        
+    <PageTransition className="flex-1" style={{ backgroundColor: theme.bg }}>
+      <View style={{ paddingTop: insets.top, flex: 1, backgroundColor: theme.bg }}>
+
         <StatusBar
           barStyle={isDark ? "light-content" : "dark-content"}
           backgroundColor="transparent"
@@ -68,8 +70,8 @@ export default function HomeScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={handleRefresh}
-              tintColor={isDark ? "rgba(162,207,163,0.75)" : "#4D8035"}
-              colors={[isDark ? "rgba(162,207,163,0.75)" : "#4D8035"]}
+              tintColor={theme.accent}
+              colors={[theme.accent]}
             />
           }
           contentContainerStyle={{
@@ -89,7 +91,7 @@ export default function HomeScreen() {
               <YourStats />
           </View>
         </ScrollView>
-        <ScanDetailSheet 
+        <ScanDetailSheet
           visible={!!selectedScanId}
           scanId={selectedScanId}
           onClose={() => setSelectedScanId(null)}

@@ -1,14 +1,14 @@
+import { useTheme } from "@/src/theme/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { Text, View, Pressable, ScrollView, useWindowDimensions } from "react-native";
 
 import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 
-import { PreparationGroup } from "../../types/homeFeed";
-import { selectPreparationGroups, useFeedStore } from "../../store/useFeedStore";
-import { useLibraryStore } from "../../store/useLibraryStore";
+import { PreparationGroup } from "@/src/types/homeFeed";
+import { selectPreparationGroups, useFeedStore } from "@/src/store/useFeedStore";
+import { useLibraryStore } from "@/src/store/useLibraryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -41,8 +41,9 @@ function useRemedyCardMetrics() {
 
 
 function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index: number, onPress: (group: PreparationGroup) => void }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+
+
   const { t } = useTranslation();
   const { width: cardWidth, height: cardHeight } = useRemedyCardMetrics();
   const scale = useSharedValue(1);
@@ -79,12 +80,12 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
 
           padding: 16,
           justifyContent: "space-between",
-          backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
+          backgroundColor: theme.surface,
           borderWidth: 1,
-          borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
+          borderColor: theme.border,
         }}
       >
-        <View 
+        <View
           style={{
             width: 48,
             height: 48,
@@ -92,23 +93,23 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 8,
-            backgroundColor: isDark ? "transparent" : "rgba(162,207,163,0.3)",
+            backgroundColor: theme.surfaceHighlight,
           }}
         >
-          <Ionicons name={group.icon as any} size={24} color={isDark ? "rgba(162,207,163,0.9)" : "#4D8035"} />
+          <Ionicons name={group.icon as any} size={24} color={theme.accent} />
         </View>
 
         <View>
-          <Text 
+          <Text
             className="font-bold text-[15px] mb-1"
             numberOfLines={2}
-            style={{ color: isDark ? "#F8FAFC" : "#22451C" }}
+            style={{ color: theme.textPrimary }}
           >
             {group.method}
           </Text>
-          <Text 
+          <Text
             className="font-medium text-[12px]"
-            style={{ color: isDark ? "rgba(162,207,163,0.8)" : "#4D8035" }}
+            style={{ color: theme.accent }}
           >
             {group.plantCount} {t(group.plantCount === 1 ? 'common_plant' : 'common_plants')}
           </Text>
@@ -120,9 +121,10 @@ function RemedyCard({ group, index, onPress }: { group: PreparationGroup, index:
 }
 
 export function QuickRemedies() {
+  const theme = useTheme();
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
   const { t } = useTranslation();
 
   const preparationGroups = useFeedStore(selectPreparationGroups);
@@ -145,23 +147,23 @@ export function QuickRemedies() {
     return (
       <View className="mb-8">
         <Text
-          className="text-[#22451C] dark:text-[#EAF3D5] px-6 mb-4"
-          style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+          className="px-6 mb-4"
+          style={[{ color: theme.textPrimary }, { fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
         >
           {t('home_remedies_title')}
         </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
           {Array.from({ length: 3 }).map((_, i) => (
-            <View 
-              key={i} 
-              style={{ 
-                width: cardWidth, 
-                height: cardHeight, 
-                backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", 
+            <View
+              key={i}
+              style={{
+                width: cardWidth,
+                height: cardHeight,
+                backgroundColor: theme.surfaceHighlight,
 
                 borderRadius: 24,
-                marginRight: SPACING 
-              }} 
+                marginRight: SPACING
+              }}
             />
           ))}
         </ScrollView>
@@ -186,8 +188,8 @@ export function QuickRemedies() {
         }}
       >
         <Text
-          className="text-[#22451C] dark:text-[#EAF3D5]"
-          style={{ flex: 1, fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+          className=""
+          style={[{ color: theme.textPrimary }, { flex: 1, fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
         >
           {t('home_remedies_title')}
         </Text>
@@ -197,7 +199,7 @@ export function QuickRemedies() {
           accessibilityLabel={t('home_see_all')}
           hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         >
-          <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>
+          <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: theme.accent }}>
             {t('home_see_all')} →
           </Text>
         </Pressable>

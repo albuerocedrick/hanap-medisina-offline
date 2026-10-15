@@ -1,17 +1,16 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { useColorScheme } from 'nativewind';
 import { Ionicons } from '@expo/vector-icons';
-import { useLibraryStore } from '../../store/useLibraryStore';
-import { useHistoryStore } from '../../store/useHistoryStore';
-import { getAllPlants } from '../../services/localLibrary';
+import { useLibraryStore } from '@/src/store/useLibraryStore';
+import { useHistoryStore } from '@/src/store/useHistoryStore';
+import { getAllPlants } from '@/src/services/localLibrary';
 import { useTranslation } from '@/src/i18n/useTranslation';
 import { useTheme } from '@/src/theme/useTheme';
 
 export default function YourStats() {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
+
   const theme = useTheme();
+
   const { t } = useTranslation();
 
 
@@ -47,7 +46,7 @@ export default function YourStats() {
           fontWeight: '500',
           letterSpacing: 0.4,
           marginBottom: 14,
-          color: isDark ? '#EAF3D5' : '#22451C',
+          color: theme.textPrimary,
         }}
       >
         {t('home_stats_title')}
@@ -63,7 +62,7 @@ export default function YourStats() {
           // card had no presence of its own.
           backgroundColor: theme.surface,
           flexDirection: 'row',
-          shadowColor: '#22451C',
+          shadowColor: theme.shadow,
 
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.06,

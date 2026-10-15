@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Pressable,
@@ -57,9 +56,9 @@ function SymptomCard({ symptom, index, viewMode, onPress }: {
   viewMode: ViewMode;
   onPress: (symptom: SymptomItem) => void;
 }) {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
   const theme = useTheme();
+
   const { t } = useTranslation();
   const scale = useSharedValue(1);
 
@@ -93,7 +92,7 @@ function SymptomCard({ symptom, index, viewMode, onPress }: {
           backgroundColor: theme.surface,
           borderWidth: 1,
           borderColor: theme.borderSubtle,
-          shadowColor: "#22451C",
+          shadowColor: theme.shadow,
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.06,
           shadowRadius: 4,
@@ -117,7 +116,7 @@ function SymptomCard({ symptom, index, viewMode, onPress }: {
           <Ionicons
             name={symptom.icon as any}
             size={isList ? 22 : 28}
-            color={isDark ? "rgba(162,207,163,0.9)" : "#4D8035"}
+            color={theme.accent}
           />
         </View>
 
@@ -154,14 +153,14 @@ function SymptomCard({ symptom, index, viewMode, onPress }: {
               borderRadius: 10,
               backgroundColor: isList
                 ? "transparent"
-                : (isDark ? "rgba(162,207,163,0.15)" : "rgba(162,207,163,0.25)"),
+                : (theme.accentSubtle),
             }}
           >
             <Text
               style={{
                 fontFamily: "Quicksand_600SemiBold",
                 fontSize: isList ? 12 : 10,
-                color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035",
+                color: theme.accent,
               }}
             >
               {countLabel}
@@ -223,9 +222,9 @@ function ViewToggle({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode
 
 export default function AllSymptomsScreen() {
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
   const theme = useTheme();
+  const isDark = theme.isDark;
   const { t } = useTranslation();
 
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -267,7 +266,7 @@ export default function AllSymptomsScreen() {
         style={{
           fontFamily: "Quicksand_700Bold",
           fontSize: 13,
-          color: isDark ? "rgba(162,207,163,0.7)" : "#4D8035",
+          color: theme.accent,
         }}
       >
         {t("symptoms_found").replace("{count}", String(symptoms.length))}
@@ -276,7 +275,7 @@ export default function AllSymptomsScreen() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? "#0B120B" : "#FAFEEF" }}>
+    <View style={{ flex: 1, backgroundColor: theme.bg }}>
       <StatusBar
         barStyle={isDark ? "light-content" : "dark-content"}
         backgroundColor="transparent"
@@ -302,7 +301,7 @@ export default function AllSymptomsScreen() {
               <Ionicons
                 name="leaf-outline"
                 size={18}
-                color={isDark ? "rgba(162,207,163,0.8)" : "#4D8035"}
+                color={theme.accent}
               />
               <Text
                 numberOfLines={1}

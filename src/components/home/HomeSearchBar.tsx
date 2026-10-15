@@ -4,8 +4,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BackHandler, Image, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
-import { getAllPlants, searchPlantsLocally } from "../../services/localLibrary";
-import { groupPlantSearchResults } from "../../services/plantSearch";
+import { getAllPlants, searchPlantsLocally } from "@/src/services/localLibrary";
+import { groupPlantSearchResults } from "@/src/services/plantSearch";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { useTheme } from "@/src/theme/useTheme";
 

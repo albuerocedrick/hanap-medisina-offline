@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { Text, TouchableOpacity, View, Pressable } from "react-native";
 import Animated, {
@@ -9,9 +8,9 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { SymptomItem } from "../../types/homeFeed";
-import { selectSymptoms, useFeedStore } from "../../store/useFeedStore";
-import { useLibraryStore } from "../../store/useLibraryStore";
+import { SymptomItem } from "@/src/types/homeFeed";
+import { selectSymptoms, useFeedStore } from "@/src/store/useFeedStore";
+import { useLibraryStore } from "@/src/store/useLibraryStore";
 import { SkeletonChip } from "./HomeSkeletons";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { useTheme } from "@/src/theme/useTheme";
@@ -120,9 +119,10 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
 }
 
 export function SymptomGrid() {
+  const theme = useTheme();
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
   const { t } = useTranslation();
 
   const symptoms = useFeedStore(selectSymptoms);
@@ -138,8 +138,8 @@ export function SymptomGrid() {
     return (
       <View className="mb-6 px-6">
         <Text
-          className="text-[#22451C] dark:text-[#EAF3D5] mb-4"
-          style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+          className="mb-4"
+          style={[{ color: theme.textPrimary }, { fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
         >
           {t('home_symptoms_title')}
         </Text>
@@ -164,23 +164,23 @@ export function SymptomGrid() {
     <View className="mb-6 px-6">
       <View className="flex-row items-center justify-between mb-4">
         <Text
-          className="text-[#22451C] dark:text-[#EAF3D5]"
-          style={{ fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }}
+          className=""
+          style={[{ color: theme.textPrimary }, { fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
         >
           {t('home_symptoms_title')}
         </Text>
         {hasMore && (
           <TouchableOpacity onPress={() => router.push("/symptoms" as any)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: isDark ? "rgba(162,207,163,0.9)" : "#4D8035" }}>
+            <Text style={{ fontFamily: "Quicksand_600SemiBold", fontSize: 13, color: theme.accent }}>
               {t('home_see_all')} →
             </Text>
           </TouchableOpacity>
         )}
       </View>
-      
+
       <View className="flex-row flex-wrap justify-between">
         {topSymptoms.map((symptom, index) => (
-          <SymptomChip 
+          <SymptomChip
             key={symptom.id}
             symptom={symptom}
             index={index}

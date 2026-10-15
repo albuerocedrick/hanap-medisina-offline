@@ -6,6 +6,7 @@ import * as Haptics from "expo-haptics";
 
 import { useTheme } from "@/src/theme/useTheme";
 import { MIN_TOUCH_TARGET } from "@/src/theme/tokens";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 type Variant = "onImage" | "onSurface";
 
@@ -46,6 +47,7 @@ export function BackButton({
   style?: any;
 }) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const router = useRouter();
   const onImage = variant === "onImage";
 
@@ -66,17 +68,17 @@ export function BackButton({
         router.replace(fallbackHref as any);
       }
     } catch (err) {
-      console.warn("[BackButton] navigation failed:", err);
+      if (__DEV__) console.warn("[BackButton] navigation failed:", err);
     }
   }, [onPress, router, fallbackHref]);
 
-  const tint = onImage ? "#FFFFFF" : theme.textPrimary;
+  const tint = onImage ? theme.onImage : theme.textPrimary;
 
   return (
     <Pressable
       onPress={handlePress}
       accessibilityRole="button"
-      accessibilityLabel={label ? `Go back to ${label}` : "Go back"}
+      accessibilityLabel={label ? t("a11y_back_to").replace("{label}", label) : t("a11y_back")}
       // The disc is 44 but the tappable region is padded out to the platform
       // minimum, so the target is comfortable without making the art heavier.
       hitSlop={(MIN_TOUCH_TARGET - DISC) / 2 + 4}
@@ -90,9 +92,9 @@ export function BackButton({
           justifyContent: "center",
           paddingHorizontal: label ? 14 : 0,
           gap: label ? 4 : 0,
-          backgroundColor: onImage ? "rgba(11,18,11,0.72)" : theme.surfaceTint,
+          backgroundColor: onImage ? theme.scrim : theme.surfaceTint,
           borderWidth: StyleSheet.hairlineWidth,
-          borderColor: onImage ? "rgba(255,255,255,0.35)" : theme.border,
+          borderColor: onImage ? theme.imageBorder : theme.border,
           // Scale + fade reads as a real press; opacity alone felt unresponsive.
           opacity: pressed ? 0.7 : 1,
           transform: [{ scale: pressed ? 0.94 : 1 }],

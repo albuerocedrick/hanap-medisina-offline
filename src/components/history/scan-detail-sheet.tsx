@@ -1,12 +1,11 @@
+import { useTheme } from "@/src/theme/useTheme";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React, { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
     Alert,
     BackHandler,
-    Dimensions,
     Image,
     Modal,
     ScrollView,
@@ -14,6 +13,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    useWindowDimensions,
 } from "react-native";
 import Animated, {
     interpolate,
@@ -30,9 +30,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getAllPlants, MedicinalPlant } from "@/src/services/localLibrary";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { LocalScanRecord } from "@/src/types";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SHEET_HEIGHT = SCREEN_HEIGHT * 0.85;
 const ANIM_CONFIG = { duration: 320, easing: Easing.out(Easing.cubic) };
 
 interface Props {
@@ -43,11 +42,15 @@ interface Props {
 }
 
 export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: Props) {
+  const theme = useTheme();
+  const { t, language } = useTranslation();
+  const { height } = useWindowDimensions();
+  const sheetHeight = height * 0.85;
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+
+
 
   const getScanById = useHistoryStore((s) => s.getScanById);
   const toggleFavorite = useHistoryStore((s) => s.toggleFavorite);
@@ -76,7 +79,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
         translateY: interpolate(
           progress.value,
           [0, 1],
-          [SHEET_HEIGHT, 0]
+          [sheetHeight, 0]
         ),
       },
     ],
@@ -120,7 +123,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
         if (!currentScan) throw new Error("Scan data could not be found.");
         setScan(currentScan);
 
-        const allPlants = getAllPlants();
+        const allPlants = getAllPlants(language);
         const matchedPlant = allPlants.find(
           (p) => p.name.toLowerCase() === currentScan.plantName.toLowerCase()
         );
@@ -133,7 +136,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
     }
 
     loadScanData(scanId);
-  }, [scanId, visible]);
+  }, [scanId, visible, language]);
 
   // Keep scan state in sync with store changes (like favorites)
   useEffect(() => {
@@ -153,7 +156,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
 
   const formatDate = (isoString?: string) => {
     if (!isoString) return "Unknown Date";
-    return new Intl.DateTimeFormat("en-PH", {
+    return new Intl.DateTimeFormat(language === "tl" ? "fil-PH" : "en-PH", {
       dateStyle: "medium",
       timeStyle: "short",
     }).format(new Date(isoString));
@@ -163,9 +166,9 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
 
   const getConfColor = (val: number) => {
     // High confidence: Solid green
-    if (val >= 70) return { bg: "#22c55e", text: isDark ? "#4ade80" : "#15803d", bar: isDark ? "rgba(34, 197, 94, 0.2)" : "#f0fdf4" };
+    if (val >= 70) return { bg: theme.success, text: theme.success, bar: theme.successSubtle };
     // Lower confidence: Light green/Lime instead of Orange/Red
-    return { bg: "#84cc16", text: isDark ? "#a3e635" : "#4d7c0f", bar: isDark ? "rgba(132, 204, 22, 0.2)" : "#f7fee7" };
+    return { bg: theme.accent, text: theme.accent, bar: theme.accentSubtle };
   };
   const confStyles = getConfColor(displayConf);
 
@@ -175,7 +178,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
       {/* Dimmed Backdrop */}
       <Animated.View
-        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(11, 18, 11, 0.6)" }, backdropStyle]}
+        style={[StyleSheet.absoluteFill, { backgroundColor: theme.scrim }, backdropStyle]}
       >
         <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={onClose} />
       </Animated.View>
@@ -189,17 +192,17 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
             bottom: 0,
             left: 0,
             right: 0,
-            height: SHEET_HEIGHT,
+            height: sheetHeight,
             paddingBottom: insets.bottom,
-            backgroundColor: isDark ? "#0B120B" : "#FAFEEF",
+            backgroundColor: theme.bg,
             borderTopLeftRadius: 32,
             borderTopRightRadius: 32,
             borderTopWidth: 1,
             borderLeftWidth: 1,
             borderRightWidth: 1,
-            borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
+            borderColor: theme.border,
             overflow: "hidden",
-            shadowColor: "#000",
+            shadowColor: theme.shadow,
             shadowOffset: { width: 0, height: -4 },
             shadowOpacity: 0.2,
             shadowRadius: 12,
@@ -209,7 +212,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
       >
         {/* Drag Handle */}
         <View
-          style={{ backgroundColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(34,69,28,0.2)" }}
+          style={{ backgroundColor: theme.surfaceTint }}
           className="w-12 h-1.5 rounded-full self-center mt-4 mb-2"
         />
 
@@ -217,31 +220,33 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
         <View className="flex-row items-center justify-between px-6 py-2">
           <Text
             style={{
-              color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)",
+              color: theme.textSecondary,
               fontFamily: "Quicksand_700Bold",
             }}
             className="text-sm tracking-widest uppercase"
           >
-            Scan Details
+            {t("history_scan_details")}
           </Text>
           <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={t("cancel")}
             onPress={onClose}
-            style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }}
+            style={{ backgroundColor: theme.surfaceTint }}
             className="w-8 h-8 items-center justify-center rounded-full"
           >
-            <Feather name="x" size={18} color={isDark ? "rgba(248,250,252,0.9)" : "#22451C"} />
+            <Feather name="x" size={18} color={theme.textPrimary} />
           </TouchableOpacity>
         </View>
 
         {loading ? (
           <View className="flex-1 items-center justify-center pb-20">
-            <ActivityIndicator size="large" color={isDark ? "#A2CFA3" : "#16a34a"} />
+            <ActivityIndicator size="large" color={theme.success} />
           </View>
         ) : error || !scan ? (
           <View className="flex-1 items-center justify-center px-6 pb-20">
-            <Feather name="alert-triangle" size={40} color={isDark ? "rgba(248,250,252,0.3)" : "#A2CFA3"} />
-            <Text style={{ color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "Quicksand_700Bold" }} className="text-lg mt-4 text-center">Scan Not Found</Text>
-            <Text style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_500Medium" }} className="text-center mt-2">{error}</Text>
+            <Feather name="alert-triangle" size={40} color={theme.textSecondary} />
+            <Text style={{ color: theme.textPrimary, fontFamily: "Quicksand_700Bold" }} className="text-lg mt-4 text-center">Scan Not Found</Text>
+            <Text style={{ color: theme.textSecondary, fontFamily: "Quicksand_500Medium" }} className="text-center mt-2">{error}</Text>
           </View>
         ) : (
           <ScrollView contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
@@ -251,7 +256,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
               <View className="flex-1">
                 <Text
                   style={{
-                    color: isDark ? "#F8FAFC" : "#22451C",
+                    color: theme.textPrimary,
                     fontFamily: "serif",
                     fontStyle: "italic",
                     fontWeight: "500",
@@ -264,10 +269,13 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
               </View>
 
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={t(scan.isFavorite ? "a11y_remove_favorite" : "a11y_add_favorite")}
+                accessibilityState={{ selected: scan.isFavorite }}
                 onPress={() => toggleFavorite(scan.id)}
                 style={{
-                  backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#FAFEEF",
-                  borderColor: isDark ? "rgba(255,255,255,0.14)" : "#A2CFA3",
+                  backgroundColor: theme.surface,
+                  borderColor: theme.border,
                   borderWidth: StyleSheet.hairlineWidth,
                 }}
                 className="w-12 h-12 rounded-full items-center justify-center"
@@ -275,7 +283,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                 <Ionicons
                   name={scan.isFavorite ? "heart" : "heart-outline"}
                   size={24}
-                  color={scan.isFavorite ? "#ef4444" : isDark ? "rgba(248,250,252,0.7)" : "#4D8035"}
+                  color={scan.isFavorite ? theme.danger : theme.textSecondary}
                 />
               </TouchableOpacity>
             </View>
@@ -284,7 +292,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
             <View className="px-6 mb-6 flex-row justify-between gap-3">
               <View className="flex-1">
                 <Text
-                  style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_700Bold" }}
+                  style={{ color: theme.textSecondary, fontFamily: "Quicksand_700Bold" }}
                   className="text-[11px] uppercase tracking-wider mb-2"
                 >
                   Your Scan
@@ -292,8 +300,8 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => setViewerImage(scan.imageUri)}
-                  style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)", borderWidth: 1 }}
-                  className="aspect-square bg-slate-200 rounded-2xl overflow-hidden"
+                  style={{ borderColor: theme.border, borderWidth: 1 }}
+                  className="aspect-square rounded-2xl overflow-hidden"
                 >
                   <Image source={{ uri: scan.imageUri }} className="w-full h-full" resizeMode="cover" />
                 </TouchableOpacity>
@@ -301,7 +309,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
 
               <View className="flex-1">
                 <Text
-                  style={{ color: isDark ? "rgba(248,250,252,0.5)" : "rgba(34,69,28,0.6)", fontFamily: "Quicksand_700Bold" }}
+                  style={{ color: theme.textSecondary, fontFamily: "Quicksand_700Bold" }}
                   className="text-[11px] uppercase tracking-wider mb-2"
                 >
                   Reference
@@ -310,16 +318,16 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                   activeOpacity={0.9}
                   onPress={() => libraryMatch?.imageUrl && setViewerImage(libraryMatch.imageUrl)}
                   style={{
-                    borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.5)",
+                    borderColor: theme.border,
                     borderWidth: 1,
-                    backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(162,207,163,0.15)",
+                    backgroundColor: theme.surfaceHighlight,
                   }}
                   className="aspect-square rounded-2xl overflow-hidden items-center justify-center"
                 >
                   {libraryMatch?.imageUrl ? (
                     <Image source={{ uri: libraryMatch.imageUrl }} className="w-full h-full" resizeMode="cover" />
                   ) : (
-                    <Ionicons name="leaf-outline" size={28} color={isDark ? "rgba(248,250,252,0.3)" : "#A2CFA3"} />
+                    <Ionicons name="leaf-outline" size={28} color={theme.textSecondary} />
                   )}
                 </TouchableOpacity>
               </View>
@@ -329,8 +337,8 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
             <View className="px-6 mb-6">
               <View
                 style={{
-                  backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "#FAFEEF",
-                  borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.55)",
+                  backgroundColor: theme.surface,
+                  borderColor: theme.border,
                   borderWidth: 1,
                 }}
                 className="rounded-2xl p-4 shadow-sm"
@@ -338,7 +346,7 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                 <View className="mb-4">
                   <View className="flex-row justify-between items-end mb-2">
                     <Text
-                      style={{ color: isDark ? "rgba(248,250,252,0.8)" : "rgba(34,69,28,0.8)", fontFamily: "Quicksand_600SemiBold" }}
+                      style={{ color: theme.textSecondary, fontFamily: "Quicksand_600SemiBold" }}
                       className="text-xs"
                     >
                       AI Confidence
@@ -350,15 +358,15 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                   </View>
                 </View>
 
-                <View style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.3)" }} className="h-px mb-3" />
+                <View style={{ backgroundColor: theme.surfaceTint }} className="h-px mb-3" />
 
                 <View className="gap-3">
                   <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-2">
-                      <Feather name="camera" size={14} color={isDark ? "rgba(248,250,252,0.6)" : "#4D8035"} />
-                      <Text style={{ color: isDark ? "rgba(248,250,252,0.6)" : "#4D8035", fontFamily: "Quicksand_500Medium" }} className="text-xs">Captured on</Text>
+                      <Feather name="camera" size={14} color={theme.textSecondary} />
+                      <Text style={{ color: theme.textSecondary, fontFamily: "Quicksand_500Medium" }} className="text-xs">Captured on</Text>
                     </View>
-                    <Text style={{ color: isDark ? "#F8FAFC" : "#22451C", fontFamily: "Quicksand_600SemiBold" }} className="text-xs">{formatDate(scan.scannedAt)}</Text>
+                    <Text style={{ color: theme.textPrimary, fontFamily: "Quicksand_600SemiBold" }} className="text-xs">{formatDate(scan.scannedAt)}</Text>
                   </View>
                 </View>
               </View>
@@ -373,25 +381,25 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                     onClose();
                     router.push(`/(tabs)/library/${libraryMatch.id}`);
                   }}
-                  style={{ backgroundColor: "#4D8035" }}
+                  style={{ backgroundColor: theme.accentStrong }}
                   className="w-full flex-row items-center justify-center gap-2 py-3.5 rounded-xl shadow-sm"
                 >
-                  <Ionicons name="book-outline" size={18} color="white" />
-                  <Text style={{ fontFamily: "Quicksand_700Bold" }} className="text-white text-sm tracking-wide">
+                  <Ionicons name="book-outline" size={18} color={theme.onImage} />
+                  <Text style={[{ color: theme.onImage }, { fontFamily: "Quicksand_700Bold" }]} className="text-sm tracking-wide">
                     View Full Plant Info
                   </Text>
                 </TouchableOpacity>
               ) : (
                 <View
                   style={{
-                    backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(162,207,163,0.15)",
-                    borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(162,207,163,0.4)",
+                    backgroundColor: theme.surfaceTint,
+                    borderColor: theme.border,
                     borderWidth: 1,
                   }}
                   className="rounded-xl p-3 flex-row gap-3 items-center"
                 >
-                  <Feather name="info" size={16} color={isDark ? "rgba(248,250,252,0.6)" : "#4D8035"} />
-                  <Text style={{ color: isDark ? "rgba(248,250,252,0.8)" : "rgba(34,69,28,0.8)", fontFamily: "Quicksand_500Medium" }} className="flex-1 text-xs">
+                  <Feather name="info" size={16} color={theme.textSecondary} />
+                  <Text style={{ color: theme.textSecondary, fontFamily: "Quicksand_500Medium" }} className="flex-1 text-xs">
                     Not documented in the Library yet.
                   </Text>
                 </View>
@@ -402,17 +410,17 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
                 activeOpacity={0.8}
                 onPress={handleDelete}
                 style={{
-                    backgroundColor: isDark ? "#38201F" : "#FBE9E5",
-                    borderColor: isDark ? "#63312C" : "#EBCBC4",
+                    backgroundColor: theme.dangerSubtle,
+                    borderColor: theme.dangerBorder,
                   borderWidth: 1,
                     minHeight: 54, marginTop: 16, borderRadius: 16,
                     flexDirection: "row", gap: 10, alignItems: "center", justifyContent: "center",
                 }}
                   accessibilityRole="button"
-                  accessibilityLabel="Delete scan"
+                  accessibilityLabel={t("history_delete")}
               >
-                  <Feather name="trash-2" size={18} color={isDark ? "#FFB4A9" : "#A63328"} />
-                  <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 14, color: isDark ? "#FFB4A9" : "#A63328" }}>
+                  <Feather name="trash-2" size={18} color={theme.danger} />
+                  <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 14, color: theme.danger }}>
                   Delete Scan
                 </Text>
               </TouchableOpacity>
@@ -423,16 +431,18 @@ export function ScanDetailSheet({ visible, scanId, onClose, onDeleteRequest }: P
       </Animated.View>
 
       {!!viewerImage && (
-        <Animated.View 
+        <Animated.View
           entering={FadeIn.duration(200)}
           exiting={FadeOut.duration(200)}
-          style={[StyleSheet.absoluteFill, { zIndex: 9999, elevation: 9999, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' }]}
+          style={[StyleSheet.absoluteFill, { zIndex: 9999, elevation: 9999, backgroundColor: theme.scrimStrong, justifyContent: 'center', alignItems: 'center' }]}
         >
           <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={t("cancel")}
             style={{ position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 10 }}
             onPress={() => setViewerImage(null)}
           >
-            <Feather name="x" size={32} color="#fff" />
+            <Feather name="x" size={32} color={theme.onImage} />
           </TouchableOpacity>
           <Image
             source={{ uri: viewerImage }}
