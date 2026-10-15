@@ -21,7 +21,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { searchPlantsLocally } from "@/src/services/localLibrary";
+import { searchPlantNames } from "@/src/services/plantSearch";
 import {
   selectSearchQuery,
   useLibraryStore,
@@ -68,7 +68,7 @@ export function SearchBar({
   const suggestions = React.useMemo(() => {
     if (!localValue || localValue.trim().length === 0) return [];
     try {
-      return searchPlantsLocally(sourceList, localValue).slice(0, 6);
+      return searchPlantNames(sourceList, localValue).slice(0, 6);
     } catch (e) {
       return [];
     }

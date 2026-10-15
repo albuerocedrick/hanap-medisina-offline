@@ -62,7 +62,7 @@ test('category, symptom and remedy filters leave the complete catalog available'
   assert.deepEqual(ids(store.getState().getDisplayedPlants()), ids(catalog));
 });
 
-test('starting a symptom search clears hidden browse filters and keeps all matches available', () => {
+test('starting a plant-name search clears hidden browse filters and keeps matches available', () => {
   for (const selectFilter of [
     () => store.getState().setActiveCategory('diuretic'),
     () => store.getState().setActiveSymptom('fever'),
@@ -70,14 +70,21 @@ test('starting a symptom search clears hidden browse filters and keeps all match
   ]) {
     store.getState().setSearchQuery('');
     selectFilter();
-    store.getState().setSearchQuery('ubo');
+    store.getState().setSearchQuery('litlit');
     assert.equal(store.getState().activeCategory, null);
     assert.equal(store.getState().activeSymptom, null);
     assert.equal(store.getState().activePreparationMethod, null);
     const matches = store.getState().getDisplayedPlants();
-    assert.ok(matches.some(plant => plant.id === 'lagundi'));
-    assert.ok(matches.some(plant => plant.id === 'litlit'));
+    assert.deepEqual(ids(matches), ['litlit']);
     assert.equal(store.getState().plants.length, catalog.length);
+  }
+  store.getState().setSearchQuery('');
+});
+
+test('Library results do not match symptom queries', () => {
+  for (const query of ['cough', 'ubo', 'lagnat', 'sakit ng tiyan']) {
+    store.getState().setSearchQuery(query);
+    assert.deepEqual(store.getState().getDisplayedPlants(), []);
   }
   store.getState().setSearchQuery('');
 });

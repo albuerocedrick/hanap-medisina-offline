@@ -97,9 +97,17 @@ export function groupPlantSearchResults(results: MedicinalPlant[], query: string
 // Search the documented uses, never warnings, research, or growing instructions.
 // Return the caller's records so images, language, and filters stay intact.
 export function searchPlantRecords(list: MedicinalPlant[], query: string): MedicinalPlant[] {
+  return searchRecords(list, query, false);
+}
+
+export function searchPlantNames(list: MedicinalPlant[], query: string): MedicinalPlant[] {
+  return searchRecords(list, query, true);
+}
+
+function searchRecords(list: MedicinalPlant[], query: string, namesOnly: boolean): MedicinalPlant[] {
   const normalized = normalize(query);
   if (!normalized) return list;
-  const variants = queryVariants(normalized);
+  const variants = namesOnly ? [normalized.split(" ")] : queryVariants(normalized);
   if (!variants.length) return [];
   return list.map((plant, position) => {
     let score = 0;
@@ -108,9 +116,11 @@ export function searchPlantRecords(list: MedicinalPlant[], query: string): Medic
       for (const terms of variants) {
         const phrase = terms.join(" ");
         if (names.some(name => name.includes(phrase) || containsTerms(name, terms))) score = Math.max(score, names.some(name => name === phrase) ? 120 : 100);
-        if (containsTerms(uses, terms)) score = Math.max(score, 70);
-        if (containsTerms(categories, terms)) score = Math.max(score, 50);
-        if (containsTerms(description, terms)) score = Math.max(score, 30);
+        if (!namesOnly) {
+          if (containsTerms(uses, terms)) score = Math.max(score, 70);
+          if (containsTerms(categories, terms)) score = Math.max(score, 50);
+          if (containsTerms(description, terms)) score = Math.max(score, 30);
+        }
       }
     }
     return { plant, score, position };

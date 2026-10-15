@@ -8,7 +8,7 @@ const filename = path.resolve(__dirname, "../src/services/plantSearch.ts");
 const compiled = ts.transpileModule(fs.readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true } }).outputText;
 const loaded = { exports: {} };
 new Function("require", "module", "exports", compiled)(createRequire(filename), loaded, loaded.exports);
-const { searchPlantRecords: search, groupPlantSearchResults: group } = loaded.exports;
+const { searchPlantRecords: search, searchPlantNames: searchNames, groupPlantSearchResults: group } = loaded.exports;
 const en = require("../src/data/plants_en.json");
 const tl = require("../src/data/plants_tl.json");
 const ids = (list, query) => search(list, query).map(plant => plant.id);
@@ -72,4 +72,26 @@ test("plant names stay in a plant section and unknown symptoms use documented he
   assert.equal(group(search(en, "lagundi"), "lagundi", "en")[0].label, null);
   assert.equal(group(search(en, "eczema"), "eczema", "en")[0].label, "Eczema");
   assert.deepEqual(group([], "fever", "en"), []);
+});
+
+test("Library name search supports common, local and scientific names in either language", () => {
+  for (const list of [en, tl]) {
+    assert.equal(searchNames(list, "  LaGuNdI  ")[0].id, "lagundi");
+    assert.equal(searchNames(list, "vitex negundo")[0].id, "lagundi");
+    assert.equal(searchNames(list, "tubang bakod")[0].id, "tuba-tuba");
+    assert.equal(searchNames(list, "mangga")[0].id, "mango");
+    assert.strictEqual(searchNames(list, "   "), list);
+  }
+});
+
+test("Library name search excludes symptoms, categories and descriptive text", () => {
+  for (const list of [en, tl]) {
+    for (const query of ["cough", "ubo", "fever", "lagnat", "sakit ng tiyan", "plants for cough"]) {
+      assert.deepEqual(searchNames(list, query), []);
+    }
+  }
+  const fixture = { ...en[0], id: "test-only", name: "Test plant", scientificName: "Testus", shortDescription: "A cough remedy", categories: ["fever"], details: { localName: "Test", preparation: [{ uses: ["Cough"] }] } };
+  assert.deepEqual(searchNames([fixture], "cough"), []);
+  assert.deepEqual(searchNames([fixture], "fever"), []);
+  assert.strictEqual(searchNames([fixture], "test")[0], fixture);
 });

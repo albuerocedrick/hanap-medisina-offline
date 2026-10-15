@@ -83,7 +83,7 @@ export default {
   // Library Screen
   library_title: 'Aklatan',
   library_subtitle: 'Tuklasin ang mga halamang gamot',
-  library_search: 'Maghanap ng halaman o sintomas...',
+  library_search: 'Maghanap ng halaman...',
   library_tab_plants: 'Halaman',
   library_tab_symptoms: 'Sintomas',
   library_tab_methods: 'Paraan',

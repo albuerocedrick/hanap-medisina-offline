@@ -21,8 +21,8 @@ import {
   getPlantsByIds,
   getPlantsBySymptom,
   getPlantsByPreparationMethod,
-  searchPlantsLocally,
 } from "../services/localLibrary";
+import { searchPlantNames } from "../services/plantSearch";
 
 
 // ─────────────────────────────────────────────
@@ -328,7 +328,7 @@ export const useLibraryStore = create<LibraryStore>()(
 
         if (!searchQuery) return filtered;
         
-        return searchPlantsLocally(filtered, searchQuery);
+        return searchPlantNames(filtered, searchQuery);
       },
 
       // ── Favorites ──────────────────────────────────────────────────────────

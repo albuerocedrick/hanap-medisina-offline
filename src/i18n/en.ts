@@ -83,7 +83,7 @@ export default {
   // Library Screen
   library_title: 'Library',
   library_subtitle: 'Discover medicinal plants',
-  library_search: 'Search plants or symptoms...',
+  library_search: 'Search plants...',
   library_tab_plants: 'Plants',
   library_tab_symptoms: 'Symptoms',
   library_tab_methods: 'Methods',
