@@ -2,6 +2,13 @@ import { useTheme } from "@/src/theme/useTheme";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AppState, Image, ImageResolvedAssetSource, Pressable, Text, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
+import {
+  getMascotFrameOffset,
+  getMascotLayout,
+  MASCOT_SLOT_HEIGHT,
+  MASCOT_SLOT_WIDTH,
+  MASCOT_SPRITE_METRICS,
+} from "./mascotLayout";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -32,23 +39,19 @@ const EXPRESSION_MESSAGES = [
 ];
 
 const MASCOT_CONFIG = {
-  idle: { source: require("../../../assets/images/home-mascot/herbi-idle.png"), cols: 8, rows: 8, frames: 64 },
-  goingSleep: { source: require("../../../assets/images/home-mascot/herbi-going-to-sleep.png"), cols: 8, rows: 8, frames: 64 },
-  sleeping: { source: require("../../../assets/images/home-mascot/herbi-sleep-idle.png"), cols: 8, rows: 8, frames: 64 },
-  wakeup: { source: require("../../../assets/images/home-mascot/herbi-wakeup.png"), cols: 8, rows: 8, frames: 64 },
+  idle: { source: require("../../../assets/images/home-mascot/herbi-idle.png"), ...MASCOT_SPRITE_METRICS.idle },
+  goingSleep: { source: require("../../../assets/images/home-mascot/herbi-going-to-sleep.png"), ...MASCOT_SPRITE_METRICS.goingSleep },
+  sleeping: { source: require("../../../assets/images/home-mascot/herbi-sleep-idle.png"), ...MASCOT_SPRITE_METRICS.sleeping },
+  wakeup: { source: require("../../../assets/images/home-mascot/herbi-wakeup.png"), ...MASCOT_SPRITE_METRICS.wakeup },
   expressions: [
-    { source: require("../../../assets/images/home-mascot/herbi-happy.png"), cols: 8, rows: 8, frames: 64 },
-    { source: require("../../../assets/images/home-mascot/herbi-thinking.png"), cols: 8, rows: 8, frames: 64 },
-    { source: require("../../../assets/images/home-mascot/herbi-excited.png"), cols: 8, rows: 8, frames: 64 },
-    { source: require("../../../assets/images/home-mascot/herbi-winking.png"), cols: 8, rows: 8, frames: 64 },
-    { source: require("../../../assets/images/home-mascot/herbi-peaceful.png"), cols: 8, rows: 8, frames: 64 },
+    { source: require("../../../assets/images/home-mascot/herbi-happy.png"), ...MASCOT_SPRITE_METRICS.happy },
+    { source: require("../../../assets/images/home-mascot/herbi-thinking.png"), ...MASCOT_SPRITE_METRICS.thinking },
+    { source: require("../../../assets/images/home-mascot/herbi-excited.png"), ...MASCOT_SPRITE_METRICS.excited },
+    { source: require("../../../assets/images/home-mascot/herbi-winking.png"), ...MASCOT_SPRITE_METRICS.winking },
+    { source: require("../../../assets/images/home-mascot/herbi-peaceful.png"), ...MASCOT_SPRITE_METRICS.peaceful },
   ],
 };
 
-// Option C: Scale by HEIGHT so Herbi is always the same height across all animations.
-// Width varies slightly per animation but height stays perfectly consistent.
-const TARGET_HEIGHT = 120; // Herbi is always this tall, every animation
-const SLOT_WIDTH = 140; // fixed pressable width — wide enough for the widest frame
 type MascotMode = "idle" | "expression" | "goingSleep" | "sleeping" | "wakeup";
 
 /**
@@ -220,30 +223,19 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
   };
 
   const resolved = Image.resolveAssetSource(activeConfig.source) as ImageResolvedAssetSource;
-  const sw = resolved?.width || 2048;
-  const sh = resolved?.height || 2048;
-  const fw = sw / activeConfig.cols;
-  const fh = sh / activeConfig.rows;
-
-  // Scale by HEIGHT — Herbi is always TARGET_HEIGHT px tall regardless of which sheet.
-  // MAX_SCALE caps short-frame sheets (sleep-idle fh=223) from scaling up too large.
-  const MAX_SCALE = TARGET_HEIGHT / (142.5 * (sh / 1052));
-  const scale = Math.min(TARGET_HEIGHT / fh, MAX_SCALE);
-  const displayWidth = fw * scale;
-  // Use actual scaled frame height (not TARGET_HEIGHT) as viewport height —
-  // prevents next-row bleed when scale is capped below TARGET_HEIGHT/fh
-  const displayHeight = fh * scale;
-
+  const spriteLayout = getMascotLayout(
+    activeConfig,
+    resolved?.width || activeConfig.referenceWidth,
+    resolved?.height || activeConfig.referenceHeight,
+  );
 
   const animatedSpriteStyle = useAnimatedStyle(() => {
-    const currentFrame = Math.floor(frame.value) % activeConfig.frames;
-    const frameCol = currentFrame % activeConfig.cols;
-    const frameRow = Math.floor(currentFrame / activeConfig.cols);
+    const offset = getMascotFrameOffset(frame.value, spriteLayout);
     return {
       opacity: transitionOpacity.value,
       transform: [
-        { translateX: -frameCol * fw * scale },
-        { translateY: -frameRow * fh * scale },
+        { translateX: offset.translateX },
+        { translateY: offset.translateY },
       ]
     };
   });
@@ -269,20 +261,20 @@ export function MascotChatSlot({ visible = true }: { visible?: boolean }) {
         <Pressable
           onPress={handleMascotPress}
           // Fixed slot width keeps layout stable; sprite is centered inside
-          style={{ width: SLOT_WIDTH, alignItems: "center", justifyContent: "flex-end" }}
+          style={{ width: MASCOT_SLOT_WIDTH, height: MASCOT_SLOT_HEIGHT, alignItems: "center", justifyContent: "flex-end" }}
         >
           {/* Viewport: exact one-frame size — no bleed left/right or top/bottom */}
           <View
             style={{
-              width: displayWidth,
-              height: displayHeight,
+              width: spriteLayout.width,
+              height: spriteLayout.height,
               overflow: "hidden",
             }}
           >
             <Animated.Image
               source={activeConfig.source}
               style={[
-                { width: sw * scale, height: sh * scale },
+                { width: spriteLayout.sheetWidth, height: spriteLayout.sheetHeight },
                 animatedSpriteStyle,
               ]}
               resizeMode="stretch"

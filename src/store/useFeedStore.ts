@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getHomeFeed } from "@/src/services/localFeed";
+import { getAllIllnesses } from "@/src/services/localLibrary";
 import { useSettingsStore, AppLanguage } from "./useSettingsStore";
 import {
   TriviaItem,
@@ -155,6 +156,13 @@ export const useFeedStore = create<FeedStore>()(
     {
       name: "hanapmedisina-feed-store",
       storage: createJSONStorage(() => AsyncStorage),
+      version: 1,
+      // Replace legacy raw-use cards during upgrades, including when an old
+      // cache hydrates after the startup refresh has already completed.
+      migrate: (persisted) => ({
+        ...(persisted as Partial<FeedState>),
+        symptoms: getAllIllnesses(),
+      }),
 
       partialize: (state) => ({
         weeklyTrivia: state.weeklyTrivia,

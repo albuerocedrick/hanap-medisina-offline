@@ -102,7 +102,7 @@
     "name": "Tawa-tawa",
     "scientificName": "Euphorbia hirta L.",
     "shortDescription": "Isang halamang tumutubo taun-taon sa mga tropikal na lugar, kabilang ang Pilipinas. Kilala sa tradisyonal na gamit para sa dengue at mababang bilang ng platelet. May mga klinikal na pag-aaral na nag-ulat ng pagtaas ng platelet. Mayroon ding naitalang aktibidad laban sa mikrobyo, pamamaga, oksidasyon, at malaria.",
-    "imageSource": "tawa-tawa.jpg",
+    "imageSource": "tawa-tawa.png",
     "categories": [
       "immune-boost",
       "anti-inflammatory",
@@ -2092,7 +2092,7 @@
     "name": "Tuba-tuba",
     "scientificName": "Jatropha curcas",
     "shortDescription": "Isang matibay na palumpong na ginagamit sa tradisyonal na panggagamot, pangunahin sa panlabas na pangangalaga sa sugat. Napakalason ng mga buto nito.",
-    "imageSource": "tuba-tuba.jpg",
+    "imageSource": "tuba-tuba.png",
     "categories": [
       "wound-healing",
       "anti-inflammatory"
@@ -2390,7 +2390,7 @@
     "name": "Litlit",
     "scientificName": "Piper retrofractum Vahl",
     "shortDescription": "Isang gumagapang na pamintang mula sa Pilipinas, na tinatawag ding Javanese long pepper. May naitalang tradisyonal na gamit ang dahon at ugat, ngunit hindi ito patunay ng mabisang paggamot.",
-    "imageSource": "litlit.jpg",
+    "imageSource": "litlit.png",
     "categories": [
       "cough",
       "digestive",

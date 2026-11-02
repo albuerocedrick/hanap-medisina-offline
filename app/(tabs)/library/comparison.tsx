@@ -2,16 +2,18 @@ import { useTheme } from "@/src/theme/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Image,
+  Keyboard,
   Modal,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -21,11 +23,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 // Components
 import { PhysicalChecklistTable } from "@/src/components/comparison/physical-checklist";
 import { PlantCard } from "@/src/components/library/plant-card";
-import { SearchBar } from "@/src/components/library/search-bar";
 
 // Services & Store
 import { MedicinalPlant as Plant } from "@/src/types";
 import { getPlantsByIds } from "@/src/services/localLibrary";
+import { searchPlantNames } from "@/src/services/plantSearch";
 import { useLibraryStore } from "@/src/store/useLibraryStore";
 import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
 import { useTranslation } from "@/src/i18n/useTranslation";
@@ -56,7 +58,7 @@ export default function PlantComparisonScreen() {
   // ─── Global State ────────────────────────────────────────────────────────
 
   const favorites = useLibraryStore((s) => s.favorites);
-  const getDisplayedPlants = useLibraryStore((s) => s.getDisplayedPlants);
+  const plants = useLibraryStore((s) => s.plants);
 
   // ─── Local State ─────────────────────────────────────────────────────────
   const [plantA, setPlantA] = useState<Plant | null>(null);
@@ -71,6 +73,26 @@ export default function PlantComparisonScreen() {
   const [isPickerOpen, setIsPickerOpen] = useState<boolean>(
     pickMode === "true" || !initialPlantBId,
   );
+  // The comparison picker searches the full catalog independently of the
+  // Library tab's query, category and favorites filters.
+  const [pickerQuery, setPickerQuery] = useState("");
+  const pickerData = useMemo(
+    () => searchPlantNames(plants.filter((plant) => plant.id !== plantAId), pickerQuery),
+    [plants, plantAId, pickerQuery],
+  );
+
+  const openPicker = () => {
+    setPickerQuery("");
+    setIsPickerOpen(true);
+  };
+  const closePicker = () => {
+    Keyboard.dismiss();
+    setIsPickerOpen(false);
+    if (!selectedPlantBId) {
+      if (router.canGoBack()) router.back();
+      else router.replace("/(tabs)/library");
+    }
+  };
 
   // ─── Data Fetching ───────────────────────────────────────────────────────
   useEffect(() => {
@@ -78,7 +100,10 @@ export default function PlantComparisonScreen() {
 
     async function loadComparisonData() {
       if (!plantAId) {
-        if (isMounted) setError(t('compare_primary_missing'));
+        if (isMounted) {
+          setError(t('compare_primary_missing'));
+          setIsLoading(false);
+        }
         return;
       }
 
@@ -120,46 +145,72 @@ export default function PlantComparisonScreen() {
 
   // Plant B Picker Modal Content
   const renderPickerModal = () => {
-    // Exclude Plant A from the choices so you don't compare a plant to itself
-    const pickerData = getDisplayedPlants().filter((p) => p.id !== plantAId);
-
     return (
       <Modal
         visible={isPickerOpen}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() => setIsPickerOpen(false)}
+        onRequestClose={closePicker}
       >
         <View
           style={{ flex: 1, backgroundColor: theme.bg, paddingTop: Platform.OS === "ios" ? 0 : insets.top }}
         >
           {/* Header */}
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.border }}>
-            <Text style={{ fontFamily: "serif", fontStyle: "italic", fontSize: 20, color: theme.textPrimary }}>
+            <Text style={{ flex: 1, fontFamily: "Quicksand_700Bold", fontSize: 20, color: theme.textPrimary }}>
               {t('compare_select_title')}
             </Text>
             <TouchableOpacity
-              onPress={() => {
-                setIsPickerOpen(false);
-                if (!plantB) router.back(); // Auto-go back if they abort initial pick
-              }}
+              onPress={closePicker}
+              accessibilityRole="button"
+              accessibilityLabel={t('cancel')}
+              style={{ width: 48, height: 48, marginLeft: 8, borderRadius: 24, alignItems: "center", justifyContent: "center", backgroundColor: theme.surfaceTint }}
             >
               <Ionicons name="close" size={24} color={theme.textSecondary} />
             </TouchableOpacity>
           </View>
 
-          <SearchBar placeholder={t('compare_search')} showSuggestions={false} />
+          <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 24, marginTop: 16, paddingLeft: 16, backgroundColor: theme.surfaceTint, borderColor: theme.border, borderWidth: StyleSheet.hairlineWidth, borderRadius: 20 }}>
+            <Ionicons name="search-outline" size={18} color={theme.accent} />
+            <TextInput
+              value={pickerQuery}
+              onChangeText={setPickerQuery}
+              placeholder={t('compare_search')}
+              accessibilityLabel={t('compare_search')}
+              placeholderTextColor={theme.textSecondary}
+              selectionColor={theme.accent}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="search"
+              onSubmitEditing={Keyboard.dismiss}
+              clearButtonMode="never"
+              style={{ flex: 1, minHeight: 48, paddingHorizontal: 10, paddingVertical: 12, fontFamily: "Quicksand_600SemiBold", fontSize: 14, color: theme.textPrimary }}
+            />
+            {pickerQuery.length > 0 && (
+              <TouchableOpacity
+                onPress={() => setPickerQuery("")}
+                accessibilityRole="button"
+                accessibilityLabel={t('home_search_clear')}
+                style={{ width: 48, height: 48, alignItems: "center", justifyContent: "center" }}
+              >
+                <Ionicons name="close-circle" size={20} color={theme.accent} />
+              </TouchableOpacity>
+            )}
+          </View>
 
           <FlatList
             data={pickerData}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingVertical: 16 }}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            contentContainerStyle={{ paddingTop: 16, paddingBottom: Math.max(insets.bottom, 16) }}
             renderItem={({ item }) => (
               <PlantCard
                 plant={item}
                 hideFavoriteIndicator
                 hideCategoryChips
                 onPress={(selected) => {
+                  Keyboard.dismiss();
                   setSelectedPlantBId(selected.id);
                   setIsPickerOpen(false);
                 }}
@@ -168,7 +219,7 @@ export default function PlantComparisonScreen() {
             ListEmptyComponent={
               <View style={{ paddingTop: 40, alignItems: "center" }}>
                 <Text style={{ fontFamily: "Quicksand_500Medium", color: theme.textSecondary }}>
-                  {t('compare_no_plants')}
+                  {t(pickerQuery.trim() ? 'lib_no_match_title' : 'compare_no_plants')}
                 </Text>
               </View>
             }
@@ -277,7 +328,7 @@ export default function PlantComparisonScreen() {
                   </LinearGradient>
                   {/* Change Plant Button */}
                   <TouchableOpacity
-                    onPress={() => setIsPickerOpen(true)}
+                    onPress={openPicker}
                     style={{ position: "absolute", top: 12, right: 12, backgroundColor: theme.scrim, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, flexDirection: "row", alignItems: "center", borderWidth: StyleSheet.hairlineWidth, borderColor: theme.imageBorder }}
                   >
                     <Ionicons name="swap-horizontal" size={12} color={theme.onImage} />
@@ -290,7 +341,7 @@ export default function PlantComparisonScreen() {
               // Empty Slot State
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => setIsPickerOpen(true)}
+                onPress={openPicker}
                 style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.surfaceHighlight }}
               >
                 <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: theme.surfaceHighlight, borderWidth: 1, borderStyle: "dashed", borderColor: theme.border, alignItems: "center", justifyContent: "center" }}>
@@ -328,7 +379,7 @@ export default function PlantComparisonScreen() {
                 {t('compare_second_plant')}
               </Text>
               <TouchableOpacity
-                onPress={() => setIsPickerOpen(true)}
+                onPress={openPicker}
                 style={{ marginTop: 16, backgroundColor: theme.accentSubtle, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.accentSoftBorder }}
               >
                 <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.accent }}>{t('compare_choose')}</Text>

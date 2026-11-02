@@ -5,6 +5,7 @@ import { useSettingsStore } from '@/src/store/useSettingsStore';
 import type { AppLanguage } from '@/src/store/useSettingsStore';
 import { searchPlantRecords } from './plantSearch';
 import { getPlantCatalog } from './plantCatalog';
+import { getIllnessItems, plantMatchesIllness } from './illnessCatalog';
 
 export { MedicinalPlant, ComparisonTraits, ResearchItem };
 
@@ -12,7 +13,7 @@ const imageMap: Record<string, any> = {
   'guava.jpg': require('../../assets/images/plants/guava.jpg'),
   'oregano.jpg': require('../../assets/images/plants/oregano.jpg'),
   'tsaang-gubat.jpg': require('../../assets/images/plants/tsaang-gubat.jpg'),
-  'tawa-tawa.jpg': require('../../assets/images/plants/tawa-tawa.jpg'),
+  'tawa-tawa.png': require('../../assets/images/plants/tawa-tawa.png'),
   'mango.jpg': require('../../assets/images/plants/mango.jpg'),
   'guyabano.jpg': require('../../assets/images/plants/guyabano.jpg'),
   'pansit-pansitan.jpg': require('../../assets/images/plants/pansit-pansitan.jpg'),
@@ -35,9 +36,9 @@ const imageMap: Record<string, any> = {
   'gumamela.jpg': require('../../assets/images/plants/gumamela.jpg'),
   'suha.jpg': require('../../assets/images/plants/suha.jpg'),
   'alugbati.jpg': require('../../assets/images/plants/alugbati.jpg'),
-  'tuba-tuba.jpg': require('../../assets/images/plants/tuba-tuba.jpg'),
+  'tuba-tuba.png': require('../../assets/images/plants/tuba-tuba.png'),
   'katakataka.jpg': require('../../assets/images/plants/katakataka.jpg'),
-  'litlit.jpg': require('../../assets/images/plants/litlit.jpg'),
+  'litlit.png': require('../../assets/images/plants/litlit.png'),
   'dila-dila.jpg': require('../../assets/images/plants/dila-dila.jpg'),
   'insulin-plant.jpg': require('../../assets/images/plants/insulin-plant.jpg'),
 };
@@ -240,12 +241,11 @@ export function getAllSymptoms(language?: AppLanguage): SymptomItem[] {
 }
 
 export function getPlantsBySymptom(symptom: string): MedicinalPlant[] {
-  const query = symptom.toLowerCase();
-  return getActivePlants().filter(plant => 
-    plant.details?.preparation?.some(prep => 
-      prep.uses?.some(use => use.toLowerCase().includes(query))
-    )
-  );
+  return getActivePlants().filter(plant => plantMatchesIllness(plant, symptom));
+}
+
+export function getAllIllnesses(language: AppLanguage = useSettingsStore.getState().language): SymptomItem[] {
+  return getIllnessItems(language);
 }
 
 export function getAllPreparationGroups(language?: AppLanguage): PreparationGroup[] {

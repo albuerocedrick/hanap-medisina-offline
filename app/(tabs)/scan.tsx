@@ -8,6 +8,7 @@ import { CaptureGuide } from "@/src/components/onboarding/CaptureGuide";
 import { PermissionGate } from "@/src/components/scan/PermissionGate";
 import { ScanBottomSheet } from "@/src/components/scan/ScanBottomSheet";
 import { ScanReticle } from "@/src/components/scan/ScanReticle";
+import { ScanInstructions } from "@/src/components/scan/ScanInstructions";
 import { scanStyles as styles } from "@/src/components/scan/scan.styles";
 import { useScanController } from "@/src/hooks/useScanController";
 import { useTranslation } from "@/src/i18n/useTranslation";
@@ -23,14 +24,16 @@ export default function ScanScreen() {
   const camera = useRef<Camera>(null);
   const isFocused = useIsFocused();
   const insets = useSafeAreaInsets();
-  const guideSeen = useOnboardingStore(s => s.cameraGuideSeen);
+  const [showInstructions, setShowInstructions] = useState(true);
   const [showGuide, setShowGuide] = useState(false);
-  const guideOpen = isFocused && (!guideSeen || showGuide);
+  const guideOpen = isFocused && showGuide;
   const [foreground, setForeground] = useState(AppState.currentState === "active");
   const [flash, setFlash] = useState<"on" | "off" | "auto">("off");
   const [cameraError, setCameraError] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
   const [cameraGeneration, setCameraGeneration] = useState(0);
-  const active = isFocused && foreground && !guideOpen && hasPermission && !!device && !cameraError;
+  const previewActive = isFocused && foreground && !guideOpen && hasPermission && !!device && !cameraError;
+  const active = previewActive && cameraReady && !showInstructions;
   const scan = useScanController(camera, active, flash);
   const [focusPoint, setFocusPoint] = useState<{ x: number; y: number } | null>(null);
   const focusTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -45,6 +48,8 @@ export default function ScanScreen() {
     if (!isFocused) {
       if (focusTimeout.current) clearTimeout(focusTimeout.current);
       setFocusPoint(null);
+      setShowInstructions(true);
+      setShowGuide(false);
     }
   }, [isFocused]);
 
@@ -59,12 +64,16 @@ export default function ScanScreen() {
   }, [active, device?.supportsFocus, scan.sheetState]);
 
   const closeGuide = () => {
-    useOnboardingStore.getState().markCameraGuideSeen();
     setShowGuide(false);
+  };
+  const startScanning = () => {
+    useOnboardingStore.getState().markCameraGuideSeen();
+    setShowInstructions(false);
   };
   const guide = <CaptureGuide visible={guideOpen} onClose={closeGuide} />;
   const retryCamera = () => {
     setCameraGeneration(value => value + 1);
+    setCameraReady(false);
     setCameraError(false);
     setFocusPoint(null);
   };
@@ -76,7 +85,7 @@ export default function ScanScreen() {
   const flashLabel = t(flash === "on" ? "scan_flash_on" : flash === "auto" ? "scan_flash_auto" : "scan_flash_off");
   return (
     <View style={[styles.screen, { backgroundColor: theme.scrimStrong }]}>
-      {!hasPermission ? <PermissionGate onRequest={() => { void requestPermission(); }} /> : !device || cameraError ?
+      {!hasPermission ? <PermissionGate onRequest={requestPermission} /> : !device || cameraError ?
         <View style={[styles.centered, { backgroundColor: theme.bg, alignSelf: "stretch" }]}>
           <Ionicons name="camera-outline" size={34} color={theme.accent} />
           <Text accessibilityRole="alert" style={[styles.body, { color: theme.textPrimary, marginTop: 16 }]}>{t("scan_camera_unavailable")}</Text>
@@ -88,21 +97,31 @@ export default function ScanScreen() {
       <TouchableWithoutFeedback onPress={handleFocus} accessible={false}>
         <View style={{ width: viewportWidth, height: viewportHeight, overflow: "hidden" }}>
           <Camera key={cameraGeneration} ref={camera} style={StyleSheet.absoluteFill} device={device} photo enableZoomGesture
-            isActive={active && scan.sheetState === "hidden" && !scan.isDismissing}
-            onError={error => { if (__DEV__) console.error("Camera failed:", error); setCameraError(true); }} />
+            isActive={previewActive && scan.sheetState === "hidden" && !scan.isDismissing}
+            onInitialized={() => setCameraReady(true)}
+            onError={error => { if (__DEV__) console.error("Camera failed:", error); setCameraReady(false); setCameraError(true); }} />
           {focusPoint && <View pointerEvents="none" style={{ position: "absolute", left: focusPoint.x - 30,
             top: focusPoint.y - 30, width: 60, height: 60, borderWidth: 1.5, borderRadius: 8, borderColor: theme.warning }} />}
-          <ScanReticle width={reticleWidth} height={Math.min(reticleWidth * 1.35, viewportHeight * 0.9)} />
+          {!showInstructions && <ScanReticle width={reticleWidth} height={Math.min(reticleWidth * 1.35, viewportHeight * 0.9)} />}
         </View>
       </TouchableWithoutFeedback>
-      {device.hasFlash && <TouchableOpacity accessibilityRole="button" accessibilityLabel={flashLabel}
+      {showInstructions && <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.scrim,
+        paddingTop: insets.top + 16, paddingBottom: Math.max(insets.bottom, 12) + 80, paddingHorizontal: 20,
+        alignItems: "center", justifyContent: "center" }]}>
+        <ScanInstructions onStart={startScanning} />
+      </View>}
+      {!showInstructions && device.hasFlash && <TouchableOpacity accessibilityRole="button" accessibilityLabel={flashLabel}
         disabled={scan.isProcessing} onPress={() => setFlash(value => value === "off" ? "on" : value === "on" ? "auto" : "off")}
         style={[styles.flashButton, { top: insets.top + 12, backgroundColor: theme.scrimStrong }]}>
         <Ionicons name={flash === "off" ? "flash-off" : "flash"} size={16} color={flash === "on" ? theme.warning : theme.onImage} />
         <Text style={[styles.helpText, { color: theme.onImage }]}>{flashLabel}</Text>
       </TouchableOpacity>}
-      {scan.sheetState === "hidden" && !scan.isDismissing && <>
+      {!showInstructions && scan.sheetState === "hidden" && !scan.isDismissing && <>
         <View pointerEvents="box-none" style={{ position: "absolute", bottom: Math.max(insets.bottom, 12) + 76, left: 20, right: 20, alignItems: "center" }}>
+          <View pointerEvents="none" style={[styles.reminder, { backgroundColor: theme.scrim }]}>
+            <Text style={[styles.captureText, { color: theme.onImage, fontSize: 12, textAlign: "center" }]}>{t("capture_reminder")}</Text>
+            <Text style={[styles.body, { color: theme.onImage, fontSize: 12, lineHeight: 18, marginTop: 5 }]}>{t("capture_hold")}</Text>
+          </View>
           <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_photo")}
             accessibilityState={{ disabled, busy: scan.isProcessing || scan.loading }} disabled={disabled} onPress={scan.capture}
             activeOpacity={0.8} style={[styles.captureButton, { backgroundColor: theme.accent,
@@ -135,10 +154,6 @@ export default function ScanScreen() {
           <Ionicons name="help-circle-outline" size={20} color={theme.onImage} />
           <Text style={[styles.helpText, { color: theme.onImage }]}>{t("capture_help")}</Text>
         </TouchableOpacity>
-        <View pointerEvents="none" style={[styles.reminder, { bottom: Math.max(insets.bottom, 12) + 140, backgroundColor: theme.scrimStrong }]}>
-          <Text style={[styles.captureText, { color: theme.onImage, fontSize: 12, textAlign: "center" }]}>{t("capture_reminder")}</Text>
-          <Text style={[styles.body, { color: theme.onImage, fontSize: 12, lineHeight: 18, marginTop: 5 }]}>{t("capture_hold")}</Text>
-        </View>
       </>}
       </>}
       {guide}

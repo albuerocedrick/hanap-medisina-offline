@@ -142,7 +142,7 @@ test('home feed provides seven stable, nonempty trivia cards with valid symptom 
     assert.equal(new Set(feed.weeklyTrivia.map(row => row.id)).size, 7);
     assert.deepEqual(getHomeFeed(locale), feed, 'daily ordering must be stable during a session');
     feed.weeklyTrivia.forEach(item => { text(item.id, 'trivia.id'); text(item.text, 'trivia.text'); });
-    assert.deepEqual(feed.symptoms, library.getAllSymptoms(locale));
+    assert.deepEqual(feed.symptoms, library.getAllIllnesses(locale));
     assert.deepEqual(feed.preparationGroups, library.getAllPreparationGroups(locale));
   }
 });

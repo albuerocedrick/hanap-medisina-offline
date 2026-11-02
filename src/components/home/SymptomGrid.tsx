@@ -22,7 +22,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
  * the optional count badge each contributed their own height, so a chip whose
  * label wrapped ended up taller than its neighbours and the rows read ragged.
  */
-const CHIP_HEIGHT = 96;
+const CHIP_HEIGHT = 112;
 const ICON_CIRCLE = 44;
 
 function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index: number, onPress: (symptom: SymptomItem) => void }) {
@@ -50,6 +50,8 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={() => onPress(symptom)}
+      accessibilityRole="button"
+      accessibilityLabel={`${symptom.label}, ${symptom.plantCount}`}
       style={[{ width: "31%", marginBottom: 12 }, animatedStyle]}
     >
       <View
@@ -83,7 +85,7 @@ function SymptomChip({ symptom, index, onPress }: { symptom: SymptomItem, index:
           <Ionicons name={symptom.icon as any} size={24} color={theme.accent} />
         </View>
         <Text
-          numberOfLines={1}
+            numberOfLines={2}
           style={{
             marginTop: 8,
             fontSize: 11,
@@ -130,7 +132,7 @@ export function SymptomGrid() {
   const setActiveSymptom = useLibraryStore((s) => s.setActiveSymptom);
 
   const handleSymptomPress = (symptom: SymptomItem) => {
-    setActiveSymptom(symptom.label);
+    setActiveSymptom(symptom.id);
     router.push("/(tabs)/library");
   };
 
@@ -139,7 +141,7 @@ export function SymptomGrid() {
       <View className="mb-6 px-6">
         <Text
           className="mb-4"
-          style={[{ color: theme.textPrimary }, { fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
+          style={[{ color: theme.textPrimary, flex: 1, marginRight: 8 }, { fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
         >
           {t('home_symptoms_title')}
         </Text>
@@ -165,7 +167,7 @@ export function SymptomGrid() {
       <View className="flex-row items-center justify-between mb-4">
         <Text
           className=""
-          style={[{ color: theme.textPrimary }, { fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
+          style={[{ color: theme.textPrimary, flex: 1, marginRight: 8 }, { fontSize: 22, fontFamily: "serif", fontStyle: "italic", fontWeight: "500", letterSpacing: 0.4 }]}
         >
           {t('home_symptoms_title')}
         </Text>

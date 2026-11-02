@@ -29,6 +29,7 @@ import { SearchBar } from "@/src/components/library/search-bar";
 import { selectDisplayedPlants, useLibraryStore } from "@/src/store/useLibraryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import { useTheme } from "@/src/theme/useTheme";
+import { getIllnessLabel } from "@/src/services/illnessCatalog";
 
 
 export default function LibraryFeed() {
@@ -37,7 +38,7 @@ export default function LibraryFeed() {
   const [selectedScanId, setSelectedScanId] = useState<string | null>(null);
 
   const theme = useTheme();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   useEffect(() => {
     if (scanIdFromParams) {
@@ -241,7 +242,7 @@ export default function LibraryFeed() {
       {activeSymptom && (
         <View className="mx-6 mt-4 flex-row items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: theme.accentSubtle }}>
           <Text style={{ fontFamily: "Quicksand_600SemiBold", color: theme.textPrimary, flex: 1 }}>
-            {t('lib_showing_symptom').replace('{symptom}', activeSymptom)}
+            {t('lib_showing_symptom').replace('{symptom}', getIllnessLabel(activeSymptom, language))}
           </Text>
           <TouchableOpacity onPress={() => setActiveSymptom(null)} style={{ padding: 4 }}>
             <Text style={{ fontFamily: "Quicksand_700Bold", color: theme.danger, fontSize: 14 }}>{t('lib_clear')}</Text>

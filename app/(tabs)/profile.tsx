@@ -17,7 +17,7 @@ import { ProfileAvatar } from "@/src/components/profile/profile-avatar";
 import { EditProfileModal } from "@/src/components/profile/edit-profile-modal";
 import { ExportImportSection } from "@/src/components/profile/export-import-section";
 import { ProfileMenuItem } from "@/src/components/profile/profile-menu-item";
-import { PhotoCreditsSheet } from "@/src/components/profile/PhotoCreditsSheet";
+import { ProfilePhotoSuccessSheet } from "@/src/components/profile/profile-photo-success-sheet";
 import { useProfileStore } from "@/src/store/useProfileStore";
 import { useHistoryStore } from "@/src/store/useHistoryStore";
 import { useTranslation } from "@/src/i18n/useTranslation";
@@ -41,7 +41,7 @@ export default function ProfileScreen() {
 
   const [editProfileVisible, setEditProfileVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
-  const [photoCreditsVisible, setPhotoCreditsVisible] = useState(false);
+  const [photoSuccessVisible, setPhotoSuccessVisible] = useState(false);
   const [resetVisible, setResetVisible] = useState(false);
 
 
@@ -53,22 +53,22 @@ export default function ProfileScreen() {
     if (pickingAvatar.current) return;
     pickingAvatar.current = true;
     try {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission Required", "Please allow access to your photo library to update your avatar.");
-      return;
-    }
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission Required", "Please allow access to your photo library to update your avatar.");
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
 
-    if (result.canceled || !result.assets?.[0]?.uri) return;
+      if (result.canceled || !result.assets?.[0]?.uri) return;
 
-    const asset = result.assets[0];
+      const asset = result.assets[0];
 
       // Ensure the profile directory exists
       const profileDir = `${FileSystem.documentDirectory}profile/`;
@@ -86,7 +86,7 @@ export default function ProfileScreen() {
       });
 
       setAvatar(newUri);
-      Alert.alert("Success", "Your profile photo has been updated!");
+      setPhotoSuccessVisible(true);
     } catch (err: any) {
       if (__DEV__) console.error("[ProfileScreen] Avatar save failed:", err);
       Alert.alert("Error", "Could not save your avatar. Please try again.");
@@ -122,7 +122,6 @@ export default function ProfileScreen() {
           <ProfileMenuItem icon="edit-2" label={t("profile_edit")} onPress={() => setEditProfileVisible(true)} />
           <ProfileMenuItem icon="globe" label={`${t("profile_language")}: ${language === "en" ? "English" : "Tagalog"}`} onPress={() => setLanguageSheetVisible(true)} />
           <ProfileMenuItem icon="help-circle" label={t("onboard_replay")} onPress={useOnboardingStore.getState().replay} />
-          <ProfileMenuItem icon="image" label={t("photo_credits")} onPress={() => setPhotoCreditsVisible(true)} />
           <ExportImportSection />
         </View>
         <Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 12, color: theme.textSecondary, marginBottom: 12, letterSpacing: 1 }}>{t("profile_session").toUpperCase()}</Text>
@@ -133,7 +132,7 @@ export default function ProfileScreen() {
     </PageTransition>
     <EditProfileModal visible={editProfileVisible} currentFirstName={firstName} currentLastName={lastName} onSave={(first, last) => { setFirstName(first); setLastName(last); }} onClose={() => setEditProfileVisible(false)} />
     <LanguageSheet visible={languageSheetVisible} current={language} onSelect={setLanguage} onClose={() => setLanguageSheetVisible(false)} />
-    <PhotoCreditsSheet visible={photoCreditsVisible} onClose={() => setPhotoCreditsVisible(false)} />
+    <ProfilePhotoSuccessSheet visible={photoSuccessVisible} avatarUri={avatarUri} onClose={() => setPhotoSuccessVisible(false)} />
     <AppSheet visible={resetVisible} title={t("profile_reset")} onClose={() => setResetVisible(false)}>
       <View style={{ width: 48, height: 48, backgroundColor: theme.dangerSubtle, borderRadius: 14, alignItems: "center", justifyContent: "center", marginBottom: 16 }}><Feather name="refresh-cw" size={23} color={theme.danger} /></View>
       <Text style={{ fontFamily: "Quicksand_500Medium", fontSize: 15, lineHeight: 23, color: theme.textSecondary, marginBottom: 24 }}>{t("profile_reset_description")}</Text>

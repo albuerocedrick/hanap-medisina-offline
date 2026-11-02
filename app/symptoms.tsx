@@ -240,7 +240,7 @@ export default function AllSymptomsScreen() {
   }, [symptoms.length, fetchHomeFeed]);
 
   const handleSymptomPress = useCallback((symptom: SymptomItem) => {
-    setActiveSymptom(symptom.label);
+    setActiveSymptom(symptom.id);
     router.push("/(tabs)/library");
   }, [setActiveSymptom, router]);
 

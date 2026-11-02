@@ -1,4 +1,4 @@
-import { getAllSymptoms, getAllPreparationGroups } from './localLibrary';
+import { getAllIllnesses, getAllPreparationGroups } from './localLibrary';
 import { HomeFeedData, TriviaItem } from '@/src/types/homeFeed';
 import type { AppLanguage } from '@/src/store/useSettingsStore';
 
@@ -43,8 +43,8 @@ export function getHomeFeed(language: AppLanguage): HomeFeedData {
     });
   }
 
-  // 5. Symptoms and Preparations
-  const symptoms = getAllSymptoms(language);
+  // Browse named illnesses, not every raw preparation use or wellness claim.
+  const symptoms = getAllIllnesses(language);
   const preparationGroups = getAllPreparationGroups(language);
 
   return {

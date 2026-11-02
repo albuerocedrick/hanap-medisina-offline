@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { BlurView } from "expo-blur";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -220,38 +221,6 @@ export default function PlantDetailsScreen() {
     <View style={{ flex: 1, backgroundColor: theme.bg }}>
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* ─── Fixed Header Nav (Floating over image) ───────────────────────── */}
-      <View
-        style={{
-          position: "absolute", top: Math.max(insets.top, 20) + 10, left: 16, right: 16,
-          zIndex: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center"
-        }}
-      >
-        <BackButton variant="onImage" fallbackHref="/(tabs)/library" />
-
-        <TouchableOpacity
-          onPress={handleToggleFavorite}
-          style={{
-            width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center",
-            // Matches BackButton: a 0.3 scrim vanished against pale plant photos.
-            backgroundColor: theme.scrimStrong, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.imageBorder
-          }}
-          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-          accessibilityRole="button"
-          accessibilityState={{ selected: isFavorite }}
-          accessibilityLabel={
-            t(isFavorite ? "a11y_remove_favorite" : "a11y_add_favorite")
-          }
-        >
-
-          <Ionicons
-            name={isFavorite ? "heart" : "heart-outline"}
-            size={20}
-            color={isFavorite ? theme.success : theme.onImage}
-          />
-        </TouchableOpacity>
-      </View>
-
       <ScrollView
         bounces={false}
         showsVerticalScrollIndicator={false}
@@ -395,6 +364,39 @@ export default function PlantDetailsScreen() {
           )}
         </View>
       </ScrollView>
+      {/* Render after the content so the pinned glass control samples it. */}
+      <View
+        pointerEvents="box-none"
+        style={{
+          position: "absolute", top: Math.max(insets.top, 20) + 10, left: 16, right: 16,
+          zIndex: 10, alignItems: "flex-start",
+        }}
+      >
+        <BackButton variant="onImage" fallbackHref="/(tabs)/library" />
+        <TouchableOpacity
+          onPress={handleToggleFavorite}
+          style={{
+            position: "absolute", top: 0, right: 0,
+            width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center",
+            backgroundColor: "transparent", overflow: "hidden",
+            borderWidth: StyleSheet.hairlineWidth, borderColor: theme.imageBorder,
+          }}
+          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+          accessibilityRole="button"
+          accessibilityState={{ selected: isFavorite }}
+          accessibilityLabel={t(isFavorite ? "a11y_remove_favorite" : "a11y_add_favorite")}
+        >
+          <BlurView pointerEvents="none" intensity={28} tint="default"
+            experimentalBlurMethod="dimezisBlurView" blurReductionFactor={4} style={StyleSheet.absoluteFill} />
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: theme.accentSubtle }]} />
+          <Ionicons
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={20}
+            color={isFavorite ? theme.danger : theme.onImage}
+            style={{ textShadowColor: theme.shadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

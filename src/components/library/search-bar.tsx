@@ -123,6 +123,7 @@ export function SearchBar({
 
   const handleClear = () => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = null;
     setLocalValue("");
     setIsBusy(false);
     try {
@@ -131,7 +132,8 @@ export function SearchBar({
     } catch (err) {
       if (__DEV__) console.error("[SearchBar] Failed to clear search query:", err);
     }
-    inputRef.current?.focus();
+    inputRef.current?.blur();
+    Keyboard.dismiss();
   };
 
   const hasValue = localValue.length > 0;
@@ -199,24 +201,26 @@ export function SearchBar({
           clearButtonMode="never"
         />
 
-        {isBusy && hasValue ? (
+        {isBusy && hasValue && (
           <ActivityIndicator
             size="small"
             color={theme.accent}
             style={{ marginLeft: 8 }}
           />
-        ) : hasValue ? (
-          <TouchableOpacity onPress={handleClear} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-            <View
-              style={{
-                backgroundColor: theme.surfaceTint,
-                width: 20, height: 20, borderRadius: 10, alignItems: "center", justifyContent: "center"
-              }}
-            >
-              <Ionicons name="close" size={12} color={theme.textPrimary} />
-            </View>
+        )}
+        {hasValue && (
+          <TouchableOpacity
+            onPress={handleClear}
+            accessibilityRole="button"
+            accessibilityLabel={t("home_search_clear")}
+            style={{
+              width: 44, height: 44, marginVertical: -12, marginRight: -10,
+              alignItems: "center", justifyContent: "center",
+            }}
+          >
+            <Ionicons name="close-circle" size={22} color={theme.accent} />
           </TouchableOpacity>
-        ) : null}
+        )}
       </View>
 
       {/* Cancel — only while the search is active, so it costs no width at rest. */}

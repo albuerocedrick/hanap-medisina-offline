@@ -202,7 +202,7 @@ export function CompareTab({
   const handleSelectFromLibrary = () => {
     try {
       router.push({
-        pathname: "/library/comparison",
+        pathname: "/(tabs)/library/comparison",
         params: {
           plantAId: currentPlantId,
           pickMode: "true", // comparison.tsx opens the library sheet for plantB
@@ -279,7 +279,7 @@ export function CompareTab({
           accessibilityRole="button"
           accessibilityLabel={t('details_compare_btn')}
         >
-          <View style={{ backgroundColor: theme.accentSubtle, borderRadius: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+          <View style={{ backgroundColor: theme.selectionSurface, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.selectionBorder, borderRadius: 12, minHeight: 48, paddingHorizontal: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
             <Ionicons
               name="git-compare-outline"
               size={16}

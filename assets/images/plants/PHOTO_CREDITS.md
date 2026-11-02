@@ -1,10 +1,22 @@
 # Plant photograph credits
 
-All 30 Library plants use real photographs sourced from Wikimedia Commons and selected for visible leaves. The photographs were downloaded on 2026-10-15. No AI images or AI image edits were used for these replacements. Litlit and calamansi use ordinary pixel crops to emphasize leaves; the other files retain their downloaded pixels. The app also crops images to fit its cards.
+The Library uses real photographs from Wikimedia Commons and three replacements supplied by the app owner for Litlit, Tawa-tawa, and Tuba-tuba. The supplied PNGs are unchanged. No AI images or AI image edits were used. The app crops images only when fitting them into cards.
 
-Each photograph, including any cropped version, remains available under the license listed below. Photographer credits and source links are also available in the app under Photo credits. The Bayabas photograph is also used for the legacy guava.jpg asset.
+The Wikimedia photographs retain the licenses listed below. No license or original photographer was specified for the owner-supplied replacements. Available photographer credits and source links appear in the app under Photo credits. The Bayabas photograph is also used for the legacy guava.jpg asset.
 
-The JSON manifest records the download URL, source and bundled SHA-256 hashes, and crop coordinates where applicable.
+The JSON manifest records sources and bundled SHA-256 hashes where available. Supplied photos have no external source or license links.
+
+
+## Photos supplied by the app owner (2026-10-15)
+
+The app now displays these unmodified supplied PNGs instead of the corresponding
+Wikimedia JPGs. The original JPG credits below are retained for the archived
+source assets; they do not attribute the replacement photos. No photographer,
+external source URL, or license was supplied for the new files.
+
+- `tawa-tawa.png` — Tawa-tawa; SHA-256 `58ebca45dd1488bdb9f4358251fece3522d9b5a8ae75f6e0d2eb33aa1f187ba6`
+- `tuba-tuba.png` — Tuba-tuba; SHA-256 `9c35f0b92cc02b55700536e309d2141f9e7eaaed725355980e83cdca02699a76`
+- `litlit.png` — Litlit; SHA-256 `0461990005304da4a68b0c9c0984fcf11f9b818bb7e7489fcddb3b3575c6e288`
 
 ## tsaang-gubat.jpg
 

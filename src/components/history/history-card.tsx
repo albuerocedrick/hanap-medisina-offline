@@ -1,34 +1,23 @@
 import { useTheme } from "@/src/theme/useTheme";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Image, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { useTranslation } from "@/src/i18n/useTranslation";
 import Swipeable, { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  SharedValue,
-  interpolate,
-  Extrapolation,
-} from "react-native-reanimated";
 import { LocalScanRecord } from "@/src/types";
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+const DELETE_ACTION_WIDTH = 88;
+// Swipeable otherwise defaults to a one-second settling spring.
+const SWIPE_ANIMATION = { duration: 220, dampingRatio: 1, overshootClamping: true };
 
-function DeleteAction({ progress, onPress, label, plantName, isDark }: { progress: SharedValue<number>; onPress: () => void; label: string; plantName: string; isDark: boolean }) {
+function DeleteAction({ onPress, label, plantName, disabled }: { onPress: () => void; label: string; plantName: string; disabled: boolean }) {
   const theme = useTheme();
-  const style = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
-    transform: [{ translateX: interpolate(progress.value, [0, 1], [18, 0], Extrapolation.CLAMP) }],
-  }));
-  const color = theme.danger;
-  return <Animated.View style={[{ width: 92, paddingLeft: 10, justifyContent: "center" }, style]}>
-    <TouchableOpacity activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${label}: ${plantName}`} onPress={onPress}
-      style={{ minHeight: 76, paddingVertical: 14, borderRadius: 16, borderWidth: 1, borderColor: theme.dangerBorder, backgroundColor: theme.dangerSubtle, justifyContent: "center", alignItems: "center", gap: 7 }}>
-      <Feather name="trash-2" size={20} color={color} /><Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 11, color }}>{label}</Text>
+  return <View style={{ width: DELETE_ACTION_WIDTH, paddingLeft: 8, alignSelf: "stretch" }}>
+    <TouchableOpacity activeOpacity={0.8} disabled={disabled} accessibilityRole="button" accessibilityState={{ disabled }} accessibilityLabel={`${label}: ${plantName}`} onPress={onPress}
+      style={{ flex: 1, minHeight: 100, paddingVertical: 14, borderRadius: 20, backgroundColor: theme.dangerAction, justifyContent: "center", alignItems: "center", gap: 7 }}>
+      <Feather name="trash-2" size={20} color={theme.onDangerAction} /><Text style={{ fontFamily: "Quicksand_700Bold", fontSize: 11, color: theme.onDangerAction }}>{label}</Text>
     </TouchableOpacity>
-  </Animated.View>;
+  </View>;
 }
 
 interface Props {
@@ -54,14 +43,12 @@ export const HistoryCard = React.memo(function HistoryCard({
 }: Props) {
   const theme = useTheme();
 
-  const isDark = theme.isDark;
   const { t } = useTranslation();
   const swipeRef = useRef<SwipeableMethods>(null);
 
-  const scale = useSharedValue(1);
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+  useEffect(() => {
+    if (isSelecting) swipeRef.current?.close();
+  }, [isSelecting]);
 
   // Confidence is stored as decimal 0.0 - 1.0
   const displayConf = Number((item.confidence * 100).toFixed(2));
@@ -95,18 +82,16 @@ export const HistoryCard = React.memo(function HistoryCard({
     });
   };
 
-  const renderRightActions = (progress: SharedValue<number>) => <DeleteAction progress={progress} label={t("history_delete")} plantName={item.plantName} isDark={isDark} onPress={() => { swipeRef.current?.close(); onDelete(item.id); }} />;
+  const renderRightActions = () => <DeleteAction label={t("history_delete")} plantName={item.plantName} disabled={isSelecting} onPress={() => {
+    if (isSelecting) return;
+    swipeRef.current?.close();
+    onDelete(item.id);
+  }} />;
 
   return (
-    <Swipeable ref={swipeRef} renderRightActions={renderRightActions} enabled={!isSelecting} overshootRight={false} rightThreshold={40} friction={2} containerStyle={{ marginHorizontal: 24, marginBottom: 12, overflow: "hidden", borderRadius: 24 }}>
-      <AnimatedTouchable
-        activeOpacity={1}
-        onPressIn={() => {
-          scale.value = withSpring(0.97, { damping: 15, stiffness: 300 });
-        }}
-        onPressOut={() => {
-          scale.value = withSpring(1, { damping: 15, stiffness: 300 });
-        }}
+    <Swipeable ref={swipeRef} renderRightActions={renderRightActions} enabled={!isSelecting} overshootLeft={false} overshootRight={false} rightThreshold={DELETE_ACTION_WIDTH * 0.4} friction={1} animationOptions={SWIPE_ANIMATION} containerStyle={{ marginHorizontal: 24, marginBottom: 12, overflow: "hidden", borderRadius: 24 }}>
+      <TouchableOpacity
+        activeOpacity={0.88}
         onPress={() => {
           if (isSelecting) {
             onToggleSelect(item.id);
@@ -115,15 +100,13 @@ export const HistoryCard = React.memo(function HistoryCard({
           }
         }}
         onLongPress={() => onLongPress(item)}
-        style={[
-          animStyle,
-          { width: "100%" }
-        ]}
+        style={{ width: "100%" }}
       >
         <View
           style={{
             flexDirection: "row",
-            backgroundColor: theme.surfaceHighlight,
+            // Keep the covered part of the delete action hidden during a drag.
+            backgroundColor: theme.surface,
             borderRadius: 24,
             overflow: "hidden",
             borderWidth: isSelected ? 2 : StyleSheet.hairlineWidth,
@@ -238,7 +221,7 @@ export const HistoryCard = React.memo(function HistoryCard({
             </View>
           </View>
         </View>
-      </AnimatedTouchable>
+      </TouchableOpacity>
     </Swipeable>
   );
 });

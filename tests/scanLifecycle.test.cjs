@@ -226,6 +226,7 @@ test('camera retry remounts the native session while preserving a live result sh
     '@/src/components/scan/PermissionGate': { PermissionGate: () => null },
     '@/src/components/scan/ScanBottomSheet': { ScanBottomSheet: Sheet },
     '@/src/components/scan/ScanReticle': { ScanReticle: () => null },
+    '@/src/components/scan/ScanInstructions': { ScanInstructions: props => React.createElement('ScanInstructions', props) },
     '@/src/components/scan/scan.styles': { scanStyles: {} },
     '@/src/hooks/useScanController': { useScanController: (...args) => { controller = controllerHook(...args); return controller; } },
     '@/src/i18n/useTranslation': { useTranslation },
@@ -234,6 +235,10 @@ test('camera retry remounts the native session while preserving a live result sh
   }).default;
   let renderer;
   await act(async () => { renderer = create(React.createElement(Screen)); });
+  await act(async () => {
+    renderer.root.findByType('Camera').props.onInitialized();
+    renderer.root.findByType('ScanInstructions').props.onStart();
+  });
   await act(async () => { await controller.capture(); });
   assert.equal(controller.sheetState, 'success');
   await act(async () => { renderer.root.findByType('Camera').props.onError(new Error('transient native session error')); });
@@ -245,6 +250,7 @@ test('camera retry remounts the native session while preserving a live result sh
   await act(async () => { renderer.root.findByProps({ accessibilityLabel: 'scan_try_again' }).props.onPress(); });
   assert.equal(cameraMounts, 2, 'retry must create a fresh native camera session');
   assert.equal(controller.isDismissing, true, 'retry must respect the still-exiting sheet');
+  await act(async () => { renderer.root.findByType('Camera').props.onInitialized(); });
   await act(async () => { await controller.capture(); });
   assert.equal(controller.sheetState, 'hidden');
   await act(async () => { finishExit(); });

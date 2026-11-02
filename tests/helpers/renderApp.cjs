@@ -84,6 +84,7 @@ exports.environment = function environment() {
       useRouter: () => ({ push: route => state.routes.push(route), back: () => state.routes.push('back'),
         canGoBack: () => state.canGoBack, replace: route => state.replacements.push(route) }) },
     'expo-linear-gradient': { LinearGradient: 'LinearGradient' },
+    'expo-blur': { BlurView: 'BlurView' },
     '@expo/vector-icons': { Ionicons: 'Ionicons', Feather: 'Feather' },
     'lucide-react-native': { ArrowLeft: 'ArrowLeft', Check: 'Check' },
     'react-native-safe-area-context': { SafeAreaView: 'SafeAreaView', useSafeAreaInsets: () => ({ top: 24, bottom: 0, left: 0, right: 0 }) },
@@ -100,7 +101,6 @@ exports.environment = function environment() {
     '@/src/components/ui/PageTransition': { PageTransition: Slot('PageTransition') },
     '@/src/components/history/scan-detail-sheet': { ScanDetailSheet: Slot('ScanDetailSheet') },
     '@/src/components/profile/export-import-section': { ExportImportSection: Slot('ExportImportSection') },
-    '@/src/components/profile/PhotoCreditsSheet': { PhotoCreditsSheet: Slot('PhotoCreditsSheet') },
   };
   function resolveFile(candidate) {
     if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) return candidate;

@@ -32,12 +32,13 @@ export interface TriviaItem {
 // SYMPTOM ITEM
 // ─────────────────────────────────────────────
 
-/** A symptom/ailment that users can tap to find matching plants */
+/** A named illness users can tap to browse related plant information.
+ * The legacy type name is retained for persisted feed compatibility. */
 export interface SymptomItem {
-  id: string;          // slug, e.g. "cough-relief"
-  label: string;       // display text, e.g. "Cough"
+  id: string;          // language-independent illness ID, e.g. "asthma"
+  label: string;       // localized display text, e.g. "Asthma" / "Hika"
   icon: string;        // Ionicons icon name, e.g. "medkit-outline"
-  plantCount: number;  // how many plants address this symptom
+  plantCount: number;  // number of related plant records in the library
 }
 
 // ─────────────────────────────────────────────

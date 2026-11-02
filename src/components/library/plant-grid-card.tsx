@@ -1,6 +1,7 @@
 import { useTheme } from "@/src/theme/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { BlurView } from "expo-blur";
 import React, { memo, useState } from "react";
 import {
   Image,
@@ -154,16 +155,23 @@ export function PlantGridCardComponent({
               width: 28,
               height: 28,
               borderRadius: 14,
-              backgroundColor: theme.scrim,
+              backgroundColor: "transparent",
+              overflow: "hidden",
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: theme.imageBorder,
               justifyContent: "center",
               alignItems: "center",
             }}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
+            <BlurView pointerEvents="none" intensity={28} tint="default"
+              experimentalBlurMethod="dimezisBlurView" blurReductionFactor={4} style={StyleSheet.absoluteFill} />
+            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: theme.accentSubtle }]} />
             <Ionicons
               name={isFavorite ? "heart" : "heart-outline"}
               size={16}
               color={isFavorite ? theme.danger : theme.onImage}
+              style={{ textShadowColor: theme.shadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }}
             />
           </TouchableOpacity>
         )}

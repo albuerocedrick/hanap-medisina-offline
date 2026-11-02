@@ -21,6 +21,8 @@ import {
   getPlantsByIds,
 } from "@/src/services/localLibrary";
 import { searchPlantNames } from "@/src/services/plantSearch";
+import { sortPlantsByName } from "@/src/services/plantCatalog";
+import { plantMatchesIllness } from "@/src/services/illnessCatalog";
 
 
 // ─────────────────────────────────────────────
@@ -265,10 +267,10 @@ export const selectDisplayedPlants = (() => {
     previous = inputs;
     let filtered = plants;
     if (activeCategory) filtered = filtered.filter(plant => plant.categories.includes(activeCategory));
-    if (activeSymptom) filtered = filtered.filter(plant => plant.details?.preparation?.some(prep => prep.uses?.some(use => use.toLowerCase().includes(activeSymptom.toLowerCase()))));
+    if (activeSymptom) filtered = filtered.filter(plant => plantMatchesIllness(plant, activeSymptom));
     if (activePreparationMethod) filtered = filtered.filter(plant => plant.details?.preparation?.some(prep => prep.method.toLowerCase().includes(activePreparationMethod.toLowerCase())));
     if (showFavoritesOnly) filtered = filtered.filter(plant => favoriteIds.has(plant.id));
-    result = searchQuery ? searchPlantNames(filtered, searchQuery) : filtered;
+    result = sortPlantsByName(searchQuery ? searchPlantNames(filtered, searchQuery) : filtered);
     return result;
   };
 })();
@@ -393,7 +395,8 @@ export const useLibraryStore = create<LibraryStore>()(
       },
 
       setActiveSymptom: (symptom) => {
-        set({ activeSymptom: symptom, activeCategory: null, activePreparationMethod: null });
+        set({ activeSymptom: symptom, activeCategory: null, activePreparationMethod: null,
+          ...(symptom ? { searchQuery: "", showFavoritesOnly: false } : {}) });
         get().fetchPlants();
       },
 
