@@ -381,9 +381,9 @@ test('the scan screen gates native camera activity on permission, focus, foregro
   let requests = 0, guideMarks = 0, appStateListener, controllerActive;
   const onboardingListeners = new Set();
   function useOnboardingStore(selector) {
-    return React.useSyncExternalStore(callback => { onboardingListeners.add(callback); return () => onboardingListeners.delete(callback); }, () => selector({ cameraGuideSeen: guideSeen }));
+    return React.useSyncExternalStore(callback => { onboardingListeners.add(callback); return () => onboardingListeners.delete(callback); }, () => selector({ cameraGuideSeen: guideSeen, skipScanGuide: false }));
   }
-  useOnboardingStore.getState = () => ({ markCameraGuideSeen() { guideMarks++; guideSeen = true; onboardingListeners.forEach(callback => callback()); } });
+  useOnboardingStore.getState = () => ({ cameraGuideSeen: guideSeen, markCameraGuideSeen() { guideMarks++; guideSeen = true; onboardingListeners.forEach(callback => callback()); } });
   const Camera = React.forwardRef((props, ref) => { React.useImperativeHandle(ref, () => ({ takePhoto() {} }), []); return React.createElement('Camera', props); });
   const identity = key => key;
   const Screen = load('app/(tabs)/scan.tsx', {
@@ -394,7 +394,6 @@ test('the scan screen gates native camera activity on permission, focus, foregro
       StyleSheet: { absoluteFill: {} }, Text: 'Text', TouchableOpacity: 'Button', TouchableWithoutFeedback: 'Touchable', View: 'View', useWindowDimensions: () => ({ width: 400, height: 800 }) },
     'react-native-safe-area-context': { useSafeAreaInsets: () => ({ top: 0, bottom: 0 }) },
     'react-native-vision-camera': { Camera, useCameraDevice: () => device, useCameraPermission: () => ({ hasPermission: permission, requestPermission: async () => { requests++; return permission; } }) },
-    '@/src/components/onboarding/CaptureGuide': { CaptureGuide: props => React.createElement('Guide', props) },
     '@/src/components/scan/PermissionGate': { PermissionGate: props => React.createElement('Permission', props) },
     '@/src/components/scan/ScanBottomSheet': { ScanBottomSheet: props => React.createElement('Sheet', props) },
     '@/src/components/scan/ScanReticle': { ScanReticle: () => null },
@@ -420,12 +419,12 @@ test('the scan screen gates native camera activity on permission, focus, foregro
   assert.equal(renderer.root.findAllByType('Camera').length, 0);
   permission = true;
   await refresh();
-  assert.equal(renderer.root.findByType('Guide').props.visible, false, 'the optional tips sheet must not cover the scan introduction');
+  assert.equal(renderer.root.findAllByType('Instructions').length, 1);
   assert.equal(renderer.root.findByType('Camera').props.isActive, true, 'camera preview may initialize behind instructions');
   assert.equal(controllerActive, false, 'the introduction must block capture');
   await act(async () => renderer.root.findByType('Camera').props.onInitialized());
   assert.equal(controllerActive, false, 'a ready camera cannot bypass instructions');
-  await act(async () => renderer.root.findByType('Instructions').props.onStart());
+  await act(async () => renderer.root.findByType('Instructions').props.onStart(false));
   assert.equal(guideMarks, 1);
   assert.equal(controllerActive, true);
   assert.equal(renderer.root.findByType('Camera').props.isActive, true);
@@ -439,11 +438,11 @@ test('the scan screen gates native camera activity on permission, focus, foregro
   focused = true;
   await refresh();
   assert.equal(controllerActive, false, 'returning to the scanner requires acknowledging its instructions');
-  await act(async () => renderer.root.findByType('Instructions').props.onStart());
+  await act(async () => renderer.root.findByType('Instructions').props.onStart(false));
   assert.equal(controllerActive, true);
   await act(async () => renderer.root.findByProps({ accessibilityLabel: 'capture_help' }).props.onPress());
   assert.equal(controllerActive, false);
-  await act(async () => renderer.root.findByType('Guide').props.onClose());
+  await act(async () => renderer.root.findByType('Instructions').props.onClose(false));
   assert.equal(controllerActive, true);
   device = null;
   await refresh();

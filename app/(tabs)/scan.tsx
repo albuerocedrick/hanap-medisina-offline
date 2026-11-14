@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, AppState, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, useWindowDimensions, type GestureResponderEvent } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission } from "react-native-vision-camera";
-import { CaptureGuide } from "@/src/components/onboarding/CaptureGuide";
 import { PermissionGate } from "@/src/components/scan/PermissionGate";
 import { ScanBottomSheet } from "@/src/components/scan/ScanBottomSheet";
 import { ScanReticle } from "@/src/components/scan/ScanReticle";
@@ -24,9 +23,11 @@ export default function ScanScreen() {
   const camera = useRef<Camera>(null);
   const isFocused = useIsFocused();
   const insets = useSafeAreaInsets();
-  const [showInstructions, setShowInstructions] = useState(true);
+  const skipScanGuide = useOnboardingStore(state => state.skipScanGuide);
+  const [dismissedIntro, setDismissedIntro] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const guideOpen = isFocused && showGuide;
+  const showInstructions = !dismissedIntro && !skipScanGuide;
   const [foreground, setForeground] = useState(AppState.currentState === "active");
   const [flash, setFlash] = useState<"on" | "off" | "auto">("off");
   const [cameraError, setCameraError] = useState(false);
@@ -48,7 +49,7 @@ export default function ScanScreen() {
     if (!isFocused) {
       if (focusTimeout.current) clearTimeout(focusTimeout.current);
       setFocusPoint(null);
-      setShowInstructions(true);
+      setDismissedIntro(false);
       setShowGuide(false);
     }
   }, [isFocused]);
@@ -63,14 +64,16 @@ export default function ScanScreen() {
     catch (error) { if (__DEV__) console.warn("Camera focus failed:", error); }
   }, [active, device?.supportsFocus, scan.sheetState]);
 
-  const closeGuide = () => {
+  const closeGuide = (skip: boolean) => {
+    if (skip !== skipScanGuide) useOnboardingStore.getState().setSkipScanGuide(skip);
+    setDismissedIntro(true);
     setShowGuide(false);
   };
-  const startScanning = () => {
-    useOnboardingStore.getState().markCameraGuideSeen();
-    setShowInstructions(false);
+  const startScanning = (skip: boolean) => {
+    const onboarding = useOnboardingStore.getState();
+    if (!onboarding.cameraGuideSeen) onboarding.markCameraGuideSeen();
+    closeGuide(skip);
   };
-  const guide = <CaptureGuide visible={guideOpen} onClose={closeGuide} />;
   const retryCamera = () => {
     setCameraGeneration(value => value + 1);
     setCameraReady(false);
@@ -102,14 +105,11 @@ export default function ScanScreen() {
             onError={error => { if (__DEV__) console.error("Camera failed:", error); setCameraReady(false); setCameraError(true); }} />
           {focusPoint && <View pointerEvents="none" style={{ position: "absolute", left: focusPoint.x - 30,
             top: focusPoint.y - 30, width: 60, height: 60, borderWidth: 1.5, borderRadius: 8, borderColor: theme.warning }} />}
-          {!showInstructions && <ScanReticle width={reticleWidth} height={Math.min(reticleWidth * 1.35, viewportHeight * 0.9)} />}
+          {!showInstructions && !guideOpen && <ScanReticle width={reticleWidth} height={Math.min(reticleWidth * 1.35, viewportHeight * 0.9)} />}
         </View>
       </TouchableWithoutFeedback>
-      {showInstructions && <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.scrim,
-        paddingTop: insets.top + 16, paddingBottom: Math.max(insets.bottom, 12) + 80, paddingHorizontal: 20,
-        alignItems: "center", justifyContent: "center" }]}>
-        <ScanInstructions onStart={startScanning} />
-      </View>}
+      {isFocused && (showInstructions || guideOpen) &&
+        <ScanInstructions foreground={foreground} skipGuide={skipScanGuide} onStart={startScanning} onClose={closeGuide} />}
       {!showInstructions && device.hasFlash && <TouchableOpacity accessibilityRole="button" accessibilityLabel={flashLabel}
         disabled={scan.isProcessing} onPress={() => setFlash(value => value === "off" ? "on" : value === "on" ? "auto" : "off")}
         style={[styles.flashButton, { top: insets.top + 12, backgroundColor: theme.scrimStrong }]}>
@@ -156,7 +156,6 @@ export default function ScanScreen() {
         </TouchableOpacity>
       </>}
       </>}
-      {guide}
       {/* Keep the sheet mounted across camera/permission failures so its exit
           callback always releases the session's dismissal lock. */}
       <ScanBottomSheet sheetState={scan.sheetState} photoUri={scan.photoUri} result={scan.result} saveStatus={scan.saveStatus}

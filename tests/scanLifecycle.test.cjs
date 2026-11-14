@@ -210,7 +210,7 @@ test('camera retry remounts the native session while preserving a live result sh
     }, [props.sheetState, props.onClosed]);
     return React.createElement('ScanBottomSheet', props);
   }
-  const useOnboardingStore = selector => selector({ cameraGuideSeen: true });
+  const useOnboardingStore = selector => selector({ cameraGuideSeen: true, skipScanGuide: false });
   useOnboardingStore.getState = () => ({ markCameraGuideSeen() {} });
   const device = { hasFlash: true, supportsFocus: true };
   const Screen = load('app/(tabs)/scan.tsx', {
@@ -222,7 +222,6 @@ test('camera retry remounts the native session while preserving a live result sh
       View: 'View', useWindowDimensions: () => ({ width: 400, height: 800 }) },
     'react-native-safe-area-context': { useSafeAreaInsets: () => ({ top: 0, bottom: 0 }) },
     'react-native-vision-camera': { Camera, useCameraDevice: () => device, useCameraPermission: () => ({ hasPermission: true, requestPermission() {} }) },
-    '@/src/components/onboarding/CaptureGuide': { CaptureGuide: () => null },
     '@/src/components/scan/PermissionGate': { PermissionGate: () => null },
     '@/src/components/scan/ScanBottomSheet': { ScanBottomSheet: Sheet },
     '@/src/components/scan/ScanReticle': { ScanReticle: () => null },
@@ -237,7 +236,7 @@ test('camera retry remounts the native session while preserving a live result sh
   await act(async () => { renderer = create(React.createElement(Screen)); });
   await act(async () => {
     renderer.root.findByType('Camera').props.onInitialized();
-    renderer.root.findByType('ScanInstructions').props.onStart();
+    renderer.root.findByType('ScanInstructions').props.onStart(false);
   });
   await act(async () => { await controller.capture(); });
   assert.equal(controller.sheetState, 'success');
