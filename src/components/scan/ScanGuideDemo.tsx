@@ -10,7 +10,7 @@ import { useTheme } from "@/src/theme/useTheme";
 
 type ScanGuideStep = keyof typeof phaseLabels;
 const leafPhoto = require("../../../assets/images/plants/tsaang-gubat.jpg");
-const smallPlantPhoto = require("../../../assets/images/plants/tawa-tawa.jpg");
+const smallPlantPhoto = require("../../../assets/images/plants/tawa-tawa.png");
 const phaseLabels = {
   frame: ["scan_demo_too_close", "scan_demo_in_frame"],
   smallPlant: ["scan_demo_too_close", "scan_demo_leaves_and_stem"],
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   photo: { width: "100%", height: "100%" },
   shadow: { position: "absolute", width: "125%", height: "115%", left: "8%", top: "-7%" },
   reticle: { position: "absolute", width: "70%", height: "65%" },
-  smallPlantReticle: { position: "absolute", aspectRatio: 4 / 3, height: "96%", maxWidth: "96%" },
+  smallPlantReticle: { position: "absolute", aspectRatio: 3 / 4, height: "96%", maxWidth: "96%" },
   corner: { position: "absolute", width: 17, height: 17, borderColor: "#f8fbed" },
   topLeft: { top: 0, left: 0, borderTopWidth: 2, borderLeftWidth: 2, borderTopLeftRadius: 5 },
   topRight: { top: 0, right: 0, borderTopWidth: 2, borderRightWidth: 2, borderTopRightRadius: 5 },
