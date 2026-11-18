@@ -12,6 +12,7 @@ import { scanStyles } from "./scan.styles";
 
 const slides = [
   { step: "frame", title: "scan_intro_frame", body: "scan_intro_frame_body" },
+  { step: "smallPlant", title: "scan_intro_small_plant", body: "scan_intro_small_plant_body" },
   { step: "light", title: "scan_intro_light", body: "scan_intro_light_body" },
   { step: "focus", title: "scan_intro_focus", body: "scan_intro_focus_body" },
 ] as const;

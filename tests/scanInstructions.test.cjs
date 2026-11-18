@@ -58,7 +58,7 @@ for (const language of ['en', 'tl']) test(`scanner shows clear ${language} instr
   const app = await scanner(language);
   try {
     const content = textContent(app.tree.root);
-    for (const key of ['capture_guide', 'scan_intro_frame', 'scan_intro_light', 'scan_intro_focus']) {
+    for (const key of ['capture_guide', 'scan_intro_frame', 'scan_intro_small_plant', 'scan_intro_light', 'scan_intro_focus']) {
       assert.ok(content.includes(app.translations[key]));
     }
     assert.equal(app.tree.root.findByType('Modal').props.animationType, 'none');
@@ -66,6 +66,12 @@ for (const language of ['en', 'tl']) test(`scanner shows clear ${language} instr
     assert.equal(carousel.props.pagingEnabled, true);
     assert.equal(carousel.findAllByType('Pressable').length, 0,
       'the start action stays outside scrolling instructions so large text cannot push it offscreen');
+    await act(async () => app.button('scan_intro_small_plant').props.onPress());
+    const smallPlantSlide = carousel.findAllByType('View').find(node => node.props.importantForAccessibility === 'auto');
+    assert.ok(textContent(smallPlantSlide).includes(app.translations.scan_intro_small_plant_body));
+    assert.ok(textContent(smallPlantSlide).includes(app.translations.scan_demo_one_photo_taken));
+    assert.equal(smallPlantSlide.findAllByType('Image').length, 1);
+    assert.equal(app.state.captures, 0, 'the demo does not take a real photo');
     assert.equal(app.state.active, false, 'tab-trigger capture must be blocked while the intro is visible');
     assert.equal(app.tree.root.findAllByProps({ accessibilityLabel: app.translations.capture_photo }).length, 0);
     await act(async () => app.button('scan_intro_start').props.onPress());
@@ -106,7 +112,7 @@ test('scan guide loops across swipe boundaries and updates its selected slide', 
   try {
     const carousel = app.tree.root.findAllByType('ScrollView').find(node => node.props.horizontal);
     const slideWidth = carousel.props.contentOffset.x;
-    for (const [edge, key] of [[0, 'scan_intro_focus'], [4, 'scan_intro_frame']]) {
+    for (const [edge, key] of [[0, 'scan_intro_focus'], [5, 'scan_intro_frame']]) {
       await act(async () => carousel.props.onMomentumScrollEnd({ nativeEvent: { contentOffset: { x: edge * slideWidth } } }));
       assert.equal(app.button(key).props.accessibilityState.selected, true);
     }
@@ -123,7 +129,7 @@ test('the carousel auto-advances, wraps, and stops in the background', async con
     await act(async () => context.mock.timers.tick(140));
   };
   try {
-    for (const key of ['scan_intro_light', 'scan_intro_focus', 'scan_intro_frame']) {
+    for (const key of ['scan_intro_small_plant', 'scan_intro_light', 'scan_intro_focus', 'scan_intro_frame']) {
       await advance();
       assert.equal(app.button(key).props.accessibilityState.selected, true);
     }
@@ -132,7 +138,7 @@ test('the carousel auto-advances, wraps, and stops in the background', async con
     assert.equal(app.button('scan_intro_frame').props.accessibilityState.selected, true);
     await act(async () => app.state.cameraListener('active'));
     await advance();
-    assert.equal(app.button('scan_intro_light').props.accessibilityState.selected, true);
+    assert.equal(app.button('scan_intro_small_plant').props.accessibilityState.selected, true);
   } finally { act(() => app.tree.unmount()); }
 });
 
