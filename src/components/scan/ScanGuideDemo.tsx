@@ -13,7 +13,7 @@ const leafPhoto = require("../../../assets/images/scan-guide/leaf-framing.jpg");
 const smallPlantPhoto = require("../../../assets/images/scan-guide/small-plant-framing.jpg");
 const phaseLabels = {
   frame: ["scan_demo_too_close", "scan_demo_in_frame"],
-  smallPlant: ["scan_demo_too_close", "scan_demo_leaves_and_stem"],
+  smallPlant: ["scan_demo_include_stem", "scan_demo_leaves_and_stem"],
   light: ["scan_demo_in_shadow", "scan_demo_even_light"],
   focus: ["scan_demo_tap_leaf", "scan_demo_hold_still"],
 } as const;

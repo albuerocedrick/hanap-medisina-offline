@@ -26,6 +26,7 @@ export default {
   scan_guide_skip: "Don’t show this again",
   scan_guide_close: "Close photo tips",
   scan_demo_too_close: "Too close",
+  scan_demo_include_stem: "Include leaves and stem",
   scan_demo_in_frame: "Leaf in frame",
   scan_demo_leaves_and_stem: "Leaves and stem in frame",
   scan_demo_one_photo_taken: "1 photo taken",

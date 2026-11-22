@@ -26,6 +26,7 @@ export default {
   scan_guide_skip: "Huwag nang ipakita muli",
   scan_guide_close: "Isara ang mga tip sa larawan",
   scan_demo_too_close: "Masyadong malapit",
+  scan_demo_include_stem: "Isama ang dahon at tangkay",
   scan_demo_in_frame: "Nasa frame ang dahon",
   scan_demo_leaves_and_stem: "Kita ang mga dahon at tangkay",
   scan_demo_one_photo_taken: "1 larawan ang nakuha",
