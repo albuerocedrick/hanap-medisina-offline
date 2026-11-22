@@ -9,8 +9,8 @@ import { useTranslation } from "@/src/i18n/useTranslation";
 import { useTheme } from "@/src/theme/useTheme";
 
 type ScanGuideStep = keyof typeof phaseLabels;
-const leafPhoto = require("../../../assets/images/plants/tsaang-gubat.jpg");
-const smallPlantPhoto = require("../../../assets/images/plants/tawa-tawa.png");
+const leafPhoto = require("../../../assets/images/scan-guide/leaf-framing.jpg");
+const smallPlantPhoto = require("../../../assets/images/scan-guide/small-plant-framing.jpg");
 const phaseLabels = {
   frame: ["scan_demo_too_close", "scan_demo_in_frame"],
   smallPlant: ["scan_demo_too_close", "scan_demo_leaves_and_stem"],
@@ -85,12 +85,14 @@ export function ScanGuideDemo({ step, compact, animate }: { step: ScanGuideStep;
 
   return <View accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
     style={[styles.viewfinder, {
-      height: compact ? 90 : 152,
-      backgroundColor: smallPlant ? theme.scrimStrong : theme.surface,
+      width: compact ? "60%" : "100%",
+      aspectRatio: 2,
+      alignSelf: "center",
+      backgroundColor: theme.surface,
       borderColor: theme.accentSoftBorder,
     }]}>
     <Animated.View style={[StyleSheet.absoluteFillObject, photo]}>
-      <Image source={smallPlant ? smallPlantPhoto : leafPhoto} resizeMode={smallPlant ? "contain" : "cover"}
+      <Image source={smallPlant ? smallPlantPhoto : leafPhoto} resizeMode="cover"
         fadeDuration={0} style={styles.photo} />
     </Animated.View>
     {step === "focus" && animate && <Animated.View style={[StyleSheet.absoluteFillObject, softFocus]}>
@@ -142,8 +144,8 @@ const styles = StyleSheet.create({
   viewfinder: { borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   photo: { width: "100%", height: "100%" },
   shadow: { position: "absolute", width: "125%", height: "115%", left: "8%", top: "-7%" },
-  reticle: { position: "absolute", width: "70%", height: "65%" },
-  smallPlantReticle: { position: "absolute", aspectRatio: 3 / 4, height: "96%", maxWidth: "96%" },
+  reticle: { position: "absolute", width: "72%", height: "94%" },
+  smallPlantReticle: { position: "absolute", width: "66%", height: "94%" },
   corner: { position: "absolute", width: 17, height: 17, borderColor: "#f8fbed" },
   topLeft: { top: 0, left: 0, borderTopWidth: 2, borderLeftWidth: 2, borderTopLeftRadius: 5 },
   topRight: { top: 0, right: 0, borderTopWidth: 2, borderRightWidth: 2, borderTopRightRadius: 5 },

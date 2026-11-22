@@ -118,10 +118,6 @@ export default function ScanScreen() {
       </TouchableOpacity>}
       {!showInstructions && scan.sheetState === "hidden" && !scan.isDismissing && <>
         <View pointerEvents="box-none" style={{ position: "absolute", bottom: Math.max(insets.bottom, 12) + 76, left: 20, right: 20, alignItems: "center" }}>
-          <View pointerEvents="none" style={[styles.reminder, { backgroundColor: theme.scrim }]}>
-            <Text style={[styles.captureText, { color: theme.onImage, fontSize: 12, textAlign: "center" }]}>{t("capture_reminder")}</Text>
-            <Text style={[styles.body, { color: theme.onImage, fontSize: 12, lineHeight: 18, marginTop: 5 }]}>{t("capture_hold")}</Text>
-          </View>
           <TouchableOpacity accessibilityRole="button" accessibilityLabel={t("capture_photo")}
             accessibilityState={{ disabled, busy: scan.isProcessing || scan.loading }} disabled={disabled} onPress={scan.capture}
             activeOpacity={0.8} style={[styles.captureButton, { backgroundColor: theme.accent,

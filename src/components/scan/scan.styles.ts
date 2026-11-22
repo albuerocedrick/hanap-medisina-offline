@@ -17,7 +17,6 @@ export const scanStyles = StyleSheet.create({
   captureButton: { minHeight: 52, minWidth: 148, paddingHorizontal: 22, borderRadius: 16, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, borderWidth: 1 },
   captureText: { fontFamily: "Quicksand_700Bold", fontSize: 14 },
   helpText: { fontFamily: "Quicksand_600SemiBold", fontSize: 13 },
-  reminder: { alignSelf: "stretch", padding: 14, borderRadius: 16, marginBottom: 12 },
   backdrop: { ...StyleSheet.absoluteFillObject },
   sheet: { position: "absolute", bottom: 0, left: 0, right: 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, borderTopWidth: StyleSheet.hairlineWidth, overflow: "hidden", elevation: 16, shadowOffset: { width: 0, height: -6 }, shadowOpacity: 0.1, shadowRadius: 20 },
   handleRow: { alignItems: "center", paddingTop: 14, paddingBottom: 12 },
